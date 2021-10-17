@@ -1,5 +1,5 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
@@ -11,6 +11,8 @@ const firebaseConfig = {
   measurementId: process.env.MEASUREMENT_ID
 };
 
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-export default firebase;
+const db = getFirestore(app);
+
+export { db as default };
