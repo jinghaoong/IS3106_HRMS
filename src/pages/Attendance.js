@@ -1,23 +1,23 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-// import { collection, getDocs } from 'firebase/firestore';
-// import { useState, useEffect } from 'react';
-// import { db } from '../firebase-config';
+import { collection, getDocs } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import { analytics } from '../firebase-config';
 import EmployeesListResults from '../components/employees/employeeListResults';
 import EmployeesListToolbar from '../components/employees/employeeListToolbar';
 import employees from '../__mocks__/customers';
 
 const Attendance = () => {
-  // const [employees, setEmployees] = useState([]);
-  // const employeeRef = collection(db, 'users');
+  const [employees, setEmployees] = useState([]);
+  const employeeRef = collection(analytics, 'users');
 
-  // useEffect(() => {
-  //   const getEmployees = async () => {
-  //     const data = await getDocs(employeeRef);
-  //     console.log(data);
-  //   };
-  //   getEmployees();
-  // }, []);
+  useEffect(() => {
+    const getEmployees = async () => {
+      const data = await getDocs(employeeRef);
+      console.log(data);
+    };
+    getEmployees();
+  }, []);
   <>
     <Helmet>
       <title>HRMS | Attendance Portal</title>

@@ -9,7 +9,7 @@ import NotFound from './pages/NotFound';
 import ProductList from './pages/ProductList';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
-import AttendancePortal from './pages/AttendancePortal';
+import Attendance from './pages/Attendance';
 
 const routes = [
   {
@@ -20,7 +20,7 @@ const routes = [
       { path: 'customers', element: <CustomerList /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <ProductList /> },
-      { path: 'attendance', element: <AttendancePortal /> },
+      { path: 'attendance', element: <Attendance/> },
       { path: 'settings', element: <Settings /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
