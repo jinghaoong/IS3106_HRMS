@@ -1,10 +1,10 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-import CustomerListResults from '../components/customer/CustomerListResults';
-import CustomerListToolbar from '../components/customer/CustomerListToolbar';
-import customers from '../__mocks__/customers';
+import EmployeesListResults from '../components/employees/employeeListResults';
+import EmployeesListToolbar from '../components/employees/employeeListToolbar';
+import employees from '../__mocks__/customers';
 
-const CustomerList = () => (
+const AttendanceList = () => (
   <>
     <Helmet>
       <title>HRMS | Attendance Portal</title>
@@ -17,13 +17,13 @@ const CustomerList = () => (
       }}
     >
       <Container maxWidth={false}>
-        <CustomerListToolbar />
+        <EmployeesListToolbar />
         <Box sx={{ pt: 3 }}>
-          <CustomerListResults customers={customers} />
+          <EmployeesListResults employees={employees} />
         </Box>
       </Container>
     </Box>
   </>
 );
 
-export default CustomerList;
+export default AttendanceList;
