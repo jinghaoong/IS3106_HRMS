@@ -1,18 +1,17 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: process.env.API_KEY,
-  authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
-  messagingSenderId: process.env.MS_ID,
-  appId: process.env.APP_ID,
-  measurementId: process.env.MEASUREMENT_ID
+  apiKey: "AIzaSyBDDcRjD-n8GARKy7Kz04UMPyJ_2DMW3lY",
+  authDomain: "customhrms.firebaseapp.com",
+  projectId: "customhrms",
+  storageBucket: "customhrms.appspot.com",
+  messagingSenderId: "454637246867",
+  appId: "1:454637246867:web:7d3d4402869f5a20ac3066",
+  measurementId: "G-KV472W0W56"
 };
 
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
-const db = getFirestore(app);
-
-export { db as default };
+export { analytics as default };
