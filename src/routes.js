@@ -10,6 +10,7 @@ import ProductList from './pages/ProductList';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Attendance from './pages/Attendance';
+import Appraisal from './pages/Appraisal';
 
 const routes = [
   {
@@ -20,8 +21,9 @@ const routes = [
       { path: 'customers', element: <CustomerList /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <ProductList /> },
-      { path: 'attendance', element: <Attendance/> },
+      { path: 'attendance', element: <Attendance /> },
       { path: 'settings', element: <Settings /> },
+      { path: 'appraisal', element: <Appraisal /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },
