@@ -3,55 +3,53 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
-  Avatar,
   Box,
   Card,
+  Checkbox,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  Typography
 } from '@material-ui/core';
-import getInitials from '../../utils/getInitials';
 
-const EmployeesListResults = ({ employees, ...rest }) => {
-  const [selectedEmployeesIds] = useState([]);
+const EmployeeListResults = ({ employees, ...rest }) => {
+  const [selectedEmployeesIds, setSelectedEmployeesIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
-  // const handleSelectAll = (event) => {
-  //   let newSelectedEmployeesIds;
+  const handleSelectAll = (event) => {
+    let newSelectedEmployeesIds;
 
-  //   if (event.target.checked) {
-  //     newSelectedEmployeesIds = employees.map((employee) => employee.id);
-  //   } else {
-  //     newSelectedEmployeesIds = [];
-  //   }
+    if (event.target.checked) {
+      newSelectedEmployeesIds = employees.map((employee) => employee.userId);
+    } else {
+      newSelectedEmployeesIds = [];
+    }
 
-  //   setSelectedEmployeesIds(newSelectedEmployeesIds);
-  // };
+    setSelectedEmployeesIds(newSelectedEmployeesIds);
+  };
 
-  // const handleSelectOne = (event, id) => {
-  //   const selectedIndex = selectedEmployeesIds.indexOf(id);
-  //   let newSelectedEmployeesIds = [];
+  const handleSelectOne = (event, userId) => {
+    const selectedIndex = selectedEmployeesIds.indexOf(userId);
+    let newSelectedEmployeesIds = [];
 
-  //   if (selectedIndex === -1) {
-  //     newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds, id);
-  //   } else if (selectedIndex === 0) {
-  //     newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds.slice(1));
-  //   } else if (selectedIndex === selectedEmployeesIds.length - 1) {
-  //     newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelectedEmployeesIds = newSelectedEmployeesIds.concat(
-  //       selectedEmployeesIds.slice(0, selectedIndex),
-  //       selectedEmployeesIds.slice(selectedIndex + 1)
-  //     );
-  //   }
+    if (selectedIndex === -1) {
+      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds, userId);
+    } else if (selectedIndex === 0) {
+      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds.slice(1));
+    } else if (selectedIndex === selectedEmployeesIds.length - 1) {
+      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(
+        selectedEmployeesIds.slice(0, selectedIndex),
+        selectedEmployeesIds.slice(selectedIndex + 1)
+      );
+    }
 
-  //   setSelectedEmployeesIds(newSelectedEmployeesIds);
-  // };
+    setSelectedEmployeesIds(newSelectedEmployeesIds);
+  };
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -68,74 +66,80 @@ const EmployeesListResults = ({ employees, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
-                  Employee
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    checked={selectedEmployeesIds.length === employees.length}
+                    color="primary"
+                    indeterminate={
+                      selectedEmployeesIds.length > 0
+                      && selectedEmployeesIds.length < employees.length
+                    }
+                    onChange={handleSelectAll}
+                  />
                 </TableCell>
                 <TableCell>
-                  ID
+                  First Name
                 </TableCell>
                 <TableCell>
-                  Date/Time in
+                  Last Name
                 </TableCell>
                 <TableCell>
-                  Date/Time out
+                  Username
                 </TableCell>
                 <TableCell>
-                  Hours Worked
+                  Address
                 </TableCell>
                 <TableCell>
-                  Overtime Hours
+                  Contact
                 </TableCell>
                 <TableCell>
-                  Status
+                  Email
+                </TableCell>
+                <TableCell>
+                  DOB
+                </TableCell>
+                <TableCell>
+                  Joined ON
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {employees.slice(0, limit).map((employee) => (
+              {Array.from(employees).slice(0, limit).map((employee) => (
                 <TableRow
                   hover
-                  key={employee.id}
-                  selected={selectedEmployeesIds.indexOf(employee.id) !== -1}
+                  key={employee.userId}
+                  selected={selectedEmployeesIds.indexOf(employee.userId) !== -1}
                 >
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                      }}
-                    >
-                      <Avatar
-                        src={employee.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials(employee.name)}
-                      </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {employee.name}
-                      </Typography>
-                    </Box>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectedEmployeesIds.indexOf(employee.userId) !== -1}
+                      onChange={(event) => handleSelectOne(event, employee.userId)}
+                      value="true"
+                    />
                   </TableCell>
                   <TableCell>
-                    {employee.id}
+                    {employee.firstName}
                   </TableCell>
                   <TableCell>
-                    {`${employee.address.city}, ${employee.address.state}, ${employee.address.country}`}
+                    {employee.lastName}
                   </TableCell>
                   <TableCell>
-                    {employee.phone}
+                    {employee.username}
                   </TableCell>
                   <TableCell>
-                    {moment(employee.createdAt).format('DD/MM/YYYY')}
+                    {employee.address}
                   </TableCell>
                   <TableCell>
-                    {moment(employee.createdAt).format('DD/MM/YYYY')}
+                    {employee.contact}
                   </TableCell>
                   <TableCell>
-                    {moment(employee.createdAt).format('DD/MM/YYYY')}
+                    {employee.email}
+                  </TableCell>
+                  <TableCell>
+                    {moment(employee.dob).format('DD/MM/YYYY')}
+                  </TableCell>
+                  <TableCell>
+                    {moment(employee.startDate).format('DD/MM/YYYY')}
                   </TableCell>
                 </TableRow>
               ))}
@@ -156,8 +160,8 @@ const EmployeesListResults = ({ employees, ...rest }) => {
   );
 };
 
-EmployeesListResults.propTypes = {
+EmployeeListResults.propTypes = {
   employees: PropTypes.array.isRequired
 };
 
-export default EmployeesListResults;
+export default EmployeeListResults;
