@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Container,
-  Icon,
   TextField,
   Typography
 } from '@material-ui/core';
@@ -13,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { auth } from '../firebase-config';
 
+let authenticated = false;
 const Login = () => {
   const navigate = useNavigate();
 
@@ -24,8 +24,11 @@ const Login = () => {
         password
       );
       console.log(user);
+      authenticated = true;
+      console.log(authenticated);
     } catch (error) {
       console.log(error);
+      authenticated = false;
     }
   };
 
@@ -54,7 +57,9 @@ const Login = () => {
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+              if (authenticated === true) {
+                navigate('/app/dashboard', { replace: true });
+              }
             }}
           >
             {({

@@ -26,4 +26,5 @@ const EmployeeList = () => (
   </>
 );
 
+console.log(Array.isArray(EmployeeList));
 export default EmployeeList;
