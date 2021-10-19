@@ -27,7 +27,7 @@ const EmployeesListToolbar = (props) => (
         color="primary"
         variant="contained"
       >
-        Add customer
+        Add Employee
       </Button>
     </Box>
     <Box sx={{ mt: 3 }}>
@@ -48,7 +48,7 @@ const EmployeesListToolbar = (props) => (
                   </InputAdornment>
                 )
               }}
-              placeholder="Search customer"
+              placeholder="Search employee"
               variant="outlined"
             />
           </Box>

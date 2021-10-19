@@ -1,5 +1,24 @@
-import { v4 as uuid } from 'uuid';
+// import { v4 as uuid } from 'uuid';
+import { getDatabase, ref, set } from 'firebase/database';
 
+function writeUserData(userId, firstName, lastName, username, address, contact, email, dob, startDate) {
+  const db = getDatabase();
+  set(ref(db, ('employee/', userId)), {
+    userId,
+    firstName,
+    lastName,
+    username,
+    address,
+    contact,
+    email,
+    dob,
+    startDate
+  });
+}
+
+export default writeUserData;
+
+/*
 export default [
   {
     id: uuid(),
@@ -142,3 +161,4 @@ export default [
     phone: '801-301-7894'
   }
 ];
+*/
