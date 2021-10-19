@@ -9,8 +9,8 @@ import NotFound from './pages/NotFound';
 import ProductList from './pages/ProductList';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
-import Attendance from './pages/Attendance';
 import Appraisal from './pages/Appraisal';
+import Attendance from './pages/Attendance';
 
 const routes = [
   {
@@ -21,9 +21,9 @@ const routes = [
       { path: 'employees', element: <EmployeeList /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <ProductList /> },
-      { path: 'attendance', element: <Attendance /> },
       { path: 'settings', element: <Settings /> },
       { path: 'appraisal', element: <Appraisal /> },
+      { path: 'attendance', element: <Attendance /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },
