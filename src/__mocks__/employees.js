@@ -1,22 +1,31 @@
-// import { v4 as uuid } from 'uuid';
-import { getDatabase, ref, set } from 'firebase/database';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
-function writeUserData(userId, firstName, lastName, username, address, contact, email, dob, startDate) {
-  const db = getDatabase();
-  set(ref(db, ('employee/', userId)), {
-    userId,
-    firstName,
-    lastName,
-    username,
-    address,
-    contact,
-    email,
-    dob,
-    startDate
+const firebaseConfig = {
+  apiKey: 'AIzaSyBDDcRjD-n8GARKy7Kz04UMPyJ_2DMW3lY',
+  authDomain: 'customhrms.firebaseapp.com',
+  projectId: 'customhrms',
+  storageBucket: 'customhrms.appspot.com',
+  messagingSenderId: '454637246867',
+  appId: '1:454637246867:web:7d3d4402869f5a20ac3066',
+  measurementId: 'G-KV472W0W56'
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const employeeList = async function getUsers() {
+  const querySnapshot = await getDocs(collection(db, 'users'));
+  querySnapshot.forEach((doc) => {
+    console.log(doc.id, ' => ', doc.data());
+    console.log('User');
   });
-}
+};
 
-export default writeUserData;
+const employees = Array.from(employeeList);
+console.log(Array.isArray(employees));
+
+export default { employees };
 
 /*
 export default [
