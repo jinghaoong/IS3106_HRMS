@@ -2,14 +2,14 @@ import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 // import { collection, getDocs } from 'firebase/firestore';
 // import { useState, useEffect } from 'react';
-// import { db } from '../firebase-config';
+// import { app } from '../firebase-config';
 import EmployeesListResults from '../components/employees/employeeListResults';
 import EmployeesListToolbar from '../components/employees/employeeListToolbar';
-import employees from '../__mocks__/customers';
+import employees from '../__mocks__/employees';
 
 const Attendance = () => {
   // const [employees, setEmployees] = useState([]);
-  // const employeeRef = collection(analytics, 'users');
+  // const employeeRef = collection(app, 'users');
 
   // useEffect(() => {
   //   const getEmployees = async () => {
@@ -32,7 +32,7 @@ const Attendance = () => {
       <Container maxWidth={false}>
         <EmployeesListToolbar />
         <Box sx={{ pt: 3 }}>
-          <EmployeesListResults employees={employees} />
+          <EmployeesListResults employees={writeUserData} />
         </Box>
       </Container>
     </Box>
