@@ -32,7 +32,7 @@ const Attendance = () => {
       <Container maxWidth={false}>
         <EmployeesListToolbar />
         <Box sx={{ pt: 3 }}>
-          <EmployeesListResults employees={writeUserData} />
+          <EmployeesListResults employees={employees} />
         </Box>
       </Container>
     </Box>
