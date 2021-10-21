@@ -134,7 +134,7 @@ const Login = () => {
                     <Button
                       color="secondary"
                       variant="text"
-                      onClick={navigate('/app/register', { replace: true })}
+                      onClick={() => { navigate('/app/register', { replace: true }); }}
                     >
                       Register
                     </Button>
