@@ -123,7 +123,7 @@ const Login = () => {
                     size="large"
                     type="submit"
                     variant="contained"
-                    onClick={login(values.email, values.password)}
+                    onClick={() => { login(values.email, values.password); }}
                   >
                     Sign in
                   </Button>
