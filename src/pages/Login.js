@@ -129,7 +129,7 @@ const Login = () => {
                     Sign in
                   </Button>
                   <Typography
-                    align="center"
+                    color="textSecondary"
                   >
                     If you do not have an account,
                     {' '}
