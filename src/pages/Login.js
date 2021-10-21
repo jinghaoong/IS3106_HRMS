@@ -35,7 +35,7 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>Login | Material Kit</title>
+        <title>HRMS | Login</title>
       </Helmet>
       <Box
         sx={{
@@ -125,8 +125,21 @@ const Login = () => {
                     variant="contained"
                     onClick={login(values.email, values.password)}
                   >
-                    Sign in now
+                    Sign in
                   </Button>
+                  <Typography
+                    align="center"
+                  >
+                    If you do not have an account,
+                    <Button
+                      color="secondary"
+                      variant="text"
+                      onClick={navigate('/app/register', { replace: true })}
+                    >
+                      Register
+                    </Button>
+                    here
+                  </Typography>
                 </Box>
               </form>
             )}
