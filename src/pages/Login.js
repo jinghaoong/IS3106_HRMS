@@ -3,12 +3,13 @@ import {
   Button,
   Container,
   TextField,
-  Typography
+  Typography,
+  Link
 } from '@material-ui/core';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Formik } from 'formik';
 import { Helmet } from 'react-helmet';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { auth } from '../firebase-config';
 
@@ -131,13 +132,16 @@ const Login = () => {
                     align="center"
                   >
                     If you do not have an account,
-                    <Button
-                      color="secondary"
-                      variant="text"
-                      onClick={() => { navigate('/app/register', { replace: true }); }}
+                    {' '}
+                    <Link
+                      component={RouterLink}
+                      to="/register"
+                      variant="h6"
+                      underline="hover"
                     >
                       Register
-                    </Button>
+                    </Link>
+                    {' '}
                     here
                   </Typography>
                 </Box>
