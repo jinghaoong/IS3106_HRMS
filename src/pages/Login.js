@@ -13,23 +13,20 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { auth } from '../firebase-config';
 
-let authenticated = false;
 const Login = () => {
   const navigate = useNavigate();
 
-  const login = async (email, password) => {
+  const login = (email, password) => {
     try {
-      const user = await signInWithEmailAndPassword(
+      const user = signInWithEmailAndPassword(
         auth,
         email,
         password
-      );
-      console.log(user);
-      authenticated = true;
-      console.log(authenticated);
+      ).then(console.log(auth.currentUser)).catch((error) => { console.log('Here is an error', error); return navigate('/login', { replace: true }); });
+      console.log('Current user is ', user);
     } catch (error) {
+      console.log('Current error is here');
       console.log(error);
-      authenticated = false;
     }
   };
 
@@ -58,9 +55,9 @@ const Login = () => {
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={() => {
-              if (authenticated === true) {
-                navigate('/app/dashboard', { replace: true });
-              }
+              console.log(auth.currentUser == null);
+              console.log('Entering this loop');
+              navigate('/app/dashboard', { replace: true });
             }}
           >
             {({
