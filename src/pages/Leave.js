@@ -1,26 +1,13 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-// import { collection, getDocs } from 'firebase/firestore';
-// import { useState, useEffect } from 'react';
-// import { app } from '../firebase-config';
 import EmployeesListResults from '../components/employees/employeeListResults';
 import EmployeesListToolbar from '../components/employees/employeeListToolbar';
 import employees from '../__mocks__/employees';
 
-const Attendance = () => {
-  // const [employees, setEmployees] = useState([]);
-  // const employeeRef = collection(app, 'users');
-
-  // useEffect(() => {
-  //   const getEmployees = async () => {
-  //     const data = await getDocs(employeeRef);
-  //     console.log(data);
-  //   };
-  //   getEmployees();
-  // }, []);
+const Leave = () => {
   <>
     <Helmet>
-      <title>HRMS | Attendance Portal</title>
+      <title>HRMS | Leave Management Portal</title>
     </Helmet>
     <Box
       sx={{
@@ -39,4 +26,4 @@ const Attendance = () => {
   </>;
 };
 
-export default Attendance;
+export default Leave;

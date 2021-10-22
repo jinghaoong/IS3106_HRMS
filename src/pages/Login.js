@@ -55,7 +55,7 @@ const Login = () => {
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={() => {
-              console.log(auth.currentUser == null);
+              console.log(auth.currentUser === null);
               console.log('Entering this loop');
               navigate('/app/dashboard', { replace: true });
             }}
