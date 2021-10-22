@@ -3,8 +3,8 @@ import { Box, Container } from '@material-ui/core';
 // import { collection, getDocs } from 'firebase/firestore';
 // import { useState, useEffect } from 'react';
 // import { app } from '../firebase-config';
-import EmployeesListResults from '../components/employees/employeeListResults';
-import EmployeesListToolbar from '../components/employees/employeeListToolbar';
+import EmployeesListResults from '../components/employees/EmployeeListResults';
+import EmployeesListToolbar from '../components/employees/EmployeeListToolbar';
 import employees from '../__mocks__/employees';
 
 const Attendance = () => {
