@@ -94,9 +94,17 @@ const EmployeeListResults = ({ employees, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(employees).slice(0, limit).filter((val) => {
-                if (searchValue === '' || val.firstName.toLowerCase().includes(searchValue) || val.lastName.toLowerCase().includes(searchValue)) {
+              {employees.slice(0, limit).filter((val) => {
+                if (searchValue === '') {
                   return val;
+                }
+                if (searchValue !== '') {
+                  const searchVal = searchValue.toLowerCase();
+                  const fullName = (`${val.lastName} ${val.firstName}`) && (`${val.lastName} ${val.firstName}`).toLowerCase().includes(searchVal);
+                  console.log(fullName);
+                  const firstName = val.firstName && val.firstName.toLowerCase().includes(searchVal);
+                  const lastName = val.lastName && val.lastName.toLowerCase().includes(searchVal);
+                  return fullName || firstName || lastName;
                 }
                 return null;
               }).filter((em) => {
