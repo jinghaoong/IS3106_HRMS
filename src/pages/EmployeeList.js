@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-import EmployeeListResults from '../components/employees/EmployeeListResults';
-import EmployeeListToolbar from '../components/employees/EmployeeListToolbar';
+import EmployeeListResults from '../components/employees/employeeListResults';
+import EmployeeListToolbar from '../components/employees/employeeListToolbar';
 import employees from '../__mocks__/employees';
 
 const EmployeeList = () => (
