@@ -42,7 +42,7 @@ const App = () => {
       element: <DashboardLayout />,
       children: [
         { path: 'account', element: <Account /> },
-        { path: 'employees', element: <EmployeeList /> },
+        { path: 'employees', element: <EmployeeList employees={employees} /> },
         { path: 'dashboard', element: <Dashboard /> },
         { path: 'products', element: <ProductList /> },
         { path: 'settings', element: <Settings /> },
