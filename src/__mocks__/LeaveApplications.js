@@ -18,7 +18,7 @@ const leaveApplicationsList = async function getLeaveApplications() {
   const querySnapshot = await getDocs(collection(db, 'leave'));
   querySnapshot.forEach((doc) => {
     console.log(doc.id, ' => ', doc.data());
-    console.log('User');
+    console.log('Leave');
   });
 };
 

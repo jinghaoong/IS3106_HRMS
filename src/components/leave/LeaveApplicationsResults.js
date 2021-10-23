@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+// import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Box,
@@ -15,27 +15,27 @@ import {
 } from '@material-ui/core';
 
 const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
-  const [selectedEmployeesIds] = useState([]);
+  const [selectedLeaveApplicationsIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
-  const handleSelectOne = (event, userId) => {
-    const selectedIndex = selectedEmployeesIds.indexOf(userId);
-    let newSelectedEmployeesIds = [];
+  const handleSelectOne = (event, leaveId) => {
+    const selectedIndex = selectedLeaveApplicationsIds.indexOf(leaveId);
+    let newSelectedLeaveApplicationsIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds, userId);
+      newSelectedLeaveApplicationsIds = newSelectedLeaveApplicationsIds.concat(selectedLeaveApplicationsIds, leaveId);
     } else if (selectedIndex === 0) {
-      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds.slice(1));
-    } else if (selectedIndex === selectedEmployeesIds.length - 1) {
-      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds.slice(0, -1));
+      newSelectedLeaveApplicationsIds = newSelectedLeaveApplicationsIds.concat(selectedLeaveApplicationsIds.slice(1));
+    } else if (selectedIndex === selectedLeaveApplicationsIds.length - 1) {
+      newSelectedLeaveApplicationsIds = newSelectedLeaveApplicationsIds.concat(selectedLeaveApplicationsIds.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(
-        selectedEmployeesIds.slice(0, selectedIndex),
-        selectedEmployeesIds.slice(selectedIndex + 1)
+      newSelectedLeaveApplicationsIds = newSelectedLeaveApplicationsIds.concat(
+        selectedLeaveApplicationsIds.slice(0, selectedIndex),
+        selectedLeaveApplicationsIds.slice(selectedIndex + 1)
       );
     }
-    selectedEmployeesIds(newSelectedEmployeesIds);
+    selectedLeaveApplicationsIds(newSelectedLeaveApplicationsIds);
   };
 
   const handleLimitChange = (event) => {
@@ -64,57 +64,33 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
                 <TableCell>
                   Address
                 </TableCell>
-                <TableCell>
-                  Contact
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  DOB
-                </TableCell>
-                <TableCell>
-                  Joined
-                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(employees).slice(0, limit).map((employee) => (
+              {Array.from(leaveApplications).slice(0, limit).map((leaveApplication) => (
                 <TableRow
                   hover
-                  key={employee.userId}
-                  selected={selectedEmployeesIds.indexOf(employee.userId) !== -1}
+                  key={leaveApplication.leaveId}
+                  selected={selectedLeaveApplicationsIds.indexOf(leaveApplication.leaveId) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedEmployeesIds.indexOf(employee.userId) !== -1}
-                      onChange={(event) => handleSelectOne(event, employee.userId)}
+                      checked={selectedLeaveApplicationsIds.indexOf(leaveApplication.leaveId) !== -1}
+                      onChange={(event) => handleSelectOne(event, leaveApplication.leaveId)}
                       value="true"
                     />
                   </TableCell>
                   <TableCell>
-                    {employee.firstName}
+                    {leaveApplication.firstName}
                   </TableCell>
                   <TableCell>
-                    {employee.lastName}
+                    {leaveApplication.lastName}
                   </TableCell>
                   <TableCell>
-                    {employee.username}
+                    {leaveApplication.username}
                   </TableCell>
                   <TableCell>
-                    {employee.address}
-                  </TableCell>
-                  <TableCell>
-                    {employee.contact}
-                  </TableCell>
-                  <TableCell>
-                    {employee.email}
-                  </TableCell>
-                  <TableCell>
-                    {moment(employee.dob).format('DD/MM/YYYY')}
-                  </TableCell>
-                  <TableCell>
-                    {moment(employee.startDate).format('DD/MM/YYYY')}
+                    {leaveApplication.address}
                   </TableCell>
                 </TableRow>
               ))}
@@ -124,7 +100,7 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={employees.length}
+        count={leaveApplications.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -135,8 +111,8 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
   );
 };
 
-EmployeeListResults.propTypes = {
-  employees: PropTypes.array.isRequired
+LeaveApplicationsListResults.propTypes = {
+  leaveApplications: PropTypes.array.isRequired
 };
 
 export default LeaveApplicationsResults;

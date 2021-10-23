@@ -1,8 +1,8 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-import EmployeeListResults from '../components/employees/employeeListResults';
+import LeaveApplicationsResults from '../components/leave/LeaveApplicationsResults';
 import LeaveToolbar from '../components/leave/LeaveToolbar';
-import employees from '../__mocks__/employees';
+import leaveApplications from '../__mocks__/LeaveApplications';
 
 const Leave = () => (
   <>
@@ -19,7 +19,7 @@ const Leave = () => (
       <Container maxWidth={false}>
         <LeaveToolbar />
         <Box sx={{ pt: 3 }}>
-          <EmployeeListResults employees={employees} />
+          <LeaveApplicationsResults leaveApplications={leaveApplications} />
         </Box>
       </Container>
     </Box>
