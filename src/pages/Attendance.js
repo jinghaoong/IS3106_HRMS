@@ -1,42 +1,34 @@
 import { Helmet } from 'react-helmet';
+import PropTypes from 'prop-types';
 import { Box, Container } from '@material-ui/core';
-// import { collection, getDocs } from 'firebase/firestore';
-// import { useState, useEffect } from 'react';
-// import { app } from '../firebase-config';
-import EmployeesListResults from '../components/employees/employeeListResults';
-import EmployeesListToolbar from '../components/employees/employeeListToolbar';
-import employees from '../__mocks__/employees';
+import AttendanceListResults from '../components/attendance/attendanceListResults';
 
-const Attendance = () => {
-  // const [employees, setEmployees] = useState([]);
-  // const employeeRef = collection(app, 'users');
+const Attendance = ({ employees }) => {
+  console.log(employees);
+  return (
+    <>
+      <Helmet>
+        <title>Attendance | Material Kit</title>
+      </Helmet>
+      <Box
+        sx={{
+          backgroundColor: 'background.default',
+          minHeight: '100%',
+          py: 3
+        }}
+      >
+        <Container maxWidth={false}>
+          <Box sx={{ pt: 3 }}>
+            <AttendanceListResults employees={employees} />
+          </Box>
+        </Container>
+      </Box>
+    </>
+  );
+};
 
-  // useEffect(() => {
-  //   const getEmployees = async () => {
-  //     const data = await getDocs(employeeRef);
-  //     console.log(data);
-  //   };
-  //   getEmployees();
-  // }, []);
-  <>
-    <Helmet>
-      <title>HRMS | Attendance Portal</title>
-    </Helmet>
-    <Box
-      sx={{
-        backgroundColor: 'background.default',
-        minHeight: '100%',
-        py: 3
-      }}
-    >
-      <Container maxWidth={false}>
-        <EmployeesListToolbar />
-        <Box sx={{ pt: 3 }}>
-          <EmployeesListResults employees={employees} />
-        </Box>
-      </Container>
-    </Box>
-  </>;
+Attendance.propTypes = {
+  employees: PropTypes.array.isRequired
 };
 
 export default Attendance;
