@@ -23,10 +23,12 @@ import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
+import Leave from './pages/Leave';
 
 const App = () => {
   const [employees, setEmployees] = useState([]);
   const employeeRef = collection(db, 'users');
+  const leaveApplications = useState([]);
 
   useEffect(() => {
     const getEmployees = async () => {
@@ -48,6 +50,7 @@ const App = () => {
         { path: 'settings', element: <Settings /> },
         { path: 'appraisal', element: <Appraisal /> },
         { path: 'attendance', element: <Attendance employees={employees} /> },
+        { path: 'leave', element: <Leave leaveApplications={leaveApplications} /> },
         { path: '*', element: <Navigate to="/404" /> }
       ]
     },
