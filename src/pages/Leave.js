@@ -1,13 +1,13 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-import EmployeesListResults from '../components/employees/employeeListResults';
-import EmployeesListToolbar from '../components/employees/employeeListToolbar';
+import EmployeeListResults from '../components/employees/employeeListResults';
+import LeaveToolbar from '../components/leave/LeaveToolbar';
 import employees from '../__mocks__/employees';
 
-const Leave = () => {
+const Leave = () => (
   <>
     <Helmet>
-      <title>HRMS | Leave Management Portal</title>
+      <title>HRMS | Leave Management</title>
     </Helmet>
     <Box
       sx={{
@@ -17,13 +17,14 @@ const Leave = () => {
       }}
     >
       <Container maxWidth={false}>
-        <EmployeesListToolbar />
+        <LeaveToolbar />
         <Box sx={{ pt: 3 }}>
-          <EmployeesListResults employees={employees} />
+          <EmployeeListResults employees={employees} />
         </Box>
       </Container>
     </Box>
-  </>;
-};
+  </>
+);
 
+// console.log(Array.isArray(Leave));
 export default Leave;
