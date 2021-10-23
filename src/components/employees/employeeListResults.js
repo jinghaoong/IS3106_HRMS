@@ -137,10 +137,10 @@ const EmployeeListResults = ({ employees, ...rest }) => {
                       {employee.email}
                     </TableCell>
                     <TableCell>
-                      {moment(employee.dob).format('DD MMM YYYY')}
+                      {employee.dob ? moment(employee.dob.toDate()).calendar() : ''}
                     </TableCell>
                     <TableCell>
-                      {moment(employee.joined).format('DD MMM YYYY')}
+                      {employee.startDate ? moment(employee.startDate.toDate()).calendar() : ''}
                     </TableCell>
                   </TableRow>
                 ))}
