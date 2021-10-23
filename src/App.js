@@ -23,6 +23,7 @@ import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
+import Leave from './pages/Leave';
 
 const App = () => {
   const [employees, setEmployees] = useState([]);
@@ -48,6 +49,7 @@ const App = () => {
         { path: 'settings', element: <Settings /> },
         { path: 'appraisal', element: <Appraisal /> },
         { path: 'attendance', element: <Attendance employees={employees} /> },
+        { path: 'leave', element: <Leave /> },
         { path: '*', element: <Navigate to="/404" /> }
       ]
     },
