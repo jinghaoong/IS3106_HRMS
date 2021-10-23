@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
+import Leave from './pages/Leave';
 
 const routes = [
   {
@@ -24,6 +25,7 @@ const routes = [
       { path: 'settings', element: <Settings /> },
       { path: 'appraisal', element: <Appraisal /> },
       { path: 'attendance', element: <Attendance /> },
+      { path: 'leave', element: <Leave /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },
