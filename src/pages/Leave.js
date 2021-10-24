@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 import LeaveApplicationsResults from '../components/leave/LeaveApplicationsResults';
 import LeaveToolbar from '../components/leave/LeaveToolbar';
-import leaveApplications from '../__mocks__/leaveApplications';
+import leaveApplications from '../__mocks__/LeaveApplications';
 
 const Leave = () => (
   <>
