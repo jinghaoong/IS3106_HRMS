@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import moment from 'moment';
 
-const EmployeeListResults = ({ employees, ...rest }) => {
+const employeeListResults = ({ employees, ...rest }) => {
   console.log('Current number of employees: ', employees.length);
   const [statusView] = useState('');
   const [searchValue, setSearchValue] = useState('');
@@ -174,10 +174,10 @@ const EmployeeListResults = ({ employees, ...rest }) => {
   );
 };
 
-EmployeeListResults.propTypes = {
+employeeListResults.propTypes = {
   employees: PropTypes.array.isRequired,
-  EmployeeListResults: PropTypes.array.isRequired,
+  employeeListResults: PropTypes.array.isRequired,
   employee: PropTypes.array.isRequired,
 };
 
-export default EmployeeListResults;
+export default employeeListResults;
