@@ -111,7 +111,8 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
   );
 };
 
-LeaveApplicationsListResults.propTypes = {
+LeaveApplicationsResults.propTypes = {
+  LeaveApplicationsResults: PropTypes.array.isRequired,
   leaveApplications: PropTypes.array.isRequired
 };
 

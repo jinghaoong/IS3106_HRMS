@@ -6,6 +6,7 @@ import { Search as SearchIcon } from 'react-feather';
 
 import {
   Box,
+  Button,
   Card,
   CardContent,
   TextField,
@@ -27,7 +28,6 @@ const EmployeeListResults = ({ employees, ...rest }) => {
   const [selectedEmployeesIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  // const [date, setDate] = useState(new Date());
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -91,6 +91,9 @@ const EmployeeListResults = ({ employees, ...rest }) => {
                 <TableCell>
                   Joined On
                 </TableCell>
+                <TableCell>
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -142,6 +145,16 @@ const EmployeeListResults = ({ employees, ...rest }) => {
                     <TableCell>
                       {employee.startDate ? moment(employee.startDate.toDate()).calendar() : ''}
                     </TableCell>
+                    <Button
+                      sx={{
+                        mx: 1,
+                        color: 'primary',
+                        fontSize: 10,
+                        alignSelf: 'center'
+                      }}
+                    >
+                      View User
+                    </Button>
                   </TableRow>
                 ))}
             </TableBody>
