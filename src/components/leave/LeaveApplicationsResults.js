@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-// import moment from 'moment';
+import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Box,
@@ -53,16 +53,16 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  First Name
+                  Leave Request ID
                 </TableCell>
                 <TableCell>
-                  Last Name
+                  Employee Name
                 </TableCell>
                 <TableCell>
-                  Username
+                  Date Submitted
                 </TableCell>
                 <TableCell>
-                  Address
+                  Type of Leave
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -81,16 +81,16 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    {leaveApplication.firstName}
+                    {leaveApplication.id}
                   </TableCell>
                   <TableCell>
-                    {leaveApplication.lastName}
+                    {leaveApplication.employeeName}
                   </TableCell>
                   <TableCell>
-                    {leaveApplication.username}
+                    {leaveApplication.dateSubmitted ? moment(leaveApplication.dateSubmitted.toDate()).calendar() : ''}
                   </TableCell>
                   <TableCell>
-                    {leaveApplication.address}
+                    {leaveApplication.leaveType}
                   </TableCell>
                 </TableRow>
               ))}
