@@ -4,6 +4,7 @@ import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Box,
+  IconButton,
   Card,
   Checkbox,
   Table,
@@ -13,6 +14,7 @@ import {
   TablePagination,
   TableRow,
 } from '@material-ui/core';
+import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 
 const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
   const [selectedLeaveApplicationsIds] = useState([]);
@@ -64,6 +66,7 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
                 <TableCell>
                   Type of Leave
                 </TableCell>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -91,6 +94,14 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
                   </TableCell>
                   <TableCell>
                     {leaveApplication.leaveType}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="view"
+                      onClick={() => {}}
+                    >
+                      <MoreVertOutlinedIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
