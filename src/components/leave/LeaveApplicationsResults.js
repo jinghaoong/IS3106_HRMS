@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-// import moment from 'moment';
+import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import {
   Box,
+  IconButton,
   Card,
   Checkbox,
   Table,
@@ -13,6 +14,7 @@ import {
   TablePagination,
   TableRow,
 } from '@material-ui/core';
+import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
 
 const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
   const [selectedLeaveApplicationsIds] = useState([]);
@@ -53,17 +55,18 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  First Name
+                  Leave Request ID
                 </TableCell>
                 <TableCell>
-                  Last Name
+                  Employee Name
                 </TableCell>
                 <TableCell>
-                  Username
+                  Date Submitted
                 </TableCell>
                 <TableCell>
-                  Address
+                  Type of Leave
                 </TableCell>
+                <TableCell />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -81,16 +84,24 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
                     />
                   </TableCell>
                   <TableCell>
-                    {leaveApplication.firstName}
+                    {leaveApplication.id}
                   </TableCell>
                   <TableCell>
-                    {leaveApplication.lastName}
+                    {leaveApplication.employeeName}
                   </TableCell>
                   <TableCell>
-                    {leaveApplication.username}
+                    {leaveApplication.dateSubmitted ? moment(leaveApplication.dateSubmitted.toDate()).calendar() : ''}
                   </TableCell>
                   <TableCell>
-                    {leaveApplication.address}
+                    {leaveApplication.leaveType}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="view"
+                      onClick={() => {}}
+                    >
+                      <MoreVertOutlinedIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
