@@ -36,7 +36,12 @@
     "@material-ui/core": "^5.0.0-beta.5",
     "@material-ui/icons": "^5.0.0-beta.5",
     "@material-ui/styles": "^5.0.0-beta.5",
+<<<<<<< HEAD
     "@mui/x-data-grid": "^4.0.1",
+=======
+    "@mui/icons-material": "^5.0.4",
+    "@mui/material": "^5.0.4",
+>>>>>>> a43cbb47ca192b6072d5448643c823b0cefce436
     "bootstrap": "^5.1.3",
     "chart.js": "^3.5.1",
     "firebase": "^9.1.3",
