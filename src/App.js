@@ -32,7 +32,7 @@ const App = () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setCurrUser(user);
-      console.log(currUser);
+      console.log('logged in as', currUser);
     } else {
       setCurrUser(null);
     }
