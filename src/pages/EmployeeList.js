@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { Box, Container } from '@material-ui/core';
-import employeeListResults from '../components/employees/employeeListResults';
+import EmployeeListResults from '../components/employees/employeeListResults';
 
 const EmployeeList = ({ employees }) => {
   console.log(employees);
@@ -19,7 +19,7 @@ const EmployeeList = ({ employees }) => {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <employeeListResults employees={employees} />
+            <EmployeeListResults employees={employees} />
           </Box>
         </Container>
       </Box>
