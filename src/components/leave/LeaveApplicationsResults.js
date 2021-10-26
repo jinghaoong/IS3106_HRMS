@@ -1,44 +1,33 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { Search as SearchIcon } from 'react-feather';
 import {
   Box,
-  IconButton,
   Card,
-  Checkbox,
+  CardContent,
+  TextField,
+  InputAdornment,
+  SvgIcon,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
+  IconButton,
 } from '@material-ui/core';
-import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import moment from 'moment';
 
-const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
+const LeaveApplicationsListResults = ({ leaveApplications, ...rest }) => {
+  console.log('leaveApplications type:', typeof (leaveApplications));
+  console.log('Current number of leave applications: ', leaveApplications.length);
+  const [statusView] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [selectedLeaveApplicationsIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
-  const handleSelectOne = (event, leaveId) => {
-    const selectedIndex = selectedLeaveApplicationsIds.indexOf(leaveId);
-    let newSelectedLeaveApplicationsIds = [];
-
-    if (selectedIndex === -1) {
-      newSelectedLeaveApplicationsIds = newSelectedLeaveApplicationsIds.concat(selectedLeaveApplicationsIds, leaveId);
-    } else if (selectedIndex === 0) {
-      newSelectedLeaveApplicationsIds = newSelectedLeaveApplicationsIds.concat(selectedLeaveApplicationsIds.slice(1));
-    } else if (selectedIndex === selectedLeaveApplicationsIds.length - 1) {
-      newSelectedLeaveApplicationsIds = newSelectedLeaveApplicationsIds.concat(selectedLeaveApplicationsIds.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedLeaveApplicationsIds = newSelectedLeaveApplicationsIds.concat(
-        selectedLeaveApplicationsIds.slice(0, selectedIndex),
-        selectedLeaveApplicationsIds.slice(selectedIndex + 1)
-      );
-    }
-    selectedLeaveApplicationsIds(newSelectedLeaveApplicationsIds);
-  };
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -47,8 +36,35 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
   return (
     <Card {...rest}>
+      <Box sx={{ mt: 3 }}>
+        <Card>
+          <CardContent>
+            <Box sx={{ maxWidth: 500 }}>
+              <TextField
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SvgIcon
+                        fontSize="small"
+                        color="action"
+                      >
+                        <SearchIcon />
+                      </SvgIcon>
+                    </InputAdornment>
+                  )
+                }}
+                placeholder="Search employee"
+                variant="outlined"
+                onChange={(event) => { setSearchValue(event.target.value); }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
           <Table>
@@ -70,41 +86,50 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(leaveApplications).slice(0, limit).map((leaveApplication) => (
-                <TableRow
-                  hover
-                  key={leaveApplication.leaveId}
-                  selected={selectedLeaveApplicationsIds.indexOf(leaveApplication.leaveId) !== -1}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedLeaveApplicationsIds.indexOf(leaveApplication.leaveId) !== -1}
-                      onChange={(event) => handleSelectOne(event, leaveApplication.leaveId)}
-                      value="true"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {leaveApplication.id}
-                  </TableCell>
-                  <TableCell>
-                    {leaveApplication.employeeName}
-                  </TableCell>
-                  <TableCell>
-                    {leaveApplication.dateSubmitted ? moment(leaveApplication.dateSubmitted.toDate()).calendar() : ''}
-                  </TableCell>
-                  <TableCell>
-                    {leaveApplication.leaveType}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="view"
-                      onClick={() => {}}
-                    >
-                      <MoreVertOutlinedIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {leaveApplications.slice(0, limit).filter((val) => {
+                if (searchValue === '') {
+                  return val;
+                }
+                if (searchValue !== '') {
+                  const searchVal = searchValue.toLowerCase();
+                  const fullName = (`${val.lastName} ${val.firstName}`) && (`${val.lastName} ${val.firstName}`).toLowerCase().includes(searchVal);
+                  console.log(fullName);
+                  const firstName = val.firstName && val.firstName.toLowerCase().includes(searchVal);
+                  const lastName = val.lastName && val.lastName.toLowerCase().includes(searchVal);
+                  return fullName || firstName || lastName;
+                }
+                return null;
+              }).filter((em) => {
+                if (statusView === '' || em.status.toString() === statusView) {
+                  return em;
+                }
+                return null;
+              })
+                .map((leaveApplication) => (
+                  <TableRow
+                    hover
+                    key={leaveApplication.id}
+                    selected={selectedLeaveApplicationsIds.indexOf(leaveApplication.id) !== -1}
+                  >
+                    <TableCell>
+                      {leaveApplication.id}
+                    </TableCell>
+                    <TableCell>
+                      {leaveApplication.employeeName}
+                    </TableCell>
+                    <TableCell>
+                      {leaveApplication.dateSubmitted ? moment(leaveApplication.dateSubmitted.toDate()).calendar() : ''}
+                    </TableCell>
+                    <TableCell>
+                      {leaveApplication.leaveType}
+                    </TableCell>
+                    <TableCell>
+                      <IconButton>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </Box>
@@ -122,9 +147,8 @@ const LeaveApplicationsResults = ({ leaveApplications, ...rest }) => {
   );
 };
 
-LeaveApplicationsResults.propTypes = {
-  LeaveApplicationsResults: PropTypes.array.isRequired,
-  leaveApplications: PropTypes.array.isRequired
+LeaveApplicationsListResults.propTypes = {
+  leaveApplications: PropTypes.array.isRequired,
 };
 
-export default LeaveApplicationsResults;
+export default LeaveApplicationsListResults;
