@@ -4,31 +4,17 @@ import {
   Container,
   TextField,
   Typography,
-  Link
+  Alert,
 } from '@material-ui/core';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Formik } from 'formik';
 import { Helmet } from 'react-helmet';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { auth } from '../firebase-config';
 
 const Login = () => {
   const navigate = useNavigate();
-
-  const login = (email, password) => {
-    try {
-      const user = signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      ).then(console.log(auth.currentUser)).catch((error) => { console.log('Here is an error', error); return navigate('/login', { replace: true }); });
-      console.log('Current user is ', user);
-    } catch (error) {
-      console.log('Current error is here');
-      console.log(error);
-    }
-  };
 
   return (
     <>
@@ -54,10 +40,20 @@ const Login = () => {
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              console.log(auth.currentUser === null);
-              console.log('Entering this loop');
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={(values, actions) => {
+              signInWithEmailAndPassword(auth, values.email, values.password)
+                .then((userCredential) => {
+                  // Signed in
+                  console.log(userCredential.user);
+                  actions.setSubmitting(false);
+                  navigate('/app/dashboard', { replace: true });
+                })
+                .catch((error) => {
+                  // Signin failed
+                  console.log(error.message);
+                  actions.setErrors({ login: error.message });
+                  actions.setSubmitting(false);
+                });
             }}
           >
             {({
@@ -86,6 +82,7 @@ const Login = () => {
                   >
                     Enter manager email and password
                   </Typography>
+                  {errors.login ? (<Alert severity="error">{errors.login}</Alert>) : null}
                 </Box>
                 <TextField
                   error={Boolean(touched.email && errors.email)}
@@ -121,30 +118,31 @@ const Login = () => {
                     size="large"
                     type="submit"
                     variant="contained"
-                    onClick={() => { login(values.email, values.password); }}
+                  // onClick=
                   >
                     Sign in
                   </Button>
-                  <Typography
-                    color="textSecondary"
-                  >
-                    If you do not have an account,
-                    {' '}
-                    <Link
-                      component={RouterLink}
-                      to="/register"
-                      variant="h6"
-                      underline="hover"
-                    >
-                      Register
-                    </Link>
-                    {' '}
-                    here
-                  </Typography>
                 </Box>
               </form>
             )}
           </Formik>
+          {/*
+          <Button
+            color="secondary"
+            fullWidth
+            size="large"
+            type="submit"
+            variant="contained"
+            onClick={() => {
+              signOut(auth).then(() => {
+                console.log('Sign out success');
+                console.log(auth.currentUser);
+              }).catch((error) => { console.log(error.m); });
+            }}
+          >
+            Sign Out
+          </Button>
+          */}
         </Container>
       </Box>
     </>

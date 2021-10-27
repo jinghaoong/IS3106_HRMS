@@ -1,13 +1,13 @@
 import 'react-perfect-scrollbar/dist/css/styles.css';
-import
-{
+import {
   Navigate,
   useRoutes
 } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { ThemeProvider, StyledEngineProvider } from '@material-ui/core';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from './firebase-config';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from './firebase-config';
 import GlobalStyles from './components/GlobalStyles';
 import theme from './theme';
 
@@ -24,8 +24,20 @@ import Settings from './pages/Settings';
 import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
 import Leave from './pages/Leave';
+import Payroll from './pages/Payroll';
 
 const App = () => {
+  const [currUser, setCurrUser] = useState();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurrUser(user);
+      console.log('logged in as', currUser);
+    } else {
+      setCurrUser(null);
+    }
+  });
+
   const [employees, setEmployees] = useState([]);
   const employeeRef = collection(db, 'users');
   const leaveApplications = useState([]);
@@ -37,6 +49,19 @@ const App = () => {
     };
     getEmployees();
   }, []);
+
+  /*
+  const [payroll, setPayroll] = useState([]);
+  const payrollRef = collection(db, 'payroll');
+
+  useEffect(() => {
+    const getPayroll = async () => {
+      const data = await getDocs(payrollRef);
+      setPayroll(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getPayroll();
+  }, []);
+  */
 
   const content = useRoutes([
     {
@@ -52,7 +77,8 @@ const App = () => {
         { path: 'appraisal', element: <Appraisal /> },
         { path: 'attendance', element: <Attendance employees={employees} /> },
         { path: 'leave', element: <Leave leaveApplications={leaveApplications} /> },
-        { path: '*', element: <Navigate to="/404" /> }
+        { path: '*', element: <Navigate to="/404" /> },
+        { path: 'payroll', element: <Payroll /> },
       ]
     },
     {
@@ -63,7 +89,7 @@ const App = () => {
         { path: 'register', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/login" /> },
-        { path: '*', element: <Navigate to="/404" /> }
+        { path: '*', element: <Navigate to="/404" /> },
       ]
     }
   ]);

@@ -20,7 +20,8 @@ import {
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  DollarSign as DollarSignIcon,
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -50,6 +51,11 @@ const items = [
     href: '/app/createEmployee',
     icon: UserPlusIcon,
     title: 'Create Employee'
+  },
+  {
+    href: '/app/payroll',
+    icon: DollarSignIcon,
+    title: 'Payroll'
   },
   {
     href: '/app/products',

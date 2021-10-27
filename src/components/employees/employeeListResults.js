@@ -26,7 +26,7 @@ import EditEmployeeForm from './EditEmployeeForm';
 import EmployeePopup from './EmployeePopup';
 import { editEmployee } from './EmployeeService';
 
-const EmployeeListResults = ({ employees, ...rest }) => {
+const employeeListResults = ({ employees, ...rest }) => {
   console.log('Current number of employees: ', employees.length);
   const [statusView] = useState('');
   const [searchValue, setSearchValue] = useState('');
@@ -205,13 +205,13 @@ const EmployeeListResults = ({ employees, ...rest }) => {
   );
 };
 
-EmployeeListResults.propTypes = {
+employeeListResults.propTypes = {
   employees: PropTypes.array.isRequired,
-  EmployeeListResults: PropTypes.array.isRequired,
+  employeeListResults: PropTypes.array.isRequired,
   employee: PropTypes.array.isRequired,
   title: PropTypes.object.isRequired,
   subTitle: PropTypes.object.isRequired,
   icon: PropTypes.object.isRequired,
 };
 
-export default EmployeeListResults;
+export default employeeListResults;
