@@ -178,20 +178,18 @@ function EmployeeForm() {
             required
           // error={errorIC}
           />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              variant="outlined"
-              label="Start Date"
-              name="startDate"
-              value={values.startDate}
-              onChange={(newValue) => {
-                setValues(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
-              required
-            // error={errorJoined}
-            />
-          </LocalizationProvider>
+          <TextField
+            variant="outlined"
+            label="Start Date"
+            name="startDate"
+            value={values.startDate}
+            onChange={(newValue) => {
+              setValues(newValue);
+            }}
+            renderInput={(params) => <TextField {...params} />}
+            required
+          // error={errorJoined}
+          />
           <FormControl fullWidth sx={{ m: 1 }}>
             <InputLabel htmlFor="outlined-adornment-amount">Salary</InputLabel>
             <OutlinedInput

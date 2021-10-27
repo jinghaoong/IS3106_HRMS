@@ -1,8 +1,6 @@
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { Box, Container } from '@material-ui/core';
-import EmployeeListResults from '../components/employees/EmployeeListResults';
-// import EmployeeForm from './EmployeeForm';
 import EmployeeListResults from '../components/employees/employeeListResults';
 
 const EmployeeList = ({ employees }) => {
