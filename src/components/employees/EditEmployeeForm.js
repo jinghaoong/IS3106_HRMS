@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import { TextField } from '@mui/material';
+import { TextField, MenuItem } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import Select from '@material-ui/core/Select';
+import FormControl from '@mui/material/FormControl';
 import PropTypes from 'prop-types';
 // import { addEmployee } from './EmployeeService';
 
@@ -22,17 +27,17 @@ const initialFieldValues = {
   email: '',
   contact: '',
   address: '',
-  role: 'employee',
-  dob: new Date(),
+  role: 'Employee',
+  dob: '',
   identificationNumber: '',
-  startDate: new Date(),
+  startDate: '',
   salary: '',
   bank: '',
   bankAccNum: '',
   dietaryRestrictions: '',
   ethnicity: '',
   endDate: 'N.A',
-  active: 'active'
+  active: 'Active'
 };
 
 function EditEmployeeForm(props) {
@@ -64,17 +69,17 @@ function EditEmployeeForm(props) {
       email: '',
       contact: '',
       address: '',
-      role: 'employee',
-      dob: new Date(),
+      role: values.role,
+      dob: '',
       identificationNumber: '',
-      startDate: new Date(),
+      startDate: '',
       salary: '',
       bank: '',
       bankAccNum: '',
       dietaryRestrictions: '',
-      ethnicity: '',
+      ethnicity: values.ethnicity,
       endDate: 'N.A',
-      active: 'active'
+      active: values.active
     });
   }
 
@@ -97,6 +102,7 @@ function EditEmployeeForm(props) {
             name="firstName"
             value={values.firstName}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
@@ -104,6 +110,7 @@ function EditEmployeeForm(props) {
             name="lastName"
             value={values.lastName}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
@@ -111,6 +118,7 @@ function EditEmployeeForm(props) {
             name="username"
             value={values.username}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
@@ -118,6 +126,7 @@ function EditEmployeeForm(props) {
             name="email"
             value={values.email}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
@@ -125,6 +134,7 @@ function EditEmployeeForm(props) {
             name="contact"
             value={values.contact}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
@@ -132,20 +142,29 @@ function EditEmployeeForm(props) {
             name="address"
             value={values.address}
             onChange={handleInputChange}
+            required
           />
+          <FormControl fullWidth>
+            <InputLabel>Employee Type</InputLabel>
+            <Select
+              label="Role"
+              name="role"
+              value={values.role}
+              onChange={handleInputChange}
+              required
+            >
+              <MenuItem value="Employee">Employee</MenuItem>
+              <MenuItem value="Part-Time Worker">Part-Time Worker</MenuItem>
+              <MenuItem value="Intern">Intern</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             variant="outlined"
-            label="Role"
-            name="role"
-            value={values.role}
-            onChange={handleInputChange}
-          />
-          <TextField
-            variant="outlined"
-            label="Date of Birth (mm/DD/yyyy)"
+            label="Date of Birth (mm/dd/yyyy)"
             name="dob"
             value={values.dob}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
@@ -153,27 +172,36 @@ function EditEmployeeForm(props) {
             name="identificationNumber"
             value={values.identificationNumber}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
-            label="Start Date (mm/DD/yyyy)"
+            label="Start Date (mm/dd/yyyy)"
             name="startDate"
             value={values.startDate}
             onChange={handleInputChange}
+            required
+            disabled
           />
-          <TextField
-            variant="outlined"
-            label="Salary"
-            name="salary"
-            value={values.salary}
-            onChange={handleInputChange}
-          />
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <InputLabel htmlFor="outlined-adornment-amount">Salary</InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-amount"
+              value={values.salary}
+              onChange={handleInputChange}
+              startAdornment={<InputAdornment position="start">$</InputAdornment>}
+              label="Salary"
+              name="salary"
+              required
+            />
+          </FormControl>
           <TextField
             variant="outlined"
             label="Bank"
             name="bank"
             value={values.bank}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
@@ -181,6 +209,7 @@ function EditEmployeeForm(props) {
             name="bankAccNum"
             value={values.bankAccNum}
             onChange={handleInputChange}
+            required
           />
           <TextField
             variant="outlined"
@@ -188,28 +217,51 @@ function EditEmployeeForm(props) {
             name="dietaryRestrictions"
             value={values.dietaryRestrictions}
             onChange={handleInputChange}
+            required
           />
-          <TextField
-            variant="outlined"
-            label="Ethnicity"
-            name="ethnicity"
-            value={values.ethnicity}
-            onChange={handleInputChange}
-          />
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <InputLabel>Ethnicity</InputLabel>
+            <Select
+              variant="outlined"
+              label="Ethnicity"
+              name="ethnicity"
+              value={values.ethnicity}
+              onChange={handleInputChange}
+              required
+              disabled
+            >
+              <MenuItem value="Chinese">Chinese</MenuItem>
+              <MenuItem value="Malay">Malay</MenuItem>
+              <MenuItem value="Indian">Indian</MenuItem>
+              <MenuItem value="Eurasian">Eurasian</MenuItem>
+              <MenuItem value="Others">Others</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             variant="outlined"
             label="End Date"
             name="endDate"
             value={values.endDate}
             onChange={handleInputChange}
+            required
           />
-          <TextField
-            variant="outlined"
-            label="Status"
-            name="status"
-            value={values.active}
-            onChange={handleInputChange}
-          />
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <InputLabel>Employee Status</InputLabel>
+            <Select
+              variant="outlined"
+              label="Active"
+              name="active"
+              value={values.active}
+              onChange={handleInputChange}
+              required
+            >
+              <MenuItem value="Active">Active</MenuItem>
+              <MenuItem value="Resigned">Resigned</MenuItem>
+              <MenuItem value="Retrenched">Retrenched</MenuItem>
+              <MenuItem value="Inactive">Inactive</MenuItem>
+              <MenuItem value="Others">Others</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
       <input type="Submit" value="Submit" />

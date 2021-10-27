@@ -19,8 +19,6 @@ const useStyle = makeStyles((theme) => ({
   }
 }));
 
-const roleOptions = ['employee', 'part-time', 'intern'];
-
 const initialFieldValues = {
   firstName: '',
   lastName: '',
@@ -36,9 +34,9 @@ const initialFieldValues = {
   bank: '',
   bankAccNum: '',
   dietaryRestrictions: '',
-  ethnicity: '',
+  ethnicity: 'Chinese',
   endDate: 'N.A',
-  active: 'active'
+  active: 'Active'
 };
 
 function EmployeeForm() {
@@ -63,7 +61,7 @@ function EmployeeForm() {
       email: '',
       contact: '',
       address: '',
-      role: 'employee',
+      role: '',
       dob: new Date(),
       identificationNumber: '',
       startDate: new Date(),
@@ -73,7 +71,7 @@ function EmployeeForm() {
       dietaryRestrictions: '',
       ethnicity: '',
       endDate: 'N.A',
-      active: 'active'
+      active: ''
     });
   }
 
@@ -150,7 +148,6 @@ function EmployeeForm() {
             <Select
               label="Role"
               name="role"
-              options={roleOptions}
               value={values.role}
               onChange={handleInputChange}
               required
@@ -198,6 +195,7 @@ function EmployeeForm() {
               onChange={handleInputChange}
               startAdornment={<InputAdornment position="start">$</InputAdornment>}
               label="Salary"
+              name="salary"
               required
             />
           </FormControl>
@@ -228,32 +226,48 @@ function EmployeeForm() {
             required
           // error={errorDietaryRestrictions}
           />
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <InputLabel>Ethnicity</InputLabel>
+            <Select
+              variant="outlined"
+              label="Ethnicity"
+              name="ethnicity"
+              value={values.ethnicity}
+              onChange={handleInputChange}
+              required
+            >
+              <MenuItem value="Chinese">Chinese</MenuItem>
+              <MenuItem value="Malay">Malay</MenuItem>
+              <MenuItem value="Indian">Indian</MenuItem>
+              <MenuItem value="Eurasian">Eurasian</MenuItem>
+              <MenuItem value="Others">Others</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             variant="outlined"
-            label="Ethnicity"
-            name="ethnicity"
-            value={values.ethnicity}
-            onChange={handleInputChange}
-            required
-          // error={errorEthnicity}
-          />
-          <TextField
-            variant="outlined"
-            label="End Date"
+            label="End Date (dd/mm/yyyy)"
             name="endDate"
             value={values.endDate}
             onChange={handleInputChange}
             required
           />
-          <TextField
-            variant="outlined"
-            label="Status"
-            name="status"
-            value={values.active}
-            onChange={handleInputChange}
-            required
-          // error={errorEthnicity}
-          />
+          <FormControl fullWidth sx={{ m: 1 }}>
+            <InputLabel>Employee Status</InputLabel>
+            <Select
+              variant="outlined"
+              label="Status"
+              name="active"
+              value={values.active}
+              onChange={handleInputChange}
+              required
+            >
+              <MenuItem value="Active">Active</MenuItem>
+              <MenuItem value="Resigned">Resigned</MenuItem>
+              <MenuItem value="Retrenched">Retrenched</MenuItem>
+              <MenuItem value="Inactive">Inactive</MenuItem>
+              <MenuItem value="Others">Others</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
       </Grid>
       <input type="Submit" value="Submit" />

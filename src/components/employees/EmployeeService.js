@@ -20,7 +20,7 @@ export function editEmployee(employee) {
     contact: employee.contact,
     address: employee.address,
     role: employee.role,
-    dob: employee.dob,
+    dob: new Date(Date.parse(employee.dob)),
     identificationNumber: employee.identificationNumber,
     startDate: employee.startDate,
     salary: employee.salary,
@@ -44,13 +44,13 @@ export function addEmployee(values) {
     role: values.role,
     dob: values.dob,
     identificationNumber: values.identificationNumber,
-    startDate: values.startDate,
+    startDate: new Date(Date.parse(values.startDate)),
     salary: values.salary,
     bank: values.bank,
     bankAccNum: values.bankAccNum,
     dietaryRestrictions: values.dietaryRestrictions,
     ethnicity: values.ethnicity,
-    endDate: values.endDate,
+    endDate: new Date(Date.parse(values.endDate)),
     active: values.active // eslint-disable-next-line
   }).then(() => window.alert('Success! Please reload the page.')) // eslint-disable-next-line
   .catch((error) => window.alert(error, 'Not edited!')); 
