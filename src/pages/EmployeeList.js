@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { Box, Container } from '@material-ui/core';
 import EmployeeListResults from '../components/employees/EmployeeListResults';
+// import EmployeeForm from './EmployeeForm';
 
 const EmployeeList = ({ employees }) => {
   console.log(employees);
@@ -28,7 +29,7 @@ const EmployeeList = ({ employees }) => {
 };
 
 EmployeeList.propTypes = {
-  employees: PropTypes.array.isRequired
+  employees: PropTypes.array.isRequired,
 };
 
 console.log('Current employees ', EmployeeList.length);

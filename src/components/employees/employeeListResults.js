@@ -2,8 +2,8 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Search as SearchIcon } from 'react-feather';
-// import Moment from 'moment';
-
+// import EmployeeForm from 'src/pages/EmployeeForm';
+// import Moment from 'moment';w.
 import {
   Box,
   Button,
@@ -20,6 +20,11 @@ import {
   TableRow,
 } from '@material-ui/core';
 import moment from 'moment';
+import PeopleOutlineTwoToneIcon from '@material-ui/icons/PeopleOutlineTwoTone';
+import EmployeePageHeader from './EmployeePageHeader';
+import EditEmployeeForm from './EditEmployeeForm';
+import EmployeePopup from './EmployeePopup';
+import { editEmployee } from './EmployeeService';
 
 const EmployeeListResults = ({ employees, ...rest }) => {
   console.log('Current number of employees: ', employees.length);
@@ -27,7 +32,20 @@ const EmployeeListResults = ({ employees, ...rest }) => {
   const [searchValue, setSearchValue] = useState('');
   const [selectedEmployeesIds] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
+  const [openPopup, setOpenPopup] = useState(false);
+  const [recordForEdit, setRecordForEdit] = useState(null);
+
+  const editValues = (employee, resetForm) => {
+    editEmployee(employee);
+    resetForm();
+    setOpenPopup(false);
+  };
+
+  const openInPopup = (item) => {
+    setRecordForEdit(item);
+    setOpenPopup(true);
+  };
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -39,10 +57,17 @@ const EmployeeListResults = ({ employees, ...rest }) => {
 
   return (
     <Card {...rest}>
-      <Box sx={{ mt: 3 }}>
+      <div className="EmployeeEdit">
+        <EmployeePageHeader
+          title="View All Employees"
+          subTitle="Showing All Employees"
+          icon={<PeopleOutlineTwoToneIcon fontSize="large" />}
+        />
+      </div>
+      <Box sx={{ mt: 0 }}>
         <Card>
           <CardContent>
-            <Box sx={{ maxWidth: 500 }}>
+            <Box sx={{ maxWidth: 1050 }}>
               <TextField
                 fullWidth
                 InputProps={{
@@ -57,7 +82,7 @@ const EmployeeListResults = ({ employees, ...rest }) => {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search employee"
+                placeholder="Search employee name"
                 variant="outlined"
                 onChange={(event) => { setSearchValue(event.target.value); }}
               />
@@ -104,10 +129,11 @@ const EmployeeListResults = ({ employees, ...rest }) => {
                 if (searchValue !== '') {
                   const searchVal = searchValue.toLowerCase();
                   const fullName = (`${val.lastName} ${val.firstName}`) && (`${val.lastName} ${val.firstName}`).toLowerCase().includes(searchVal);
+                  const fullName2 = (`${val.firstName} ${val.lastName}`) && (`${val.firstName} ${val.lastName}`).toLowerCase().includes(searchVal);
                   console.log(fullName);
                   const firstName = val.firstName && val.firstName.toLowerCase().includes(searchVal);
                   const lastName = val.lastName && val.lastName.toLowerCase().includes(searchVal);
-                  return fullName || firstName || lastName;
+                  return fullName || fullName2 || firstName || lastName;
                 }
                 return null;
               }).filter((em) => {
@@ -145,16 +171,11 @@ const EmployeeListResults = ({ employees, ...rest }) => {
                     <TableCell>
                       {employee.startDate ? moment(employee.startDate.toDate()).calendar() : ''}
                     </TableCell>
-                    <Button
-                      sx={{
-                        mx: 1,
-                        color: 'primary',
-                        fontSize: 10,
-                        alignSelf: 'center'
-                      }}
-                    >
-                      View User
-                    </Button>
+                    <TableCell>
+                      <Button color="primary" onClick={() => { openInPopup(employee); }}>
+                        Edit Employee
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -168,8 +189,18 @@ const EmployeeListResults = ({ employees, ...rest }) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
       />
+      <EmployeePopup
+        title="Edit Employee"
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      >
+        <EditEmployeeForm
+          recordForEdit={recordForEdit}
+          editValues={editValues}
+        />
+      </EmployeePopup>
     </Card>
   );
 };
@@ -178,6 +209,9 @@ EmployeeListResults.propTypes = {
   employees: PropTypes.array.isRequired,
   EmployeeListResults: PropTypes.array.isRequired,
   employee: PropTypes.array.isRequired,
+  title: PropTypes.object.isRequired,
+  subTitle: PropTypes.object.isRequired,
+  icon: PropTypes.object.isRequired,
 };
 
 export default EmployeeListResults;

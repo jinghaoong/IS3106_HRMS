@@ -47,6 +47,11 @@ const items = [
     title: 'Employees'
   },
   {
+    href: '/app/createEmployee',
+    icon: UserPlusIcon,
+    title: 'Create Employee'
+  },
+  {
     href: '/app/products',
     icon: ShoppingBagIcon,
     title: 'Products'
@@ -65,11 +70,6 @@ const items = [
     href: '/login',
     icon: LockIcon,
     title: 'Login'
-  },
-  {
-    href: '/register',
-    icon: UserPlusIcon,
-    title: 'Register'
   },
   {
     href: '/404',
