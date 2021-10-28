@@ -5,6 +5,9 @@ import {
 } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { ThemeProvider, StyledEngineProvider } from '@material-ui/core';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+
 import { collection, getDocs } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './firebase-config';
@@ -82,12 +85,14 @@ const App = () => {
   ]);
 
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        {content}
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles />
+          {content}
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </LocalizationProvider>
   );
 };
 
