@@ -14,12 +14,12 @@ import theme from './theme';
 import DashboardLayout from './components/DashboardLayout';
 import MainLayout from './components/MainLayout';
 import Account from './pages/Account';
-import EmployeeList from './pages/EmployeeList';
+import EmployeeListResults from './pages/EmployeeList';
+import EmployeeForm from './pages/EmployeeForm';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import ProductList from './pages/ProductList';
-import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
@@ -32,7 +32,7 @@ const App = () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setCurrUser(user);
-      console.log(currUser);
+      console.log('logged in as', currUser);
     } else {
       setCurrUser(null);
     }
@@ -56,7 +56,8 @@ const App = () => {
       element: <DashboardLayout />,
       children: [
         { path: 'account', element: <Account /> },
-        { path: 'employees', element: <EmployeeList employees={employees} /> },
+        { path: 'employees', element: <EmployeeListResults employees={employees} /> },
+        { path: 'createEmployee', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
         { path: 'dashboard', element: <Dashboard /> },
         { path: 'products', element: <ProductList /> },
         { path: 'settings', element: <Settings /> },
@@ -72,7 +73,7 @@ const App = () => {
       element: <MainLayout />,
       children: [
         { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
+        { path: 'register', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/login" /> },
         { path: '*', element: <Navigate to="/404" /> },
