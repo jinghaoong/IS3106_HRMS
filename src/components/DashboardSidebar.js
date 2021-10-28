@@ -48,6 +48,11 @@ const items = [
     title: 'Employees'
   },
   {
+    href: '/app/allEmployees',
+    icon: UsersIcon,
+    title: 'Employees V2'
+  },
+  {
     href: '/app/createEmployee',
     icon: UserPlusIcon,
     title: 'Create Employee'

@@ -18,6 +18,7 @@ import DashboardLayout from './components/DashboardLayout';
 import MainLayout from './components/MainLayout';
 import Account from './pages/Account';
 import EmployeeListResults from './pages/EmployeeList';
+import EmployeesPage from './pages/EmployeesPage';
 import EmployeeForm from './pages/EmployeeForm';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
@@ -61,6 +62,7 @@ const App = () => {
         { path: 'account', element: <Account /> },
         { path: 'employees', element: <EmployeeListResults employees={employees} /> },
         { path: 'createEmployee', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
+        { path: 'allEmployees', element: <EmployeesPage EmployeesPage={EmployeesPage} /> },
         { path: 'dashboard', element: <Dashboard /> },
         { path: 'products', element: <ProductList /> },
         { path: 'settings', element: <Settings /> },
