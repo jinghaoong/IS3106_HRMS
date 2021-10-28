@@ -50,19 +50,6 @@ const App = () => {
     getEmployees();
   }, []);
 
-  /*
-  const [payroll, setPayroll] = useState([]);
-  const payrollRef = collection(db, 'payroll');
-
-  useEffect(() => {
-    const getPayroll = async () => {
-      const data = await getDocs(payrollRef);
-      setPayroll(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-    getPayroll();
-  }, []);
-  */
-
   const content = useRoutes([
     {
       path: 'app',

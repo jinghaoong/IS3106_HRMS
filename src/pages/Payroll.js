@@ -4,7 +4,7 @@ import { Box, Container } from '@material-ui/core';
 import { collection, getDocs } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { db } from 'src/firebase-config';
+import { db } from '../firebase-config';
 
 const Payroll = () => {
   const [payroll, setPayroll] = useState([]);
@@ -19,15 +19,16 @@ const Payroll = () => {
   }, []);
 
   const columns = [
-    { field: 'id', headerName: 'ID', },
-    { field: 'basic', headerName: 'Basic', },
-    { field: 'overtime', headerName: 'Overtime', },
-    { field: 'payment', headerName: 'paymentMode', },
+    { field: 'id', headerName: 'ID', width: 130 },
+    { field: 'basic', headerName: 'Basic', width: 130 },
+    { field: 'overtime', headerName: 'Overtime', width: 150 },
+    { field: 'paymentMode', headerName: 'Payment Mode', width: 200 },
+    { field: 'cpfEmployee', headerName: 'CPF (Employee)', width: 200, },
+    { field: 'cpfEmployer', headerName: 'CPF (Employer)', width: 200 },
   ];
 
   const rows = payroll;
 
-  console.log(payroll);
   return (
     <>
       <Helmet>
@@ -42,24 +43,20 @@ const Payroll = () => {
       >
         <Container maxWidth={false}>
           <Box>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              checkboxSelection
-            />
+            <div style={{ height: 800, width: '100%' }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={10}
+                rowsPerPageOptions={[10]}
+                checkboxSelection
+              />
+            </div>
           </Box>
         </Container>
       </Box>
     </>
   );
 };
-
-/*
-Payroll.propTypes = {
-  payroll: PropTypes.array.isRequired
-};
-*/
 
 export default Payroll;
