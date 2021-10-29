@@ -111,9 +111,9 @@ const Payroll = () => {
 
   const columns = [
     {
-      field: 'eid',
-      headerName: 'Employee ID',
-      width: 200,
+      field: 'id',
+      headerName: 'Payslip ID',
+      width: 250,
     },
     {
       field: 'basic',
@@ -209,7 +209,7 @@ const Payroll = () => {
                         <Formik
                           initialValues={{
                             id: payslip.id,
-                            eid: payslip.eid,
+                            email: payslip.email,
                             basic: payslip.basic,
                             overtime: payslip.overtime,
                             cpfEmployee: payslip.cpfEmployee,
@@ -218,39 +218,44 @@ const Payroll = () => {
                               ? new Date() : payslip.startDate.toDate(),
                             endDate: payslip.endDate === undefined
                               ? new Date() : payslip.endDate.toDate(),
-                            remarks: payslip.remarks,
+                            paymentMode: payslip.paymentMode,
+                            remarks: payslip.remarks === undefined
+                              ? '' : payslip.remarks,
                           }}
                           validationSchema={Yup.object().shape({
-                            id: Yup.string(),
+                            email: Yup.string().email('Must be a valid email').max(255).required('Enter Employee Email'),
                             basic: Yup.number().required('Enter Basic Pay'),
                             overtime: Yup.number().required('Enter Overtime Pay'),
                             cpfEmployee: Yup.number(),
                             cpfEmployer: Yup.number(),
                             startDate: Yup.date().required('Enter Start Date'),
                             endDate: Yup.date().required('Enter End Date'),
+                            paymentMode: Yup.string().required('Enter Payment Mode'),
                             remarks: Yup.string(),
                           })}
                           onSubmit={(values, actions) => {
-                            if (dialogType === 'create') {
-                              const newId = `${values.eid}${format(values.endDate, 'dd-MM-yyyy')}`;
-                              actions.setFieldValue('id', newId);
-                            }
+                            const newId = `${values.email}_${format(values.endDate, 'dd-MM-yyyy')}`;
 
                             const temp = {
-                              id: values.id,
-                              eid: values.eid,
+                              id: newId,
+                              email: values.email,
                               basic: values.basic,
                               overtime: values.overtime,
                               cpfEmployee: values.cpfEmployee,
                               cpfEmployer: values.cpfEmployer,
                               startDate: Timestamp.fromDate(values.startDate),
                               endDate: Timestamp.fromDate(values.endDate),
+                              paymentMode: values.paymentMode,
                               remarks: values.remarks
                             };
 
                             setPayslip(temp);
 
-                            setDoc(doc(db, 'payroll', values.id), temp)
+                            if (dialogType === 'edit') {
+                              deleteDoc(doc(db, 'payroll', values.id));
+                            }
+
+                            setDoc(doc(db, 'payroll', newId), temp)
                               .then(() => {
                                 console.log('doc set');
                                 handleClose();
@@ -274,16 +279,16 @@ const Payroll = () => {
                           }) => (
                             <form onSubmit={handleSubmit}>
                               <TextField
-                                error={Boolean(touched.eid && errors.eid)}
+                                error={Boolean(touched.email && errors.email)}
                                 fullWidth
-                                helperText={touched.eid && errors.eid}
-                                label="Employee ID"
+                                helperText={touched.email && errors.email}
+                                label="Employee Email"
                                 margin="normal"
-                                name="eid"
+                                name="email"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 type="string"
-                                value={values.eid}
+                                value={values.email}
                                 variant="outlined"
                                 InputProps={{
                                   readOnly: dialogType === 'edit'
@@ -370,6 +375,19 @@ const Payroll = () => {
                                 onChange={(newEnd) => {
                                   setFieldValue('endDate', newEnd);
                                 }}
+                              />
+                              <TextField
+                                error={Boolean(touched.paymentMode && errors.paymentMode)}
+                                fullWidth
+                                helperText={touched.paymentMode && errors.paymentMode}
+                                label="Payment Mode"
+                                margin="normal"
+                                name="paymentMode"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.paymentMode}
+                                variant="outlined"
                               />
                               <TextField
                                 error={Boolean(touched.remarks && errors.remarks)}
