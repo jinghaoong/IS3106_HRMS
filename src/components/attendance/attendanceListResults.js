@@ -2,15 +2,10 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Search as SearchIcon } from 'react-feather';
-// import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-// import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
-// import DatePicker from '@material-ui/lab/DatePicker';
-// import { DateRangePicker } from 'react-date-range';
-import DatePicker from 'react-datepicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
 import './attendance.css';
-// import { DateRangePickerComponent } from '@syncfusion/ej2-react-calendars';
-
-import 'react-datepicker/dist/react-datepicker.css';
 
 import {
   Box,
@@ -85,12 +80,6 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
   console.log(startDateValue);
   console.log(endDateValue);
 
-  // const selectionRange = {
-  //   startDate: new Date(),
-  //   endDate: new Date(),
-  //   key: 'selection',
-  // };
-
   return (employees.length > 0 && attendance.length > 0) ? (
     <Card {...rest}>
       <Box sx={{ mt: 3 }}>
@@ -125,37 +114,35 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
             </Button>
             <div>&nbsp;</div>
             <Box className="pickers">
-              <div className="dateTags"><b>From</b></div>
-              <div className="datePick">
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
-                  sx={{
-                    minHeight: 5,
-                    mx: 5,
-                    size: 10,
-                  }}
-                  className="startingCalendar"
-                  selected={startDateValue}
-                  onChange={(date) => setStartDateValue(date)}
+                  label="Search by start date"
+                  className="datepicker"
+                  format="dd/MM/yyyy"
                   value={startDateValue}
-                  placeholderText="Search by start date"
-                />
-              </div>
-              <div>&nbsp;</div>
-              <div className="dateTags"><b>To</b></div>
-              <div className="datePick">
-                <DatePicker
-                  sx={{
-                    minHeight: 5,
-                    ml: 5,
+                  clearable
+                  maxDate={new Date()}
+                  onChange={(date) => {
+                    setStartDateValue(date);
                   }}
-                  id="ending"
-                  className="endingCalendar"
-                  selected={endDateValue}
-                  onChange={(date) => setEndDateValue(date)}
-                  value={endDateValue}
-                  placeholderText="Search by end date"
+                  renderInput={(params) => <TextField {...params} />}
                 />
-              </div>
+              </LocalizationProvider>
+              <div>&nbsp;</div>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label="Search by end date"
+                  className="datepicker"
+                  format="dd/MM/yyyy"
+                  value={endDateValue}
+                  clearable
+                  maxDate={new Date()}
+                  onChange={(date) => {
+                    setEndDateValue(date);
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
             </Box>
           </Box>
         </CardContent>
