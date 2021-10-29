@@ -43,9 +43,13 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
 
   function findEmployee(uId) {
     const em = Array.from(employees).filter((obj) => {
-      if (obj.userId === uId) {
+      console.log(obj.id);
+      console.log(uId);
+      if (obj.id.toString() === uId.toString()) {
+        console.log('ok');
         return obj;
       }
+      console.log('no');
       return null;
     });
     return em[0];
@@ -201,7 +205,7 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
             </TableHead>
             <TableBody>
               {Array.from(attendance).slice(0, limit).filter((val) => {
-                if (searchValue === '' || findEmployee(val.userId).firstName.toLowerCase().includes(searchValue) || findEmployee(val.userId).lastName.toLowerCase().includes(searchValue)) {
+                if (searchValue === '' || findEmployee(val.id).firstName.toLowerCase().includes(searchValue) || findEmployee(val.id).lastName.toLowerCase().includes(searchValue)) {
                   return val;
                 }
                 return null;
@@ -227,8 +231,8 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
                 .map((at) => (
                   <TableRow
                     hover
-                    key={at.id}
-                    selected={selectedEmployeesIds.indexOf(at.userId) !== -1}
+                    key={at.userId}
+                    selected={selectedEmployeesIds.indexOf(at.userId) !== ''}
                   >
                     <TableCell>
                       {findEmployee(at.userId).firstName}

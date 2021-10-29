@@ -40,7 +40,7 @@ const AppraisalData = ({
 
   function findEmployee(uId) {
     const em = Array.from(employees).filter((obj) => {
-      if (obj.userId === uId) {
+      if (obj.id === uId) {
         return obj;
       }
       return null;
@@ -97,7 +97,7 @@ const AppraisalData = ({
                     <TableRow
                       hover
                       key={data.id}
-                      selected={selectedEmployeesIds.indexOf(data.userId) !== -1}
+                      selected={selectedEmployeesIds.indexOf(data.userId) !== ''}
                     >
                       <TableCell>
                         {findEmployee(data.appraiserId).lastName}
