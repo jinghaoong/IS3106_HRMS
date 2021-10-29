@@ -28,6 +28,10 @@
     margin-left: 14px;
 }
 
-.datePicks {
-    display: inline;
+.datepicker {
+    display: inline-block;
+}
+
+.pickers {
+    display: inline-block;
 }
