@@ -110,32 +110,32 @@ const EmployeesPage = () => {
     {
       field: 'id',
       headerName: 'Employee ID',
-      width: 280,
+      width: 250,
     },
     {
       field: 'firstName',
       headerName: 'First Name',
-      width: 170,
+      width: 150,
     },
     {
       field: 'lastName',
       headerName: 'Last Name',
-      width: 170,
+      width: 150,
     },
     {
       field: 'role',
       headerName: 'Role',
-      width: 170,
+      width: 150,
     },
     {
       field: 'contact',
       headerName: 'Contact',
-      width: 220,
+      width: 200,
     },
     {
       field: 'email',
       headerName: 'Email',
-      width: 220,
+      width: 200,
     },
     {
       field: 'status',
@@ -218,6 +218,10 @@ const EmployeesPage = () => {
                             contact: employee.contact,
                             email: employee.email,
                             salary: employee.salary,
+                            identificationNo: employee.identificationNo,
+                            address: employee.address,
+                            bank: employee.bank,
+                            bankAccNo: employee.bankAccNo,
                             dob: employee.dob === undefined
                               ? new Date() : employee.dob.toDate(),
                             startDate: employee.startDate === undefined
@@ -230,6 +234,10 @@ const EmployeesPage = () => {
                             lastName: Yup.string().required('Enter Last Name'),
                             contact: Yup.string().required('Enter Contact'),
                             email: Yup.string().required('Enter Email'),
+                            identificationNo: Yup.string().required('Enter IC No.'),
+                            address: Yup.string().required('Enter Address'),
+                            bank: Yup.string().required('Enter Bank'),
+                            bankAccNo: Yup.number().required('Enter Bank Account Number'),
                             salary: Yup.number().required('Enter Salary'),
                             dob: Yup.date().required('Enter Date of Birth'),
                             startDate: Yup.date().required('Enter Start Date'),
@@ -248,6 +256,10 @@ const EmployeesPage = () => {
                               lastName: values.lastName,
                               role: values.role,
                               contact: values.contact,
+                              identificationNo: Yup.string().required('Enter IC No.'),
+                              address: Yup.string().required('Enter Address'),
+                              bank: Yup.string().required('Enter Bank'),
+                              bankAccNo: Yup.number().required('Enter Bank Account Number'),
                               email: values.email,
                               salary: values.salary,
                               dob: Timestamp.fromDate(values.dob),
@@ -308,6 +320,19 @@ const EmployeesPage = () => {
                                 variant="outlined"
                               />
                               <TextField
+                                error={Boolean(touched.identificationNo && errors.identificationNo)}
+                                fullWidth
+                                helperText={touched.identificationNo && errors.identificationNo}
+                                label="IC Number"
+                                margin="normal"
+                                name="identificationNo"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.identificationNo}
+                                variant="outlined"
+                              />
+                              <TextField
                                 fullWidth
                                 helperText={touched.role && errors.role}
                                 label="Role"
@@ -319,6 +344,19 @@ const EmployeesPage = () => {
                                 value={values.role}
                                 variant="outlined"
                                 labelId="label"
+                              />
+                              <TextField
+                                error={Boolean(touched.status && errors.status)}
+                                fullWidth
+                                helperText={touched.status && errors.status}
+                                label="Status"
+                                margin="normal"
+                                name="status"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.status}
+                                variant="outlined"
                               />
                               <TextField
                                 error={Boolean(touched.contact && errors.contact)}
@@ -347,6 +385,45 @@ const EmployeesPage = () => {
                                 variant="outlined"
                               />
                               <TextField
+                                error={Boolean(touched.address && errors.address)}
+                                fullWidth
+                                helperText={touched.address && errors.address}
+                                label="Address"
+                                margin="normal"
+                                name="address"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.address}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.bank && errors.bank)}
+                                fullWidth
+                                helperText={touched.bank && errors.bank}
+                                label="Bank"
+                                margin="normal"
+                                name="address"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.bank}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.bankAccNo && errors.bankAccNo)}
+                                fullWidth
+                                helperText={touched.bankAccNo && errors.bankAccNo}
+                                label="Bank Account Number"
+                                margin="normal"
+                                name="address"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="number"
+                                value={values.bankAccNo}
+                                variant="outlined"
+                              />
+                              <TextField
                                 error={Boolean(touched.salary && errors.salary)}
                                 fullWidth
                                 helperText={touched.salary && errors.salary}
@@ -361,19 +438,6 @@ const EmployeesPage = () => {
                                 InputProps={{
                                   startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                 }}
-                              />
-                              <TextField
-                                error={Boolean(touched.status && errors.status)}
-                                fullWidth
-                                helperText={touched.status && errors.status}
-                                label="Status"
-                                margin="normal"
-                                name="status"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                type="string"
-                                value={values.status}
-                                variant="outlined"
                               />
                               <br />
                               <br />
