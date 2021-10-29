@@ -10,6 +10,7 @@ import ProductList from './pages/ProductList';
 import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Appraisal from './pages/Appraisal';
+import EmployeeForm from './pages/EmployeeForm';
 import Attendance from './pages/Attendance';
 import Leave from './pages/Leave';
 
@@ -21,6 +22,7 @@ const routes = [
       { path: 'account', element: <Account /> },
       { path: 'employees', element: <EmployeeList /> },
       { path: 'employees', element: <EmployeeListResults /> },
+      { path: 'register', element: <EmployeeForm /> },
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'products', element: <ProductList /> },
       { path: 'settings', element: <Settings /> },

@@ -8,24 +8,24 @@ import {
   Container,
   IconButton,
   Dialog,
-  DialogActions,
   DialogTitle,
   DialogContent,
   TextField,
+  // MenuItem,
+  // Select
   // Typography,
 } from '@material-ui/core';
 import { InputAdornment } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon
 } from '@mui/icons-material';
+
 import {
   collection,
   getDocs,
   doc,
   setDoc,
-  deleteDoc,
   Timestamp,
 } from 'firebase/firestore';
 import { useState, useEffect, } from 'react';
@@ -36,24 +36,23 @@ import {
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { format } from 'date-fns';
 
 import { db } from '../firebase-config';
 
-const Payroll = () => {
-  const [payroll, setPayroll] = useState([]);
-  const payrollRef = (collection(db, 'payroll'));
+const EmployeesPage = () => {
+  const [employeesPage, setEmployeesPage] = useState([]);
+  const employeesPageRef = (collection(db, 'users'));
 
-  const getPayroll = async () => {
-    const data = await getDocs(payrollRef);
-    setPayroll(data.docs.map((d) => ({ ...d.data(), id: d.id })));
+  const getEmployeesPage = async () => {
+    const data = await getDocs(employeesPageRef);
+    setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })));
   };
 
   useEffect(() => {
-    getPayroll();
+    getEmployeesPage();
   }, []);
 
-  const [payslip, setPayslip] = useState([]);
+  const [employee, setEmployeePage] = useState([]);
   const [dialogType, setDialogType] = useState('create');
 
   const [open, setOpen] = useState(false);
@@ -63,10 +62,17 @@ const Payroll = () => {
   };
 
   const handleClose = () => {
-    setPayslip([]);
-    getPayroll();
+    setEmployeePage([]);
+    getEmployeesPage();
     setOpen(false);
   };
+
+  /* const employeeRoles = [
+    { value: 'Employee', label: 'Employee' },
+    { value: 'Part-timer', label: 'Part-timer' },
+    { value: 'Intern', label: 'Intern' },
+    { value: 'Others', label: 'Others' }
+  ]; */
 
   const CreateButton = () => (
     <Button
@@ -75,12 +81,12 @@ const Payroll = () => {
       startIcon={<AddIcon />}
       onClick={() => {
         setDialogType('create');
-        setPayslip([]);
+        setEmployeePage([]);
         console.log(dialogType);
         handleClickOpen();
       }}
     >
-      Create Payroll
+      Create Employee
     </Button>
   );
 
@@ -88,66 +94,53 @@ const Payroll = () => {
     <ButtonGroup>
       <IconButton onClick={() => {
         setDialogType('edit');
-        setPayslip(params.row);
+        setEmployeePage(params.row);
         console.log(dialogType);
         handleClickOpen();
       }}
       >
         <EditIcon />
       </IconButton>
-      <IconButton onClick={() => {
-        setDialogType('delete');
-        setPayslip(params.row);
-        console.log(dialogType);
-        handleClickOpen();
-      }}
-      >
-        <DeleteIcon />
-      </IconButton>
     </ButtonGroup>
   );
 
-  const rows = payroll;
+  const rows = employeesPage;
 
   const columns = [
     {
-      field: 'eid',
+      field: 'id',
       headerName: 'Employee ID',
-      width: 200,
+      width: 280,
     },
     {
-      field: 'basic',
-      headerName: 'Basic',
-      width: 130,
-      type: 'number',
+      field: 'firstName',
+      headerName: 'First Name',
+      width: 170,
     },
     {
-      field: 'overtime',
-      headerName: 'Overtime',
+      field: 'lastName',
+      headerName: 'Last Name',
+      width: 170,
+    },
+    {
+      field: 'role',
+      headerName: 'Role',
+      width: 170,
+    },
+    {
+      field: 'contact',
+      headerName: 'Contact',
+      width: 220,
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      width: 220,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
       width: 150,
-      type: 'number',
-    },
-    {
-      field: 'cpfEmployee',
-      headerName: 'CPF (Employee)',
-      width: 200,
-      type: 'number'
-    },
-    {
-      field: 'cpfEmployer',
-      headerName: 'CPF (Employer)',
-      width: 200,
-      type: 'number'
-    },
-    {
-      field: 'paymentMode',
-      headerName: 'Payment Mode',
-      width: 200,
-    },
-    {
-      field: 'remarks',
-      headerName: 'Remarks',
-      width: 200,
     },
     {
       field: 'actions',
@@ -158,13 +151,12 @@ const Payroll = () => {
     }
   ];
 
-  console.log(payroll);
-  console.log(payslip);
+  console.log(employeesPage);
 
   return (
     <>
       <Helmet>
-        <title>Payroll</title>
+        <title>Employees Page</title>
       </Helmet>
       <Box
         sx={{
@@ -189,9 +181,20 @@ const Payroll = () => {
             </div>
             <Dialog open={open} onClose={handleClose}>
               <DialogTitle>
-                {dialogType === 'create' && <div>Create Payslip</div>}
-                {dialogType === 'edit' && <div>Edit Payslip</div>}
-                {dialogType === 'delete' && <div>Delete Payslip</div>}
+                {dialogType === 'create' && <div>Create Employee</div>}
+                {dialogType === 'edit' && <div>Edit Employee</div>}
+                <Box>
+                  <Button
+                    color="primary"
+                    size="small"
+                    type="close"
+                    variant="contained"
+                    onClick={handleClose}
+                    style={{ float: 'right' }}
+                  >
+                    x
+                  </Button>
+                </Box>
               </DialogTitle>
               {dialogType !== 'delete'
                 && (
@@ -208,49 +211,54 @@ const Payroll = () => {
                       <Container maxWidth="sm">
                         <Formik
                           initialValues={{
-                            id: payslip.id,
-                            eid: payslip.eid,
-                            basic: payslip.basic,
-                            overtime: payslip.overtime,
-                            cpfEmployee: payslip.cpfEmployee,
-                            cpfEmployer: payslip.cpfEmployer,
-                            startDate: payslip.startDate === undefined
-                              ? new Date() : payslip.startDate.toDate(),
-                            endDate: payslip.endDate === undefined
-                              ? new Date() : payslip.endDate.toDate(),
-                            remarks: payslip.remarks,
+                            id: '',
+                            firstName: employee.firstName,
+                            lastName: employee.lastName,
+                            role: employee.role,
+                            contact: employee.contact,
+                            email: employee.email,
+                            salary: employee.salary,
+                            dob: employee.dob === undefined
+                              ? new Date() : employee.dob.toDate(),
+                            startDate: employee.startDate === undefined
+                              ? new Date() : employee.startDate.toDate(),
+                            status: employee.status
                           }}
                           validationSchema={Yup.object().shape({
                             id: Yup.string(),
-                            basic: Yup.number().required('Enter Basic Pay'),
-                            overtime: Yup.number().required('Enter Overtime Pay'),
-                            cpfEmployee: Yup.number(),
-                            cpfEmployer: Yup.number(),
+                            firstName: Yup.string().required('Enter First Name'),
+                            lastName: Yup.string().required('Enter Last Name'),
+                            contact: Yup.string().required('Enter Contact'),
+                            email: Yup.string().required('Enter Email'),
+                            salary: Yup.number().required('Enter Salary'),
+                            dob: Yup.date().required('Enter Date of Birth'),
                             startDate: Yup.date().required('Enter Start Date'),
-                            endDate: Yup.date().required('Enter End Date'),
-                            remarks: Yup.string(),
+                            status: Yup.string().required('Enter Status: active or inactive')
                           })}
                           onSubmit={(values, actions) => {
                             if (dialogType === 'create') {
-                              const newId = `${values.eid}${format(values.endDate, 'dd-MM-yyyy')}`;
+                              const newId = `${values.email}`;
+                              console.log('new id is ', newId);
                               actions.setFieldValue('id', newId);
                             }
 
                             const temp = {
-                              id: values.id,
-                              eid: values.eid,
-                              basic: values.basic,
-                              overtime: values.overtime,
-                              cpfEmployee: values.cpfEmployee,
-                              cpfEmployer: values.cpfEmployer,
+                              id: values.email,
+                              firstName: values.firstName,
+                              lastName: values.lastName,
+                              role: values.role,
+                              contact: values.contact,
+                              email: values.email,
+                              salary: values.salary,
+                              dob: Timestamp.fromDate(values.dob),
                               startDate: Timestamp.fromDate(values.startDate),
-                              endDate: Timestamp.fromDate(values.endDate),
-                              remarks: values.remarks
+                              status: values.status
                             };
 
-                            setPayslip(temp);
+                            setEmployeePage(temp);
+                            console.log('id currently is ', values.id, 'another one is', values.email);
 
-                            setDoc(doc(db, 'payroll', values.id), temp)
+                            setDoc(doc(db, 'users', `${values.email}`), temp)
                               .then(() => {
                                 console.log('doc set');
                                 handleClose();
@@ -274,85 +282,112 @@ const Payroll = () => {
                           }) => (
                             <form onSubmit={handleSubmit}>
                               <TextField
-                                error={Boolean(touched.eid && errors.eid)}
+                                error={Boolean(touched.firstName && errors.firstName)}
                                 fullWidth
-                                helperText={touched.eid && errors.eid}
-                                label="Employee ID"
+                                helperText={touched.firstName && errors.firstName}
+                                label="First Name"
                                 margin="normal"
-                                name="eid"
+                                name="firstName"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 type="string"
-                                value={values.eid}
+                                value={values.firstName}
                                 variant="outlined"
-                                InputProps={{
-                                  readOnly: dialogType === 'edit'
-                                }}
                               />
                               <TextField
-                                error={Boolean(touched.basic && errors.basic)}
+                                error={Boolean(touched.lastName && errors.lastName)}
                                 fullWidth
-                                helperText={touched.basic && errors.basic}
-                                label="Basic Pay"
+                                helperText={touched.lastName && errors.lastName}
+                                label="Last Name"
                                 margin="normal"
-                                name="basic"
+                                name="lastName"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.lastName}
+                                variant="outlined"
+                              />
+                              <TextField
+                                fullWidth
+                                helperText={touched.role && errors.role}
+                                label="Role"
+                                margin="normal"
+                                name="role"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.role}
+                                variant="outlined"
+                                labelId="label"
+                              />
+                              <TextField
+                                error={Boolean(touched.contact && errors.contact)}
+                                fullWidth
+                                helperText={touched.contact && errors.contact}
+                                label="Contact"
+                                margin="normal"
+                                name="contact"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.contact}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.email && errors.email)}
+                                fullWidth
+                                helperText={touched.email && errors.email}
+                                label="Email"
+                                margin="normal"
+                                name="email"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.email}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.salary && errors.salary)}
+                                fullWidth
+                                helperText={touched.salary && errors.salary}
+                                label="Salary"
+                                margin="normal"
+                                name="salary"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 type="number"
-                                value={values.basic}
+                                value={values.salary}
                                 variant="outlined"
                                 InputProps={{
                                   startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                 }}
                               />
                               <TextField
-                                error={Boolean(touched.overtime && errors.overtime)}
+                                error={Boolean(touched.status && errors.status)}
                                 fullWidth
-                                helperText={touched.overtime && errors.overtime}
-                                label="Overtime Pay"
+                                helperText={touched.status && errors.status}
+                                label="Status"
                                 margin="normal"
-                                name="overtime"
+                                name="status"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                type="number"
-                                value={values.overtime}
+                                type="string"
+                                value={values.status}
                                 variant="outlined"
-                                InputProps={{
-                                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                              />
+                              <br />
+                              <br />
+                              <DateTimePicker
+                                renderInput={(params) => <TextField {...params} />}
+                                label="Date of Birth"
+                                name="dob"
+                                value={values.dob}
+                                onChange={(newDOB) => {
+                                  setFieldValue('dob', newDOB);
                                 }}
                               />
-                              <TextField
-                                error={Boolean(touched.cpfEmployee && errors.cpfEmployee)}
-                                fullWidth
-                                helperText={touched.cpfEmployee && errors.cpfEmployee}
-                                label="Employee CPF"
-                                margin="normal"
-                                name="cpfEmployee"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                type="number"
-                                value={values.cpfEmployee}
-                                variant="outlined"
-                                InputProps={{
-                                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                                }}
-                              />
-                              <TextField
-                                error={Boolean(touched.cpfEmployer && errors.cpfEmployer)}
-                                fullWidth
-                                helperText={touched.cpfEmployer && errors.cpfEmployer}
-                                label="Employer CPF"
-                                margin="normal"
-                                name="cpfEmployer"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                type="number"
-                                value={values.cpfEmployer}
-                                variant="outlined"
-                                InputProps={{
-                                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                                }}
-                              />
+                              <br />
+                              <br />
                               <DateTimePicker
                                 renderInput={(params) => <TextField {...params} />}
                                 label="Start Date"
@@ -362,6 +397,8 @@ const Payroll = () => {
                                   setFieldValue('startDate', newStart);
                                 }}
                               />
+                              <br />
+                              <br />
                               <DateTimePicker
                                 renderInput={(params) => <TextField {...params} />}
                                 label="End Date"
@@ -370,19 +407,6 @@ const Payroll = () => {
                                 onChange={(newEnd) => {
                                   setFieldValue('endDate', newEnd);
                                 }}
-                              />
-                              <TextField
-                                error={Boolean(touched.remarks && errors.remarks)}
-                                fullWidth
-                                helperText={touched.remarks && errors.remarks}
-                                label="Remarks"
-                                margin="normal"
-                                name="remarks"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                type="string"
-                                value={values.remarks}
-                                variant="outlined"
                               />
                               <Box sx={{ py: 2 }}>
                                 <Button
@@ -403,36 +427,6 @@ const Payroll = () => {
                     </Box>
                   </DialogContent>
                 )}
-              {dialogType === 'delete'
-                && (
-                  <DialogContent>
-                    Confirm Deletion of Payslip ID:&nbsp;
-                    <b>{payslip.id}</b>
-                  </DialogContent>
-                )}
-              <DialogActions>
-                {dialogType === 'delete'
-                  && (
-                    <Button
-                      color="error"
-                      fullWidth
-                      variant="contained"
-                      onClick={() => {
-                        deleteDoc(doc(db, 'payroll', payslip.id))
-                          .then(() => {
-                            console.log('Payslip deleted');
-                            handleClose();
-                          })
-                          .catch((error) => {
-                            console.log(error.message);
-                          });
-                      }}
-                    >
-                      Confirm
-                    </Button>
-                  )}
-                <Button onClick={handleClose}>Cancel</Button>
-              </DialogActions>
             </Dialog>
           </Box>
         </Container>
@@ -441,4 +435,4 @@ const Payroll = () => {
   );
 };
 
-export default Payroll;
+export default EmployeesPage;

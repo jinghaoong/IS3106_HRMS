@@ -50,6 +50,16 @@ const items = [
     title: 'Employees'
   },
   {
+    href: '/app/allEmployees',
+    icon: UsersIcon,
+    title: 'Employees V2'
+  },
+  {
+    href: '/app/createEmployee',
+    icon: UserPlusIcon,
+    title: 'Create Employee'
+  },
+  {
     href: '/app/payroll',
     icon: DollarSignIcon,
     title: 'Payroll'
@@ -83,11 +93,6 @@ const items = [
     href: '/login',
     icon: LockIcon,
     title: 'Login'
-  },
-  {
-    href: '/register',
-    icon: UserPlusIcon,
-    title: 'Register'
   },
   {
     href: '/404',

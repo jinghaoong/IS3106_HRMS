@@ -28,7 +28,7 @@ const EmployeeList = ({ employees }) => {
 };
 
 EmployeeList.propTypes = {
-  employees: PropTypes.array.isRequired
+  employees: PropTypes.array.isRequired,
 };
 
 console.log('Current employees ', EmployeeList.length);

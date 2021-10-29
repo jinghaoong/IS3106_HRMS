@@ -5,6 +5,9 @@ import {
 } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { ThemeProvider, StyledEngineProvider } from '@material-ui/core';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+
 import { collection, getDocs } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './firebase-config';
@@ -14,12 +17,13 @@ import theme from './theme';
 import DashboardLayout from './components/DashboardLayout';
 import MainLayout from './components/MainLayout';
 import Account from './pages/Account';
-import EmployeeList from './pages/EmployeeList';
+import EmployeeListResults from './pages/EmployeeList';
+import EmployeesPage from './pages/EmployeesPage';
+import EmployeeForm from './pages/EmployeeForm';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import ProductList from './pages/ProductList';
-import Register from './pages/Register';
 import Settings from './pages/Settings';
 import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
@@ -71,26 +75,15 @@ const App = () => {
     getAppraisalForm();
   }, []);
 
-  /*
-  const [payroll, setPayroll] = useState([]);
-  const payrollRef = collection(db, 'payroll');
-
-  useEffect(() => {
-    const getPayroll = async () => {
-      const data = await getDocs(payrollRef);
-      setPayroll(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-    getPayroll();
-  }, []);
-  */
-
   const content = useRoutes([
     {
       path: 'app',
       element: <DashboardLayout />,
       children: [
         { path: 'account', element: <Account /> },
-        { path: 'employees', element: <EmployeeList employees={employees} /> },
+        { path: 'employees', element: <EmployeeListResults employees={employees} /> },
+        { path: 'createEmployee', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
+        { path: 'allEmployees', element: <EmployeesPage EmployeesPage={EmployeesPage} /> },
         { path: 'dashboard', element: <Dashboard /> },
         { path: 'products', element: <ProductList /> },
         { path: 'settings', element: <Settings /> },
@@ -106,7 +99,7 @@ const App = () => {
       element: <MainLayout />,
       children: [
         { path: 'login', element: <Login /> },
-        { path: 'register', element: <Register /> },
+        { path: 'register', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
         { path: '404', element: <NotFound /> },
         { path: '/', element: <Navigate to="/login" /> },
         { path: '*', element: <Navigate to="/404" /> },
@@ -115,12 +108,14 @@ const App = () => {
   ]);
 
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        {content}
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles />
+          {content}
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </LocalizationProvider>
   );
 };
 
