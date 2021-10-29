@@ -1,11 +1,13 @@
 import { Helmet } from 'react-helmet';
+import PropTypes from 'prop-types';
 import { Box, Container } from '@material-ui/core';
 import AppraisalForm from '../components/appraisal/appraisalForm';
+import AppraisalList from '../components/appraisal/appraisalList';
 
-const Appraisal = () => (
+const Appraisal = ({ appraisal, employees, appraisalForm }) => (
   <>
     <Helmet>
-      <title>HRMS | Attendance Portal</title>
+      <title>HRMS | Appraisal Portal</title>
     </Helmet>
     <Box
       sx={{
@@ -16,11 +18,18 @@ const Appraisal = () => (
     >
       <Container maxWidth={false}>
         <Box sx={{ pt: 3 }}>
-          <AppraisalForm />
+          <AppraisalForm appraisalForm={appraisalForm} />
+          <AppraisalList appraisal={appraisal} employees={employees} appraisalForm={appraisalForm} />
         </Box>
       </Container>
     </Box>
   </>
 );
+
+Appraisal.propTypes = {
+  appraisal: PropTypes.array.isRequired,
+  employees: PropTypes.array.isRequired,
+  appraisalForm: PropTypes.array.isRequired,
+};
 
 export default Appraisal;

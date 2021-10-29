@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Box, Container } from '@material-ui/core';
 import AttendanceListResults from '../components/attendance/attendanceListResults';
 
-const Attendance = ({ employees }) => {
-  console.log(employees);
+const Attendance = ({ attendance, employees }) => {
+  console.log(Array.from(employees));
   return (
     <>
       <Helmet>
-        <title>Attendance | Material Kit</title>
+        <title>HRMS | Attendance Portal</title>
       </Helmet>
       <Box
         sx={{
@@ -19,7 +19,7 @@ const Attendance = ({ employees }) => {
       >
         <Container maxWidth={false}>
           <Box sx={{ pt: 3 }}>
-            <AttendanceListResults employees={employees} />
+            <AttendanceListResults attendance={attendance} employees={employees} />
           </Box>
         </Container>
       </Box>
@@ -28,6 +28,7 @@ const Attendance = ({ employees }) => {
 };
 
 Attendance.propTypes = {
+  attendance: PropTypes.array.isRequired,
   employees: PropTypes.array.isRequired
 };
 

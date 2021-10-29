@@ -38,16 +38,37 @@ const App = () => {
     }
   });
 
+  const [attendance, setAttendance] = useState([]);
+  const attendanceRef = collection(db, 'attendance');
   const [employees, setEmployees] = useState([]);
-  const employeeRef = collection(db, 'users');
+  const employeesRef = collection(db, 'users');
+  const [appraisal, setAppraisal] = useState([]);
+  const appraisalRef = collection(db, 'appraisals');
+  const [appraisalForm, setAppraisalForm] = useState([]);
+  const appraisalFormRef = collection(db, 'appraisalForm');
   const leaveApplications = useState([]);
 
   useEffect(() => {
+    const getAttendance = async () => {
+      const data = await getDocs(attendanceRef);
+      setAttendance(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
     const getEmployees = async () => {
-      const data = await getDocs(employeeRef);
+      const data = await getDocs(employeesRef);
       setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
+    const getAppraisal = async () => {
+      const data = await getDocs(appraisalRef);
+      setAppraisal(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    const getAppraisalForm = async () => {
+      const data = await getDocs(appraisalFormRef);
+      setAppraisalForm(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getAttendance();
     getEmployees();
+    getAppraisal();
+    getAppraisalForm();
   }, []);
 
   /*
@@ -73,8 +94,8 @@ const App = () => {
         { path: 'dashboard', element: <Dashboard /> },
         { path: 'products', element: <ProductList /> },
         { path: 'settings', element: <Settings /> },
-        { path: 'appraisal', element: <Appraisal /> },
-        { path: 'attendance', element: <Attendance employees={employees} /> },
+        { path: 'appraisal', element: <Appraisal appraisal={appraisal} employees={employees} appraisalForm={appraisalForm} /> },
+        { path: 'attendance', element: <Attendance attendance={attendance} employees={employees} /> },
         { path: 'leave', element: <Leave leaveApplications={leaveApplications} /> },
         { path: '*', element: <Navigate to="/404" /> },
         { path: 'payroll', element: <Payroll /> },

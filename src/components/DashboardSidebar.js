@@ -22,6 +22,8 @@ import {
   Users as UsersIcon,
   Calendar as CalendarIcon,
   DollarSign as DollarSignIcon,
+  Star as StarIcon,
+  Clock as ClockIcon,
 } from 'react-feather';
 import NavItem from './NavItem';
 
@@ -61,6 +63,16 @@ const items = [
     href: '/app/account',
     icon: UserIcon,
     title: 'Account'
+  },
+  {
+    href: '/app/attendance',
+    icon: ClockIcon,
+    title: 'Attendance'
+  },
+  {
+    href: '/app/appraisal',
+    icon: StarIcon,
+    title: 'Appraisal'
   },
   {
     href: '/app/settings',
