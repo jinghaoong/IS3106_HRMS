@@ -23,8 +23,6 @@ import EmployeeForm from './pages/EmployeeForm';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
-import ProductList from './pages/ProductList';
-import Settings from './pages/Settings';
 import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
 import Leave from './pages/Leave';
@@ -78,20 +76,18 @@ const App = () => {
   const content = useRoutes([
     {
       path: 'app',
-      element: <DashboardLayout />,
+      element: (currUser !== null ? <DashboardLayout /> : ''),
       children: [
-        { path: 'account', element: <Account /> },
-        { path: 'employees', element: <EmployeeListResults employees={employees} /> },
-        { path: 'createEmployee', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
-        { path: 'allEmployees', element: <EmployeesPage EmployeesPage={EmployeesPage} /> },
-        { path: 'dashboard', element: <Dashboard /> },
-        { path: 'products', element: <ProductList /> },
-        { path: 'settings', element: <Settings /> },
-        { path: 'appraisal', element: <Appraisal appraisal={appraisal} employees={employees} appraisalForm={appraisalForm} /> },
-        { path: 'attendance', element: <Attendance attendance={attendance} employees={employees} /> },
-        { path: 'leave', element: <Leave leaveApplications={leaveApplications} /> },
+        { path: 'account', element: (currUser !== null ? <Account /> : <Login />) },
+        { path: 'employees', element: (currUser !== null ? <EmployeeListResults employees={employees} /> : <Login />) },
+        { path: 'createEmployee', element: (currUser !== null ? <EmployeeForm EmployeeForm={EmployeeForm} /> : <Login />) },
+        { path: 'allEmployees', element: (currUser !== null ? <EmployeesPage EmployeesPage={EmployeesPage} /> : <Login />) },
+        { path: 'dashboard', element: (currUser !== null ? <Dashboard /> : <Login />) },
+        { path: 'appraisal', element: (currUser !== null ? <Appraisal appraisal={appraisal} employees={employees} appraisalForm={appraisalForm} /> : <Login />) },
+        { path: 'attendance', element: (currUser !== null ? (<Attendance attendance={attendance} employees={employees} />) : <Login />) },
+        { path: 'leave', element: (currUser !== null ? <Leave leaveApplications={leaveApplications} /> : <Login />) },
         { path: '*', element: <Navigate to="/404" /> },
-        { path: 'payroll', element: <Payroll /> },
+        { path: 'payroll', element: (currUser !== null ? <Payroll /> : <Login />) },
       ]
     },
     {
