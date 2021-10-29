@@ -11,6 +11,8 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
+  // MenuItem,
+  // Select
   // Typography,
 } from '@material-ui/core';
 import { InputAdornment } from '@mui/material';
@@ -18,10 +20,10 @@ import {
   Add as AddIcon,
   Edit as EditIcon,
 } from '@mui/icons-material';
+
 import {
   collection,
   getDocs,
-  addDoc,
   doc,
   setDoc,
   Timestamp,
@@ -65,6 +67,13 @@ const EmployeesPage = () => {
     setOpen(false);
   };
 
+  /* const employeeRoles = [
+    { value: 'Employee', label: 'Employee' },
+    { value: 'Part-timer', label: 'Part-timer' },
+    { value: 'Intern', label: 'Intern' },
+    { value: 'Others', label: 'Others' }
+  ]; */
+
   const CreateButton = () => (
     <Button
       variant="contained"
@@ -101,42 +110,37 @@ const EmployeesPage = () => {
     {
       field: 'id',
       headerName: 'Employee ID',
-      width: 200,
+      width: 280,
     },
     {
       field: 'firstName',
       headerName: 'First Name',
-      width: 130,
+      width: 170,
     },
     {
       field: 'lastName',
       headerName: 'Last Name',
-      width: 130,
+      width: 170,
     },
     {
       field: 'role',
       headerName: 'Role',
-      width: 150,
+      width: 170,
     },
     {
       field: 'contact',
       headerName: 'Contact',
-      width: 200,
+      width: 220,
     },
     {
       field: 'email',
       headerName: 'Email',
-      width: 200,
+      width: 220,
     },
     {
-      field: 'dob',
-      headerName: 'DOB',
-      width: 200,
-    },
-    {
-      field: 'startDate',
-      headerName: 'Joined On',
-      width: 200,
+      field: 'status',
+      headerName: 'Status',
+      width: 150,
     },
     {
       field: 'actions',
@@ -179,6 +183,18 @@ const EmployeesPage = () => {
               <DialogTitle>
                 {dialogType === 'create' && <div>Create Employee</div>}
                 {dialogType === 'edit' && <div>Edit Employee</div>}
+                <Box>
+                  <Button
+                    color="primary"
+                    size="small"
+                    type="close"
+                    variant="contained"
+                    onClick={handleClose}
+                    style={{ float: 'right' }}
+                  >
+                    x
+                  </Button>
+                </Box>
               </DialogTitle>
               {dialogType !== 'delete'
                 && (
@@ -195,7 +211,7 @@ const EmployeesPage = () => {
                       <Container maxWidth="sm">
                         <Formik
                           initialValues={{
-                            id: employee.id,
+                            id: '',
                             firstName: employee.firstName,
                             lastName: employee.lastName,
                             role: employee.role,
@@ -206,45 +222,28 @@ const EmployeesPage = () => {
                               ? new Date() : employee.dob.toDate(),
                             startDate: employee.startDate === undefined
                               ? new Date() : employee.startDate.toDate(),
+                            status: employee.status
                           }}
                           validationSchema={Yup.object().shape({
                             id: Yup.string(),
                             firstName: Yup.string().required('Enter First Name'),
                             lastName: Yup.string().required('Enter Last Name'),
-                            role: Yup.string().required('Enter Role'),
                             contact: Yup.string().required('Enter Contact'),
                             email: Yup.string().required('Enter Email'),
                             salary: Yup.number().required('Enter Salary'),
                             dob: Yup.date().required('Enter Date of Birth'),
                             startDate: Yup.date().required('Enter Start Date'),
+                            status: Yup.string().required('Enter Status: active or inactive')
                           })}
                           onSubmit={(values, actions) => {
-                            const temp2 = {
-                              firstName: values.firstName,
-                              lastName: values.lastName,
-                              role: values.role,
-                              contact: values.contact,
-                              email: values.email,
-                              salary: values.salary,
-                              dob: Timestamp.fromDate(values.dob),
-                              startDate: Timestamp.fromDate(values.startDate)
-                            };
-
                             if (dialogType === 'create') {
-                              addDoc(doc(db, 'user'), temp2)
-                                .then(() => {
-                                  console.log('doc set');
-                                  handleClose();
-                                })
-                                .catch((error) => {
-                                  console.log(error.message);
-                                  actions.setErrors({ submit: error.message });
-                                  actions.setSubmitting(false);
-                                });
+                              const newId = `${values.email}`;
+                              console.log('new id is ', newId);
+                              actions.setFieldValue('id', newId);
                             }
 
                             const temp = {
-                              id: values.id,
+                              id: values.email,
                               firstName: values.firstName,
                               lastName: values.lastName,
                               role: values.role,
@@ -253,12 +252,13 @@ const EmployeesPage = () => {
                               salary: values.salary,
                               dob: Timestamp.fromDate(values.dob),
                               startDate: Timestamp.fromDate(values.startDate),
-                              endDate: Timestamp.fromDate(values.endDate),
+                              status: values.status
                             };
 
                             setEmployeePage(temp);
+                            console.log('id currently is ', values.id, 'another one is', values.email);
 
-                            setDoc(doc(db, 'user', values.id), temp)
+                            setDoc(doc(db, 'users', `${values.email}`), temp)
                               .then(() => {
                                 console.log('doc set');
                                 handleClose();
@@ -281,22 +281,6 @@ const EmployeesPage = () => {
                             values
                           }) => (
                             <form onSubmit={handleSubmit}>
-                              <TextField
-                                error={Boolean(touched.id && errors.id)}
-                                fullWidth
-                                helperText={touched.id && errors.id}
-                                label="Employee ID"
-                                margin="normal"
-                                name="id"
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                type="string"
-                                value={values.id}
-                                variant="outlined"
-                                InputProps={{
-                                  readOnly: dialogType === 'edit'
-                                }}
-                              />
                               <TextField
                                 error={Boolean(touched.firstName && errors.firstName)}
                                 fullWidth
@@ -324,7 +308,6 @@ const EmployeesPage = () => {
                                 variant="outlined"
                               />
                               <TextField
-                                error={Boolean(touched.role && errors.role)}
                                 fullWidth
                                 helperText={touched.role && errors.role}
                                 label="Role"
@@ -335,6 +318,7 @@ const EmployeesPage = () => {
                                 type="string"
                                 value={values.role}
                                 variant="outlined"
+                                labelId="label"
                               />
                               <TextField
                                 error={Boolean(touched.contact && errors.contact)}
@@ -378,6 +362,21 @@ const EmployeesPage = () => {
                                   startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                 }}
                               />
+                              <TextField
+                                error={Boolean(touched.status && errors.status)}
+                                fullWidth
+                                helperText={touched.status && errors.status}
+                                label="Status"
+                                margin="normal"
+                                name="status"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.status}
+                                variant="outlined"
+                              />
+                              <br />
+                              <br />
                               <DateTimePicker
                                 renderInput={(params) => <TextField {...params} />}
                                 label="Date of Birth"
@@ -387,6 +386,8 @@ const EmployeesPage = () => {
                                   setFieldValue('dob', newDOB);
                                 }}
                               />
+                              <br />
+                              <br />
                               <DateTimePicker
                                 renderInput={(params) => <TextField {...params} />}
                                 label="Start Date"
@@ -396,6 +397,8 @@ const EmployeesPage = () => {
                                   setFieldValue('startDate', newStart);
                                 }}
                               />
+                              <br />
+                              <br />
                               <DateTimePicker
                                 renderInput={(params) => <TextField {...params} />}
                                 label="End Date"
