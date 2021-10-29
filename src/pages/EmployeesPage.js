@@ -403,7 +403,7 @@ const EmployeesPage = () => {
                                 helperText={touched.bank && errors.bank}
                                 label="Bank"
                                 margin="normal"
-                                name="address"
+                                name="bank"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 type="string"
@@ -416,7 +416,7 @@ const EmployeesPage = () => {
                                 helperText={touched.bankAccNo && errors.bankAccNo}
                                 label="Bank Account Number"
                                 margin="normal"
-                                name="address"
+                                name="bankAccNo"
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 type="number"
