@@ -5,6 +5,12 @@ import { Search as SearchIcon } from 'react-feather';
 // import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 // import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 // import DatePicker from '@material-ui/lab/DatePicker';
+// import { DateRangePicker } from 'react-date-range';
+import DatePicker from 'react-datepicker';
+import './attendance.css';
+// import { DateRangePickerComponent } from '@syncfusion/ej2-react-calendars';
+
+import 'react-datepicker/dist/react-datepicker.css';
 
 import {
   Box,
@@ -14,7 +20,7 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  // Chip,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -23,11 +29,11 @@ import {
   TableRow,
 } from '@material-ui/core';
 
-const AttendanceListResults = ({ employees, ...rest }) => {
-  console.log(employees);
+const AttendanceListResults = ({ attendance, employees, ...rest }) => {
   const [statusView, setStatusView] = useState('');
   const [searchValue, setSearchValue] = useState('');
-  // const [dateValue, setDateValue] = useState('');
+  const [startDateValue, setStartDateValue] = useState('');
+  const [endDateValue, setEndDateValue] = useState('');
   const [selectedEmployeesIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -40,60 +46,119 @@ const AttendanceListResults = ({ employees, ...rest }) => {
     setPage(newPage);
   };
 
-  // const formatDate = (date) => {
-  //   if (date !== null) {
-  //     const formattedDate = date.toString().split(' ').slice(1, 4);
-  //     const newDate = formattedDate.join(' ');
-  //     return (newDate);
-  //   }
-  //   return '';
+  function findEmployee(uId) {
+    const em = Array.from(employees).filter((obj) => {
+      if (obj.userId === uId) {
+        return obj;
+      }
+      return null;
+    });
+    return em[0];
+  }
+
+  const formatDate = (date) => {
+    if (date !== null) {
+      const formattedDate = date.toString().split(' ').slice(1, 4);
+      const newDate = formattedDate.join('-');
+      return (newDate);
+    }
+    return '';
+  };
+
+  const formatTime = (date) => {
+    if (date !== null) {
+      const formattedTime = date.toString().split(' ').slice(4, 5);
+      const hourMin = formattedTime.toString().split(':').slice(0, 2);
+      const newTime = hourMin.join(':');
+      return (newTime);
+    }
+    return '';
+  };
+
+  const getStatus = (timeIn) => {
+    if (formatTime(timeIn) > '09:00:00') {
+      return 2;
+    }
+    return 1;
+  };
+
+  console.log(startDateValue);
+  console.log(endDateValue);
+
+  // const selectionRange = {
+  //   startDate: new Date(),
+  //   endDate: new Date(),
+  //   key: 'selection',
   // };
 
-  return (
+  return (employees.length > 0 && attendance.length > 0) ? (
     <Card {...rest}>
       <Box sx={{ mt: 3 }}>
-        <Box>
-          <Button
-            sx={{
-              mx: 2,
-            }}
-            value=""
-            variant={(statusView === '' || statusView === '0') ? 'contained' : 'outlined'}
-            onClick={(event) => { setStatusView(event.target.value); }}
-          >
-            All
-          </Button>
-          <Button
-            value="1"
-            variant={statusView === '1' ? 'contained' : 'outlined'}
-            onClick={(event) => { setStatusView(event.target.value); }}
-          >
-            On Time
-          </Button>
-          <Button
-            sx={{
-              mx: 2,
-            }}
-            value="2"
-            variant={statusView === '2' ? 'contained' : 'outlined'}
-            onClick={(event) => { setStatusView(event.target.value); }}
-          >
-            Late
-          </Button>
-          {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Search by date"
-              format="dd/MM/yyyy"
-              value={dateValue}
-              clearable
-              maxDate={new Date()}
-              onChange={(date) => {
-                setDateValue(formatDate(date));
+        <CardContent id="buttons">
+          <Box>
+            <Button
+              sx={{
+                mx: 2,
               }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider> */}
-        </Box>
+              value=""
+              variant={(statusView === '' || statusView === '0') ? 'contained' : 'outlined'}
+              onClick={(event) => { setStatusView(event.target.value); }}
+            >
+              All
+            </Button>
+            <Button
+              value="1"
+              variant={statusView === '1' ? 'contained' : 'outlined'}
+              onClick={(event) => { setStatusView(event.target.value); }}
+            >
+              On Time
+            </Button>
+            <Button
+              sx={{
+                mx: 2,
+              }}
+              value="2"
+              variant={statusView === '2' ? 'contained' : 'outlined'}
+              onClick={(event) => { setStatusView(event.target.value); }}
+            >
+              Late
+            </Button>
+            <div>&nbsp;</div>
+            <Box className="pickers">
+              <div className="dateTags"><b>From</b></div>
+              <div className="datePick">
+                <DatePicker
+                  sx={{
+                    minHeight: 5,
+                    mx: 5,
+                    size: 10,
+                  }}
+                  className="startingCalendar"
+                  selected={startDateValue}
+                  onChange={(date) => setStartDateValue(date)}
+                  value={startDateValue}
+                  placeholderText="Search by start date"
+                />
+              </div>
+              <div>&nbsp;</div>
+              <div className="dateTags"><b>To</b></div>
+              <div className="datePick">
+                <DatePicker
+                  sx={{
+                    minHeight: 5,
+                    ml: 5,
+                  }}
+                  id="ending"
+                  className="endingCalendar"
+                  selected={endDateValue}
+                  onChange={(date) => setEndDateValue(date)}
+                  value={endDateValue}
+                  placeholderText="Search by end date"
+                />
+              </div>
+            </Box>
+          </Box>
+        </CardContent>
         <Card>
           <CardContent>
             <Box sx={{ maxWidth: 500 }}>
@@ -148,47 +213,64 @@ const AttendanceListResults = ({ employees, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(employees).slice(0, limit).filter((val) => {
-                if (searchValue === '' || val.firstName.toLowerCase().includes(searchValue) || val.lastName.toLowerCase().includes(searchValue)) {
+              {Array.from(attendance).slice(0, limit).filter((val) => {
+                if (searchValue === '' || findEmployee(val.userId).firstName.toLowerCase().includes(searchValue) || findEmployee(val.userId).lastName.toLowerCase().includes(searchValue)) {
                   return val;
                 }
                 return null;
               }).filter((em) => {
-                if (statusView === '' || em.status.toString() === statusView) {
+                if (statusView === '' || getStatus(new Date(em.dateTimeIn.seconds * 1000).toString()).toString() === statusView) {
                   return em;
                 }
                 return null;
               })
-                .map((employee) => (
+                .filter((obj) => {
+                  if ((startDateValue === null && endDateValue === null)
+                    || (formatDate(startDateValue) <= formatDate(new Date(obj.dateTimeIn.seconds * 1000).toString()) && endDateValue === '')
+                    || (formatDate(endDateValue) >= formatDate(new Date(obj.dateTimeIn.seconds * 1000).toString()) && startDateValue === '')
+                    || (formatDate(startDateValue) <= formatDate(new Date(obj.dateTimeIn.seconds * 1000).toString()) && formatDate(endDateValue) >= formatDate(new Date(obj.dateTimeIn.seconds * 1000).toString()))) {
+                    return obj;
+                  }
+                  return null;
+                })
+                // .map((obj) => {
+                //   return obj.normalHours = obj.timeOut - obj.timeIn;
+                // })
+                .sort(((a, b) => b.dateTimeIn.seconds - a.dateTimeIn.seconds))
+                .map((at) => (
                   <TableRow
                     hover
-                    key={employee.id}
-                    selected={selectedEmployeesIds.indexOf(employee.userId) !== -1}
+                    key={at.id}
+                    selected={selectedEmployeesIds.indexOf(at.userId) !== -1}
                   >
                     <TableCell>
-                      {employee.firstName}
+                      {findEmployee(at.userId).firstName}
                     </TableCell>
                     <TableCell>
-                      {employee.firstName}
+                      {at.userId}
                     </TableCell>
                     <TableCell>
-                      {employee.firstName}
+                      {formatDate(new Date(at.dateTimeIn.seconds * 1000).toString())}
+                      <b>/</b>
+                      {formatTime(new Date(at.dateTimeIn.seconds * 1000).toString())}
                     </TableCell>
                     <TableCell>
-                      {employee.firstName}
+                      {formatDate(new Date(at.dateTimeOut.seconds * 1000).toString())}
+                      <b>/</b>
+                      {formatTime(new Date(at.dateTimeOut.seconds * 1000).toString())}
                     </TableCell>
                     <TableCell>
-                      {employee.firstName}
+                      {at.normalHours}
                     </TableCell>
                     <TableCell>
-                      {employee.firstName}
+                      {at.overtimeHours}
                     </TableCell>
-                    {/* <TableCell>
+                    <TableCell>
                       <Chip
-                        label={employee.status === 1 ? 'On Time' : 'Late'}
-                        color={employee.status === 1 ? 'success' : 'error'}
+                        label={getStatus(new Date(at.dateTimeIn.seconds * 1000).toString()) === 1 ? 'On Time' : 'Late'}
+                        color={getStatus(new Date(at.dateTimeIn.seconds * 1000).toString()) === 1 ? 'success' : 'error'}
                       />
-                    </TableCell> */}
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -205,162 +287,16 @@ const AttendanceListResults = ({ employees, ...rest }) => {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
-  );
-};
-
-AttendanceListResults.propTypes = {
-  employees: PropTypes.array.isRequired
-};
-/*
-const EmployeeListResults = ({ employees, ...rest }) => {
-  const [selectedEmployeesIds, setSelectedEmployeesIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-
-  const handleSelectAll = (event) => {
-    let newSelectedEmployeesIds;
-
-    if (event.target.checked) {
-      newSelectedEmployeesIds = employees.map((employee) => employee.userId);
-    } else {
-      newSelectedEmployeesIds = [];
-    }
-
-    setSelectedEmployeesIds(newSelectedEmployeesIds);
-  };
-
-  const handleSelectOne = (event, userId) => {
-    const selectedIndex = selectedEmployeesIds.indexOf(userId);
-    let newSelectedEmployeesIds = [];
-
-    if (selectedIndex === -1) {
-      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds, userId);
-    } else if (selectedIndex === 0) {
-      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds.slice(1));
-    } else if (selectedIndex === selectedEmployeesIds.length - 1) {
-      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(selectedEmployeesIds.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedEmployeesIds = newSelectedEmployeesIds.concat(
-        selectedEmployeesIds.slice(0, selectedIndex),
-        selectedEmployeesIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedEmployeesIds(newSelectedEmployeesIds);
-  };
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  return (
-    <Card {...rest}>
-      <PerfectScrollbar>
-        <Box sx={{ minWidth: 1050 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedEmployeesIds.length === employees.length}
-                    color="primary"
-                    indeterminate={
-                      selectedEmployeesIds.length > 0
-                      && selectedEmployeesIds.length < employees.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>
-                  First Name
-                </TableCell>
-                <TableCell>
-                  Last Name
-                </TableCell>
-                <TableCell>
-                  Username
-                </TableCell>
-                <TableCell>
-                  Address
-                </TableCell>
-                <TableCell>
-                  Contact
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  DOB
-                </TableCell>
-                <TableCell>
-                  Joined
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Array.from(employees).slice(0, limit).map((employee) => (
-                <TableRow
-                  hover
-                  key={employee.userId}
-                  selected={selectedEmployeesIds.indexOf(employee.userId) !== -1}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedEmployeesIds.indexOf(employee.userId) !== -1}
-                      onChange={(event) => handleSelectOne(event, employee.userId)}
-                      value="true"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    {employee.firstName}
-                  </TableCell>
-                  <TableCell>
-                    {employee.lastName}
-                  </TableCell>
-                  <TableCell>
-                    {employee.username}
-                  </TableCell>
-                  <TableCell>
-                    {employee.address}
-                  </TableCell>
-                  <TableCell>
-                    {employee.contact}
-                  </TableCell>
-                  <TableCell>
-                    {employee.email}
-                  </TableCell>
-                  <TableCell>
-                    {moment(employee.dob).format('DD/MM/YYYY')}
-                  </TableCell>
-                  <TableCell>
-                    {moment(employee.startDate).format('DD/MM/YYYY')}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
+  ) : (
+    <Card>
+      <h1> Loading... </h1>
     </Card>
   );
 };
 
-EmployeeListResults.propTypes = {
+AttendanceListResults.propTypes = {
+  attendance: PropTypes.array.isRequired,
   employees: PropTypes.array.isRequired
 };
 
-*/
 export default AttendanceListResults;
