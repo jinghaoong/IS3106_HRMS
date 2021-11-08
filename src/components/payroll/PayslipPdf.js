@@ -14,13 +14,13 @@ import {
   Text,
   View
 } from '@react-pdf/renderer';
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { PropTypes } from 'prop-types';
+import { doc, getDoc } from '@firebase/firestore';
+import { auth, db } from '../../firebase-config';
 
 const PayslipPdf = ({ payslip, open, handleClose }) => {
-  const startDate = format(payslip.startDate.toDate(), 'dd-MM-yyyy');
-  const endDate = format(payslip.endDate.toDate(), 'dd-MM-yyyy');
-
   const styles = StyleSheet.create({
     page: {
       fontSize: 16,
@@ -32,14 +32,12 @@ const PayslipPdf = ({ payslip, open, handleClose }) => {
     },
     titleContainer: {
       fontSize: 24,
-      alignSelf: 'left',
       marginBottom: 15,
     },
     title: {
       fontWeight: 'bold',
     },
     headerContainer: {
-      alignSelf: 'left',
       flexDirection: 'row',
       width: '70%',
       marginBottom: 5,
@@ -56,6 +54,7 @@ const PayslipPdf = ({ payslip, open, handleClose }) => {
       width: '80%',
       alignSelf: 'center',
       marginTop: 10,
+      marginBottom: 10,
     },
     row: {
       border: '1',
@@ -68,8 +67,43 @@ const PayslipPdf = ({ payslip, open, handleClose }) => {
     },
     xyz: {
       width: '50%',
-    }
+    },
+    remarksContainer: {
+      width: '100%',
+      marginBottom: 15,
+    },
+    signatureContainer: {
+      width: '80%',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    signature: {
+      width: '50%',
+    },
   });
+
+  const startDate = format(payslip.startDate.toDate(), 'dd-MM-yyyy');
+  const endDate = format(payslip.endDate.toDate(), 'dd-MM-yyyy');
+  const [employee, setEmployee] = useState();
+  const employeeRef = doc(db, 'users', payslip.email);
+
+  const manager = auth.currentUser;
+  console.log(manager);
+
+  const getEmployee = async () => {
+    const docSnap = await getDoc(employeeRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      console.log(data);
+      setEmployee(data);
+    } else {
+      console.log('No data');
+    }
+  };
+
+  useEffect(() => {
+    getEmployee();
+  }, []);
 
   const PayslipDocument = () => (
     <Document>
@@ -78,6 +112,14 @@ const PayslipPdf = ({ payslip, open, handleClose }) => {
           <Text style={styles.title}>COMPANY PAYSLIP</Text>
         </View>
 
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitle}>Employee Name</Text>
+          <Text style={styles.headerInput}>
+            {employee && employee.firstName}
+            &nbsp;
+            {employee && employee.lastName}
+          </Text>
+        </View>
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Employee Email</Text>
           <Text style={styles.headerInput}>{payslip.email}</Text>
@@ -108,6 +150,20 @@ const PayslipPdf = ({ payslip, open, handleClose }) => {
             <Text style={styles.description}>Overtime</Text>
             <Text style={styles.xyz}>{payslip.overtime > 0 ? payslip.overtime : 0}</Text>
           </View>
+          <View style={styles.row}>
+            <Text style={styles.description}>Total</Text>
+            <Text style={styles.xyz}>{payslip.basic + payslip.cpfEmployee + payslip.cpfEmployer + payslip.overtime}</Text>
+          </View>
+        </View>
+
+        <View style={styles.remarksContainer}>
+          <Text>Remarks:</Text>
+          <Text>{payslip.remarks}</Text>
+        </View>
+
+        <View style={styles.signatureContainer}>
+          <Text style={styles.signature}>Employer:  _________________</Text>
+          <Text style={styles.signature}>Employee:  _________________</Text>
         </View>
 
       </Page>
