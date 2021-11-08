@@ -28,6 +28,16 @@ const AccountProfile = () => {
   });
 
   useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrUser(user);
+        console.log('logged in as', currUser);
+        console.log('email is ', currUser.email);
+      } else {
+        setCurrUser(null);
+      }
+    });
+
     const getEmp = async () => {
       console.log('Print email', currUser.email);
       await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {

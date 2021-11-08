@@ -81,30 +81,33 @@ const AccountProfileDetails = (props) => {
       setCurrUser(null);
     }
   });
-
   console.log(currUser);
 
-  const currEmployee = () => {
-    console.log('Print email', currUser.email);
-    getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
-      if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
-        setCurrEmp(docSnap.data());
-        console.log('Current employee is ', currEmp);
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrUser(user);
+        console.log('logged in as', currUser);
+        console.log('email is ', currUser.email);
       } else {
-        console.log('No such document!');
+        setCurrUser(null);
       }
     });
-  };
 
-  console.log(currEmployee);
-
-  console.log('Current Employee is', currEmployee);
-  useEffect(() => {
-    currEmployee();
+    const getEmp = async () => {
+      console.log('Print email', currUser.email);
+      await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
+        if (docSnap.exists()) {
+          console.log('Document data:', docSnap.data());
+          setCurrEmp(docSnap.data());
+          console.log('Current employee is ', currEmp);
+        } else {
+          console.log('No such document!');
+        }
+      });
+    };
+    getEmp();
   }, []);
-
-  console.log('Current Employee is', currEmp);
 
   const handleChange = (event) => {
     setValues({
