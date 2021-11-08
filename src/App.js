@@ -97,7 +97,7 @@ const App = () => {
         { path: 'login', element: <Login /> },
         { path: 'register', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
         { path: '404', element: <NotFound /> },
-        { path: '/', element: <Navigate to="/login" /> },
+        { path: '/', element: <Navigate to={currUser === null ? '/login' : '/app/dashboard'} /> },
         { path: '*', element: <Navigate to="/404" /> },
       ]
     }
