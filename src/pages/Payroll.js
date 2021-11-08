@@ -47,7 +47,6 @@ const Payroll = () => {
   };
 
   const handleClose = () => {
-    setPayslip([]);
     getPayroll();
     setOpen(false);
   };

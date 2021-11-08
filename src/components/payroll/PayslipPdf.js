@@ -18,6 +18,9 @@ import { format } from 'date-fns';
 import { PropTypes } from 'prop-types';
 
 const PayslipPdf = ({ payslip, open, handleClose }) => {
+  const startDate = format(payslip.startDate.toDate(), 'dd-MM-yyyy');
+  const endDate = format(payslip.endDate.toDate(), 'dd-MM-yyyy');
+
   const styles = StyleSheet.create({
     page: {
       fontSize: 16,
@@ -86,9 +89,9 @@ const PayslipPdf = ({ payslip, open, handleClose }) => {
         <View style={styles.headerContainer}>
           <Text style={styles.headerTitle}>Payment Date</Text>
           <Text style={styles.headerInput}>
-            {format((payslip.startDate.toDate()), 'dd-MM-yyyy')}
+            {startDate}
             &nbsp;to&nbsp;
-            {format((payslip.endDate.toDate()), 'dd-MM-yyyy')}
+            {endDate}
           </Text>
         </View>
 
