@@ -17,16 +17,6 @@ const AccountProfile = () => {
   const [currUser, setCurrUser] = useState('');
   const [currEmp, setCurrEmp] = useState('');
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-      console.log('email is ', currUser.email);
-    } else {
-      setCurrUser(null);
-    }
-  });
-
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
