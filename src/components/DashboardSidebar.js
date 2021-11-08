@@ -1,6 +1,3 @@
-import { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import {
   Avatar,
   Box,
@@ -11,20 +8,19 @@ import {
   List,
   Typography
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { useEffect } from 'react';
 import {
   AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
-  Lock as LockIcon,
-  Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
-  User as UserIcon,
-  UserPlus as UserPlusIcon,
-  Users as UsersIcon,
   Calendar as CalendarIcon,
+  Clock as ClockIcon,
   DollarSign as DollarSignIcon,
   Star as StarIcon,
-  Clock as ClockIcon,
+  User as UserIcon,
+  Users as UsersIcon
 } from 'react-feather';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import NavItem from './NavItem';
 
 const user = {
@@ -45,19 +41,14 @@ const items = [
     title: 'Leave'
   },
   {
-    href: '/app/employees',
-    icon: UsersIcon,
-    title: 'Employees'
+    href: '/app/attendance',
+    icon: ClockIcon,
+    title: 'Attendance'
   },
   {
     href: '/app/allEmployees',
     icon: UsersIcon,
-    title: 'Employees V2'
-  },
-  {
-    href: '/app/createEmployee',
-    icon: UserPlusIcon,
-    title: 'Create Employee'
+    title: 'Employees'
   },
   {
     href: '/app/payroll',
@@ -65,34 +56,14 @@ const items = [
     title: 'Payroll'
   },
   {
-    href: '/app/products',
-    icon: ShoppingBagIcon,
-    title: 'Products'
-  },
-  {
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Account'
-  },
-  {
-    href: '/app/attendance',
-    icon: ClockIcon,
-    title: 'Attendance'
-  },
-  {
     href: '/app/appraisal',
     icon: StarIcon,
     title: 'Appraisal'
   },
   {
-    href: '/app/settings',
-    icon: SettingsIcon,
-    title: 'Settings'
-  },
-  {
-    href: '/login',
-    icon: LockIcon,
-    title: 'Login'
+    href: '/app/account',
+    icon: UserIcon,
+    title: 'Account'
   },
   {
     href: '/404',
