@@ -27,6 +27,8 @@ import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
 import Leave from './pages/Leave';
 import Payroll from './pages/Payroll';
+import UserAppraisal from './pages/UserAppraisal';
+import UserAttendance from './pages/UserAttendance';
 
 const App = () => {
   const [currUser, setCurrUser] = useState();
@@ -86,6 +88,8 @@ const App = () => {
         { path: 'appraisal', element: (currUser !== null ? <Appraisal appraisal={appraisal} employees={employees} appraisalForm={appraisalForm} /> : <Login />) },
         { path: 'attendance', element: (currUser !== null ? (<Attendance attendance={attendance} employees={employees} />) : <Login />) },
         { path: 'leave', element: (currUser !== null ? <Leave leaveApplications={leaveApplications} /> : <Login />) },
+        { path: 'userAppraisal', element: (currUser !== null ? <UserAppraisal /> : <Login />) },
+        { path: 'userAttendance', element: (currUser !== null ? <UserAttendance /> : <Login />) },
         { path: '*', element: <Navigate to="/404" /> },
         { path: 'payroll', element: (currUser !== null ? <Payroll /> : <Login />) },
       ]

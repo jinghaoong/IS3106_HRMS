@@ -231,14 +231,14 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
                 .map((at) => (
                   <TableRow
                     hover
-                    key={at.userId}
+                    key={at.email}
                     selected={selectedEmployeesIds.indexOf(at.userId) !== ''}
                   >
                     <TableCell>
-                      {findEmployee(at.userId).firstName}
+                      {findEmployee(at.email).firstName}
                     </TableCell>
                     <TableCell>
-                      {at.userId}
+                      {at.email}
                     </TableCell>
                     <TableCell>
                       {formatDate(new Date(at.dateTimeIn.seconds * 1000).toString())}
@@ -246,9 +246,9 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
                       {formatTime(new Date(at.dateTimeIn.seconds * 1000).toString())}
                     </TableCell>
                     <TableCell>
-                      {formatDate(new Date(at.dateTimeOut.seconds * 1000).toString())}
+                      {(at.dateTimeOut.seconds !== at.dateTimeIn.seconds) ? formatDate(new Date(at.dateTimeOut.seconds * 1000).toString()) : ''}
                       <b>/</b>
-                      {formatTime(new Date(at.dateTimeOut.seconds * 1000).toString())}
+                      {(at.dateTimeOut.seconds !== at.dateTimeIn.seconds) ? formatTime(new Date(at.dateTimeOut.seconds * 1000).toString()) : ''}
                     </TableCell>
                     <TableCell>
                       {at.normalHours}
