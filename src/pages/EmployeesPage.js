@@ -15,7 +15,7 @@ import {
   // Select
   // Typography,
 } from '@material-ui/core';
-import { InputAdornment } from '@mui/material';
+import { InputAdornment, MenuItem } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -39,13 +39,30 @@ import * as Yup from 'yup';
 
 import { db } from '../firebase-config';
 
+const employeeRoles = [
+  { value: 'Employee', label: 'Employee' },
+  { value: 'Part-timer', label: 'Part-timer' },
+  { value: 'Intern', label: 'Intern' },
+  { value: 'Others', label: 'Others' }
+];
+
+const employeeStatus = [
+  { value: 'Active', label: 'Active' },
+  { value: 'Resigned', label: 'Resigned' }
+];
+
 const EmployeesPage = () => {
   const [employeesPage, setEmployeesPage] = useState([]);
   const employeesPageRef = (collection(db, 'users'));
+  const [banks, setBanks] = useState([]);
+  const banksRef = (collection(db, 'banks'));
 
   const getEmployeesPage = async () => {
     const data = await getDocs(employeesPageRef);
     setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })));
+
+    const bankData = await getDocs(banksRef);
+    setBanks(bankData.docs.map((d) => ({ ...d.data(), id: d.id })));
   };
 
   useEffect(() => {
@@ -57,6 +74,7 @@ const EmployeesPage = () => {
 
   const [open, setOpen] = useState(false);
 
+  console.log(banks);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -66,13 +84,6 @@ const EmployeesPage = () => {
     getEmployeesPage();
     setOpen(false);
   };
-
-  /* const employeeRoles = [
-    { value: 'Employee', label: 'Employee' },
-    { value: 'Part-timer', label: 'Part-timer' },
-    { value: 'Intern', label: 'Intern' },
-    { value: 'Others', label: 'Others' }
-  ]; */
 
   const CreateButton = () => (
     <Button
@@ -241,7 +252,7 @@ const EmployeesPage = () => {
                             salary: Yup.number().required('Enter Salary'),
                             dob: Yup.date().required('Enter Date of Birth'),
                             startDate: Yup.date().required('Enter Start Date'),
-                            status: Yup.string().required('Enter Status: active or inactive')
+                            status: Yup.string().required('Enter Status')
                           })}
                           onSubmit={(values, actions) => {
                             if (dialogType === 'create') {
@@ -333,6 +344,7 @@ const EmployeesPage = () => {
                                 variant="outlined"
                               />
                               <TextField
+                                select
                                 fullWidth
                                 helperText={touched.role && errors.role}
                                 label="Role"
@@ -344,8 +356,18 @@ const EmployeesPage = () => {
                                 value={values.role}
                                 variant="outlined"
                                 labelId="label"
-                              />
+                              >
+                                {employeeRoles.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
                               <TextField
+                                select
                                 error={Boolean(touched.status && errors.status)}
                                 fullWidth
                                 helperText={touched.status && errors.status}
@@ -357,7 +379,16 @@ const EmployeesPage = () => {
                                 type="string"
                                 value={values.status}
                                 variant="outlined"
-                              />
+                              >
+                                {employeeStatus.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
                               <TextField
                                 error={Boolean(touched.contact && errors.contact)}
                                 fullWidth
@@ -398,6 +429,7 @@ const EmployeesPage = () => {
                                 variant="outlined"
                               />
                               <TextField
+                                select
                                 error={Boolean(touched.bank && errors.bank)}
                                 fullWidth
                                 helperText={touched.bank && errors.bank}
@@ -409,7 +441,16 @@ const EmployeesPage = () => {
                                 type="string"
                                 value={values.bank}
                                 variant="outlined"
-                              />
+                              >
+                                {banks.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.bankName}
+                                  >
+                                    {option.bankName}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
                               <TextField
                                 error={Boolean(touched.bankAccNo && errors.bankAccNo)}
                                 fullWidth
