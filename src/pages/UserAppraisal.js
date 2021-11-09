@@ -11,6 +11,8 @@ const UserAppraisal = () => {
   const [viewForm, setViewForm] = useState(false);
   const [appraisalForm, setAppraisalForm] = useState([]);
   const appraisalFormRef = collection(db, 'appraisalForm');
+  const [employees, setEmployees] = useState([]);
+  const employeesRef = collection(db, 'users');
   const [currUser, setCurrUser] = useState([]);
 
   useEffect(() => {
@@ -18,7 +20,12 @@ const UserAppraisal = () => {
       const data = await getDocs(appraisalFormRef);
       setAppraisalForm(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
+    const getEmployees = async () => {
+      const data = await getDocs(employeesRef);
+      setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
     getAppraisalForm();
+    getEmployees();
   }, []);
 
   onAuthStateChanged(auth, (user) => {
@@ -51,7 +58,22 @@ const UserAppraisal = () => {
       return null;
     });
 
+    function findEmployee(uId) {
+      const em = Array.from(employees).filter((obj) => {
+        if (obj.id === uId) {
+          return obj;
+        }
+        return null;
+      });
+      return em[0];
+    }
+
     if (cycle.length !== 0) {
+      console.log('self', cycle[0].selfEval);
+      console.log('role', findEmployee(currUser.email).role);
+      if (!cycle[0].selfEval && findEmployee(currUser.email).role === 'Employee') {
+        return false;
+      }
       return true;
     }
     return false;

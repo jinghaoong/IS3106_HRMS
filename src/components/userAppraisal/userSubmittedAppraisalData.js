@@ -168,12 +168,11 @@ const UserSubmittedAppraisalData = () => {
       return null;
     });
 
-    const end = new Date(cycle[0].endDate.seconds * 1000).toString();
+    const end = new Date(cycle[0].endDate.seconds * 1000);
     console.log('editable', formatDate(end));
     console.log('today', formatDate(new Date()));
-    console.log(end <= new Date());
-
-    if (end <= new Date()) {
+    console.log(end >= new Date());
+    if (end.setHours(1) >= new Date().setHours(0)) {
       return true;
     }
     return false;
