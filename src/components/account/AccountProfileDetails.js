@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Box,
   Button,
@@ -9,31 +8,95 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
+import {
+  setDoc,
+  doc,
+  getDoc
+}
+from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
+// import { db } from '../firebase-config';
+import { useEffect, useState } from 'react';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import { db, auth } from '../../firebase-config';
 
-const states = [
+const banks = [
   {
-    value: 'alabama',
-    label: 'Alabama'
+    value: 'dbs',
+    label: 'DBS/POSB'
   },
   {
-    value: 'new-york',
-    label: 'New York'
+    value: 'uob',
+    label: 'UOB'
   },
   {
-    value: 'san-francisco',
-    label: 'San Francisco'
+    value: 'ocbc',
+    label: 'OCBC'
+  },
+  {
+    value: 'scb',
+    label: 'Standard Chartered Bank'
+  },
+  {
+    value: 'hlf',
+    label: 'Hong Leong Finance'
+  },
+  {
+    value: 'citibank',
+    label: 'Citibank Singapore'
+  },
+  {
+    value: 'hsbc',
+    label: 'HSBC'
+  },
+  {
+    value: 'sbi',
+    label: 'State Bank of India'
+  },
+  {
+    value: 'bcb',
+    label: 'Barclays Bank'
+  },
+  {
+    value: 'boc',
+    label: 'Bank of China'
+  },
+  {
+    value: 'others',
+    label: 'Others'
   }
 ];
 
 const AccountProfileDetails = (props) => {
-  const [values, setValues] = useState({
-    firstName: 'Katarina',
-    lastName: 'Smith',
-    email: 'demo@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
-  });
+  const [values, setValues] = useState('');
+  const [currEmp, setCurrEmp] = useState('');
+  const [currUser, setCurrUser] = useState('');
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrUser(user);
+        console.log('logged in as', currUser);
+        console.log('email is ', currUser.email);
+      } else {
+        setCurrUser(null);
+      }
+    });
+
+    const getEmp = async () => {
+      console.log('Print email', currUser.email);
+      await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
+        if (docSnap.exists()) {
+          console.log('Document data:', docSnap.data());
+          setCurrEmp(docSnap.data());
+          console.log('Current employee is ', currEmp);
+        } else {
+          console.log('No such document!');
+        }
+      });
+    };
+    getEmp();
+  }, []);
 
   const handleChange = (event) => {
     setValues({
@@ -42,15 +105,22 @@ const AccountProfileDetails = (props) => {
     });
   };
 
+  const handleSubmit = () => {
+    const employeeRef = doc(db, 'users', currEmp.email);
+    // const ref2 = doc(db, 'users', `${currEmp.email}`);
+    setDoc(employeeRef, { ...values });
+  };
+
   return (
     <form
       autoComplete="off"
       noValidate
+      handleSubmit
       {...props}
     >
       <Card>
         <CardHeader
-          subheader="The information can be edited"
+          subheader="Edit your profile details here."
           title="Profile"
         />
         <Divider />
@@ -95,14 +165,13 @@ const AccountProfileDetails = (props) => {
               md={6}
               xs={12}
             >
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
+              <DateTimePicker
+                renderInput={(params) => <TextField {...params} />}
+                label="Date of Birth"
+                name="dob"
+                value={values.dob}
                 required
-                value={values.email}
-                variant="outlined"
+
               />
             </Grid>
             <Grid
@@ -116,8 +185,9 @@ const AccountProfileDetails = (props) => {
                 name="phone"
                 onChange={handleChange}
                 type="number"
-                value={values.phone}
+                value={values.contact}
                 variant="outlined"
+                required
               />
             </Grid>
             <Grid
@@ -127,11 +197,11 @@ const AccountProfileDetails = (props) => {
             >
               <TextField
                 fullWidth
-                label="Country"
-                name="country"
+                label="IC Number"
+                name="identificationNo"
                 onChange={handleChange}
                 required
-                value={values.country}
+                value={values.identificationNo}
                 variant="outlined"
               />
             </Grid>
@@ -142,16 +212,16 @@ const AccountProfileDetails = (props) => {
             >
               <TextField
                 fullWidth
-                label="Select State"
-                name="state"
+                label="Select Bank"
+                name="bank"
                 onChange={handleChange}
                 required
                 select
                 SelectProps={{ native: true }}
-                value={values.state}
+                value={values.bank}
                 variant="outlined"
               >
-                {states.map((option) => (
+                {banks.map((option) => (
                   <option
                     key={option.value}
                     value={option.value}
@@ -174,6 +244,9 @@ const AccountProfileDetails = (props) => {
           <Button
             color="primary"
             variant="contained"
+            type="submit"
+            value="submit"
+            onClick={handleSubmit}
           >
             Save details
           </Button>
