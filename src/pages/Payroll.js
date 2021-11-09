@@ -156,7 +156,7 @@ const Payroll = () => {
   return (
     <>
       <Helmet>
-        <title>Payroll</title>
+        <title>HRMS | Payroll</title>
       </Helmet>
       <Box
         sx={{
