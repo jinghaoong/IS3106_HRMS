@@ -13,14 +13,6 @@ import { useEffect } from 'react';
 import {
   AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
-<<<<<<< HEAD
-  Lock as LockIcon,
-  Settings as SettingsIcon,
-  User as UserIcon,
-  UserPlus as UserPlusIcon,
-  Users as UsersIcon,
-=======
->>>>>>> 514079f288f392fb7d65e222f4544fbc5a0dc8ec
   Calendar as CalendarIcon,
   Clock as ClockIcon,
   DollarSign as DollarSignIcon,
