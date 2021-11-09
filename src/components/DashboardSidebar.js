@@ -15,8 +15,7 @@ import {
   BarChart as BarChartIcon,
   Calendar as CalendarIcon,
   Clock as ClockIcon,
-  DollarSign as DollarSignIcon,
-  Star as StarIcon,
+  DollarSign as DollarSignIcon, Grid as GridIcon, Star as StarIcon,
   User as UserIcon,
   Users as UsersIcon
 } from 'react-feather';
@@ -36,34 +35,24 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/app/leave',
-    icon: CalendarIcon,
-    title: 'Leave'
-  },
-  {
-    href: '/app/attendance',
-    icon: ClockIcon,
-    title: 'Attendance'
-  },
-  {
     href: '/app/allEmployees',
     icon: UsersIcon,
     title: 'Employees'
   },
   {
-    href: '/app/payroll',
-    icon: DollarSignIcon,
-    title: 'Payroll'
-  },
-  {
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Account'
-  },
-  {
     href: '/app/attendance',
     icon: ClockIcon,
     title: 'Attendance'
+  },
+  {
+    href: '/app/leave',
+    icon: CalendarIcon,
+    title: 'Leave'
+  },
+  {
+    href: '/app/payroll',
+    icon: DollarSignIcon,
+    title: 'Payroll'
   },
   {
     href: '/app/appraisal',
@@ -74,6 +63,16 @@ const items = [
     href: '/app/account',
     icon: UserIcon,
     title: 'Account'
+  },
+  {
+    href: '/app/qr',
+    icon: GridIcon,
+    title: 'QR Generator'
+  },
+  {
+    href: '/app/userPayroll',
+    icon: DollarSignIcon,
+    title: 'User Payroll'
   },
   {
     href: '/404',
