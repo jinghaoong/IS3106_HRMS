@@ -64,7 +64,6 @@ const items = [
     title: 'Payroll'
   },
   {
-<<<<<<< HEAD
     href: '/app/account',
     icon: UserIcon,
     title: 'Account'
@@ -75,8 +74,6 @@ const items = [
     title: 'Attendance'
   },
   {
-=======
->>>>>>> 514079f288f392fb7d65e222f4544fbc5a0dc8ec
     href: '/app/appraisal',
     icon: StarIcon,
     title: 'Appraisal'

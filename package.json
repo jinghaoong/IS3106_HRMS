@@ -61,20 +61,10 @@
     "react-helmet": "^6.1.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-qr-code": "^2.0.2",
-<<<<<<< HEAD
-    "react-ratings-declarative": "^3.4.1",
-    "react-router": "^6.0.0-beta.0",
-    "react-router-dom": "^6.0.0-beta.0",
-    "react-scripts": "^4.0.3",
-    "react-select": "^5.1.0",
-    "react-simple-star-rating": "^3.0.0",
-    "react-star-ratings": "^2.3.0",
-=======
     "react-router": "^6.0.1",
     "react-router-dom": "^6.0.1",
     "react-scripts": "^4.0.3",
     "react-select": "^5.2.1",
->>>>>>> 514079f288f392fb7d65e222f4544fbc5a0dc8ec
     "react-transition-group": "^4.4.2",
     "uuid": "^8.3.0",
     "yup": "^0.32.9"
