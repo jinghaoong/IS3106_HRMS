@@ -29,7 +29,6 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
   const [searchValue, setSearchValue] = useState('');
   const [startDateValue, setStartDateValue] = useState('');
   const [endDateValue, setEndDateValue] = useState('');
-  const [selectedEmployeesIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
@@ -231,8 +230,7 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
                 .map((at) => (
                   <TableRow
                     hover
-                    key={at.email}
-                    selected={selectedEmployeesIds.indexOf(at.userId) !== ''}
+                    key={at.id}
                   >
                     <TableCell>
                       {findEmployee(at.email).firstName}

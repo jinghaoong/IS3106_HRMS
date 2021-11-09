@@ -7,7 +7,8 @@ import {
   doc,
   updateDoc
 } from 'firebase/firestore';
-import { Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
+import Icon from '@mui/icons-material/Login';
 
 import { auth, db } from '../../firebase-config';
 
@@ -111,6 +112,8 @@ const UserAttendanceButton = () => {
     return '';
   };
 
+  console.log('time', getCheckinTime());
+
   const handleCheckIn = () => {
     const today = new Date();
     if (getCheckinTime() === '') {
@@ -123,13 +126,27 @@ const UserAttendanceButton = () => {
   return (
     <>
       <Button
+        sx={{
+          width: '100%',
+          p: 3.5,
+          size: 10,
+        }}
         onClick={handleCheckIn}
         variant="contained"
+        color={(getCheckinTime() !== '') ? 'warning' : 'success'}
         size="large"
+        className="attendanceButton"
       >
-        {(getCheckinTime() !== '') ? 'CHECK OUT' : 'CHECK IN'}
+        {Icon && <Icon type={Icon} />}
+        &nbsp;
+        <Typography variant="h3">{(getCheckinTime() !== '') ? 'CHECK OUT' : 'CHECK IN'}</Typography>
       </Button>
-      {(getCheckinTime() !== '') ? `You have checked in at ${getCheckinTime()}` : 'You have not checked in'}
+      &nbsp;
+      {/* <Box>
+        <div> &nbsp; </div>
+        {(getCheckinTime() !== '') ? `You have checked in at ${getCheckinTime()}` : 'You have not checked in'}
+        <div> &nbsp; </div>
+      </Box> */}
     </>
   );
 };

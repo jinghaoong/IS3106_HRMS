@@ -22,6 +22,8 @@ const UserAppraisalForm = () => {
   const [ratings, setRating] = useState(0);
   const [warning, setWarning] = useState('');
   const [success, setSuccess] = useState('');
+  const [employees, setEmployees] = useState([]);
+  const employeesRef = collection(db, 'users');
 
   const initialFieldValues = {
     appraiseeEmail: '',
@@ -41,8 +43,13 @@ const UserAppraisalForm = () => {
       const data = await getDocs(appraisalFormRef);
       setAppraisalForm(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-    getAppraisal();
+    const getEmployees = async () => {
+      const data = await getDocs(employeesRef);
+      setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
     getAppraisalForm();
+    getEmployees();
+    getAppraisal();
   }, []);
 
   const [currUser, setCurrUser] = useState([]);
@@ -96,6 +103,16 @@ const UserAppraisalForm = () => {
     return '';
   };
 
+  function findEmployee(uId) {
+    const em = Array.from(employees).filter((obj) => {
+      if (obj.id === uId) {
+        return obj;
+      }
+      return null;
+    });
+    return em[0];
+  }
+
   const getCycle = (dataDate) => {
     let cycle = [];
     cycle = Array.from(appraisalForm).filter((obj) => {
@@ -127,11 +144,19 @@ const UserAppraisalForm = () => {
       return null;
     });
     if (arr.length === 0) {
-      e.preventDefault();
-      createAppraisal();
-      resetForm();
-      setWarning('');
-      setSuccess('Appraisal Successful!');
+      if (findEmployee(currUser.email).role === 'Employee' && values.appraiseeEmail !== currUser.email) {
+        setWarning('Only self evaluation is allowed!');
+        setSuccess('');
+      } else if (findEmployee(values.appraiseeEmail) === null || findEmployee(values.appraiseeEmail) === undefined) {
+        setWarning('Appraisee Email does not exists!');
+        setSuccess('');
+      } else {
+        e.preventDefault();
+        createAppraisal();
+        resetForm();
+        setWarning('');
+        setSuccess('Appraisal Successful!');
+      }
     } else {
       setWarning('Already appraised this appraisee!');
       setSuccess('');
@@ -164,21 +189,8 @@ const UserAppraisalForm = () => {
             name="appraiseeEmail"
             value={values.appraiseeEmail}
             onChange={handleInputChange}
-            required
           />
           <div>&nbsp;</div>
-          {/* <TextField
-            sx={{
-              width: 800,
-              mx: 5
-            }}
-            variant="outlined"
-            label="Ratings"
-            name="ratings"
-            value={values.ratings}
-            onChange={handleInputChange}
-            required
-          /> */}
           <div sx={{ mx: 5 }}>
             <h3>
               Ratings:

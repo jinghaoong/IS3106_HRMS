@@ -9,7 +9,7 @@ import {
   TextField
 } from '@material-ui/core';
 import {
-  setDoc,
+  updateDoc,
   doc,
   getDoc
 }
@@ -69,34 +69,27 @@ const banks = [
 
 const AccountProfileDetails = (props) => {
   const [values, setValues] = useState('');
-  const [currEmp, setCurrEmp] = useState('');
-  const [currUser, setCurrUser] = useState('');
+  const [currEmp, setCurrEmp] = useState([]);
+  const [currUser, setCurrUser] = useState([]);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurrUser(user);
+    } else {
+      setCurrUser(null);
+    }
+  });
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrUser(user);
-        console.log('logged in as', currUser);
-        console.log('email is ', currUser.email);
-      } else {
-        setCurrUser(null);
-      }
-    });
-
     const getEmp = async () => {
-      console.log('Print email', currUser.email);
       await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
         if (docSnap.exists()) {
-          console.log('Document data:', docSnap.data());
           setCurrEmp(docSnap.data());
-          console.log('Current employee is ', currEmp);
-        } else {
-          console.log('No such document!');
         }
       });
     };
     getEmp();
-  }, []);
+  }, [currUser, currEmp]);
 
   const handleChange = (event) => {
     setValues({
@@ -105,10 +98,12 @@ const AccountProfileDetails = (props) => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const employeeRef = doc(db, 'users', currEmp.email);
     // const ref2 = doc(db, 'users', `${currEmp.email}`);
-    setDoc(employeeRef, { ...values });
+    // setDoc(employeeRef, { ...values });
+    await updateDoc(employeeRef, { ...values });
   };
 
   return (
@@ -171,7 +166,6 @@ const AccountProfileDetails = (props) => {
                 name="dob"
                 value={values.dob}
                 required
-
               />
             </Grid>
             <Grid
