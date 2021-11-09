@@ -41,32 +41,34 @@ const AccountProfile = () => {
     }
   });
 
+  const getEmp = async () => {
+    await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
+      if (docSnap.exists()) {
+        const newData = docSnap.data();
+        setCurrEmp(newData);
+        setProfile({
+          avatar: '/static/images/avatars/default_avatar.png',
+          firstName: currEmp.firstName,
+          lastName: currEmp.lastName,
+          identificationNo: currEmp.identificationNo,
+          email: currEmp.email,
+          contact: currEmp.contact,
+          address: currEmp.address,
+          role: currEmp.role,
+          status: currEmp.status,
+          dob: currEmp.dob,
+          startDate: currEmp.startDate
+        });
+      }
+    });
+  };
+
   useEffect(() => {
-    const getEmp = async () => {
-      await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
-        if (docSnap.exists()) {
-          setCurrEmp(docSnap.data());
-          setProfile({
-            avatar: '/static/images/avatars/default_avatar.png',
-            firstName: currEmp.firstName,
-            lastName: currEmp.lastName,
-            identificationNo: currEmp.identificationNo,
-            email: currEmp.email,
-            contact: currEmp.contact,
-            address: currEmp.address,
-            role: currEmp.role,
-            status: currEmp.status,
-            dob: currEmp.dob,
-            joined: currEmp.joined
-          });
-        }
-      });
-    };
     getEmp();
   }, [currUser, currEmp]);
 
   const empDOB = profile.dob ? moment(profile.dob.toDate()).calendar() : '';
-  const empStart = profile.joined ? moment(profile.joined.toDate()).calendar() : '';
+  const empStart = profile.startDate ? moment(profile.startDate.toDate()).calendar() : '';
 
   return (
     <Box
@@ -85,10 +87,16 @@ const AccountProfile = () => {
       />
       <Typography
         color="textPrimary"
-        gutterBottom
         variant="h3"
       >
         {`${profile.firstName} ${profile.lastName}`}
+      </Typography>
+      <Typography
+        color="textPrimary"
+        gutterBottom
+        variant="h5"
+      >
+        {`${profile.role}`}
       </Typography>
       <Typography
         color="textSecondary"
@@ -112,24 +120,20 @@ const AccountProfile = () => {
         color="textSecondary"
         variant="body1"
       >
-        {profile.role}
-      </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
         {profile.status}
       </Typography>
       <Typography
         color="textSecondary"
         variant="body1"
       >
+        Date of Birth:&nbsp;
         {empDOB}
       </Typography>
       <Typography
         color="textSecondary"
         variant="body1"
       >
+        Joined On:&nbsp;
         {empStart}
       </Typography>
     </Box>
