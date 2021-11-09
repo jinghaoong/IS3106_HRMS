@@ -50,17 +50,20 @@ const AppraisalData = ({
 
   const getCycle = (dataDate) => {
     const cycle = Array.from(appraisalForm).filter((obj) => {
-      if ((formatDate(new Date(obj.startDate.seconds * 1000).toString())) < (formatDate(new Date(dataDate.seconds * 1000).toString()))
-        && (formatDate(new Date(obj.endDate.seconds * 1000).toString())) > (formatDate(new Date(dataDate.seconds * 1000).toString()))) {
+      if ((formatDate(new Date(obj.startDate.seconds * 1000))) <= (formatDate(new Date(dataDate.seconds * 1000)))
+        && (formatDate(new Date(obj.endDate.seconds * 1000))) >= (formatDate(new Date(dataDate.seconds * 1000)))) {
         console.log(obj);
         return obj;
       }
       return null;
     });
     console.log(cycle[0]);
-    const start = formatDate(new Date(cycle[0].startDate.seconds * 1000).toString());
-    const end = formatDate(new Date(cycle[0].endDate.seconds * 1000).toString());
-    return `${start} to ${end}`;
+    if (cycle.length !== 0) {
+      const start = formatDate(new Date(cycle[0].startDate.seconds * 1000).toString());
+      const end = formatDate(new Date(cycle[0].endDate.seconds * 1000).toString());
+      return `${start} to ${end}`;
+    }
+    return '';
   };
 
   return (
