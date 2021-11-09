@@ -72,9 +72,9 @@ const PayslipForm = ({
                 cpfEmployee: payslip.cpfEmployee,
                 cpfEmployer: payslip.cpfEmployer,
                 startDate: payslip.startDate === undefined
-                  ? (new Date()).setHours(0, 0, 0, 0) : payslip.startDate.toDate(),
+                  ? new Date() : payslip.startDate.toDate(),
                 endDate: payslip.endDate === undefined
-                  ? sub(add((new Date()).setHours(0, 0, 0, 0), { months: 1 }), { days: 1 })
+                  ? sub(add((new Date()), { months: 1 }), { days: 1 })
                   : payslip.endDate.toDate(),
                 paymentMode: payslip.paymentMode,
                 remarks: payslip.remarks === undefined
