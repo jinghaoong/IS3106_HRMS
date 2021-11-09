@@ -11,11 +11,11 @@ import {
 import {
   updateDoc,
   doc,
-  getDoc
-}
-from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
-// import { db } from '../firebase-config';
+  collection,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import { db, auth } from '../../firebase-config';
@@ -67,29 +67,27 @@ const banks = [
   }
 ];
 
-const AccountProfileDetails = (props) => {
-  const [values, setValues] = useState('');
+const AccountProfileDetails = () => {
+  const currUser = auth.currentUser;
   const [currEmp, setCurrEmp] = useState([]);
-  const [currUser, setCurrUser] = useState([]);
+  const [values, setValues] = useState([]);
+  const userRef = collection(db, 'users');
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-    } else {
-      setCurrUser(null);
-    }
-  });
+  const { email, } = currUser;
+
+  const getEmp = async () => {
+    const q = query(userRef, where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    setCurrEmp(querySnapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+    console.log(currEmp);
+  };
 
   useEffect(() => {
-    const getEmp = async () => {
-      await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
-        if (docSnap.exists()) {
-          setCurrEmp(docSnap.data());
-        }
-      });
-    };
     getEmp();
-  }, [currUser, currEmp]);
+  }, []);
+
+  console.log(currEmp);
+  console.log(currEmp);
 
   const handleChange = (event) => {
     setValues({
@@ -100,9 +98,7 @@ const AccountProfileDetails = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const employeeRef = doc(db, 'users', currEmp.email);
-    // const ref2 = doc(db, 'users', `${currEmp.email}`);
-    // setDoc(employeeRef, { ...values });
+    const employeeRef = doc(db, 'users', currEmp[0].email);
     await updateDoc(employeeRef, { ...values });
   };
 
@@ -111,7 +107,7 @@ const AccountProfileDetails = (props) => {
       autoComplete="off"
       noValidate
       handleSubmit
-      {...props}
+      {...values[0]}
     >
       <Card>
         <CardHeader
