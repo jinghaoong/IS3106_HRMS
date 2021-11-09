@@ -2,22 +2,17 @@ import {
   collection,
   getDocs,
   query,
-  where,
+  where
 } from '@firebase/firestore';
 import {
-  Button,
-  Box,
-  Card,
+  Box, Button, Card,
   CardActions,
-  CardContent,
-  Typography,
-  Container,
-  // List,
-  // ListItem,
-  // ListItemText
+  CardContent, Container, Typography
 } from '@material-ui/core';
+import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import UserPayslipDetails from '../components/payroll/UserPayslipDetails';
 import { auth, db } from '../firebase-config';
 
 const UserPayroll = () => {
@@ -39,6 +34,18 @@ const UserPayroll = () => {
   useEffect(() => {
     getPayroll();
   }, []);
+
+  // const [selectedPayslip, setPayslip] = useState();
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    getPayroll();
+    setOpen(false);
+  };
 
   return (
     <>
@@ -65,19 +72,33 @@ const UserPayroll = () => {
             )}
           {payroll
             && payroll.map((payslip) => (
-              <Card key={payslip.id}>
-                <CardContent>
-                  <Typography>
-                    {payslip.id}
-                  </Typography>
-                  <Typography>
-                    {payslip.basic}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button>Export</Button>
-                </CardActions>
-              </Card>
+              <>
+                <Card key={payslip.id}>
+                  <CardContent>
+                    <Typography>
+                      Payslip ID:&nbsp;
+                      {payslip.id}
+                    </Typography>
+                    <Typography>
+                      Pay: $
+                      {payslip.basic + payslip.overtime + payslip.cpfEmployee + payslip.cpfEmployer}
+                    </Typography>
+                    <Typography>
+                      Payment Date:&nbsp;
+                      {format(payslip.endDate.toDate(), 'dd MMMM yyyy')}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button onClick={() => {
+                      handleClickOpen();
+                    }}
+                    >
+                      View
+                    </Button>
+                  </CardActions>
+                </Card>
+                <UserPayslipDetails payslip={payslip} open={open} handleClose={handleClose} />
+              </>
             ))}
         </Container>
       </Box>
