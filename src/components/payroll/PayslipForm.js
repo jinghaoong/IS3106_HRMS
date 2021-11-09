@@ -225,7 +225,6 @@ const PayslipForm = ({
                   />
                   <DesktopDatePicker
                     renderInput={(params) => <TextField {...params} />}
-                    inputFormat="dd-MM-yyyy"
                     label="Start Date"
                     name="startDate"
                     value={values.startDate}
@@ -235,7 +234,6 @@ const PayslipForm = ({
                   />
                   <DesktopDatePicker
                     renderInput={(params) => <TextField {...params} />}
-                    inputFormat="dd-MM-yyyy"
                     label="End Date"
                     name="endDate"
                     value={values.endDate}
