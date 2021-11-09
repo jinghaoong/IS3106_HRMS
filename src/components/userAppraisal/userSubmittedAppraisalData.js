@@ -95,7 +95,7 @@ const UserSubmittedAppraisalData = () => {
 
   function findEmployee(uId) {
     const em = Array.from(employees).filter((obj) => {
-      if (obj.email === uId) {
+      if (obj.id === uId) {
         return obj;
       }
       return null;
@@ -171,9 +171,9 @@ const UserSubmittedAppraisalData = () => {
     const end = new Date(cycle[0].endDate.seconds * 1000).toString();
     console.log('editable', formatDate(end));
     console.log('today', formatDate(new Date()));
-    console.log(formatDate(end) <= formatDate(new Date()));
+    console.log(end <= new Date());
 
-    if (formatDate(end) <= formatDate(new Date())) {
+    if (end <= new Date()) {
       return true;
     }
     return false;

@@ -77,7 +77,7 @@ const UserAppraisalData = () => {
 
   function findEmployee(uId) {
     const em = Array.from(employees).filter((obj) => {
-      if (obj.email === uId) {
+      if (obj.id === uId) {
         return obj;
       }
       return null;
