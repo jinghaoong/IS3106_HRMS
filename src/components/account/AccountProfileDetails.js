@@ -68,7 +68,7 @@ const banks = [
 ];
 
 const AccountProfileDetails = (props) => {
-  const [values, setValues] = useState([]);
+  const [values, setValues] = useState('');
   const [currEmp, setCurrEmp] = useState([]);
   const [currUser, setCurrUser] = useState([]);
 
@@ -166,7 +166,6 @@ const AccountProfileDetails = (props) => {
                 name="dob"
                 value={values.dob}
                 required
-
               />
             </Grid>
             <Grid
