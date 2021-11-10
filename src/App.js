@@ -17,7 +17,7 @@ import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
 import Dashboard from './pages/Dashboard';
 import EmployeesPage from './pages/EmployeesPage';
-import LeavePage from './pages/Leave';
+import LeavePage from './pages/LeavePage';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Payroll from './pages/Payroll';
@@ -62,10 +62,10 @@ const App = () => {
       path: '/',
       element: <MainLayout />,
       children: [
+        { path: '/', element: <Navigate to={currUser === null ? '/login' : '/app/dashboard'} /> },
         { path: 'login', element: <Login /> },
         // { path: 'register', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
         { path: '404', element: <NotFound /> },
-        { path: '/', element: <Navigate to={currUser === null ? '/login' : '/app/dashboard'} /> },
         { path: '*', element: <Navigate to="/404" /> },
       ]
     }
