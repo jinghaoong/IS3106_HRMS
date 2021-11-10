@@ -21,12 +21,7 @@ import {
 } from 'react-feather';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import NavItem from './NavItem';
-
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
-};
+import { auth } from '../firebase-config';
 
 const items = [
   {
@@ -83,6 +78,13 @@ const items = [
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
+  const currUser = auth.currentUser;
+
+  const user = {
+    avatar: '/static/images/avatars/avatar_6.png',
+    jobTitle: currUser ? currUser.id : 'Senior Developer',
+    name: currUser ? currUser.email : 'Katarina Smith',
+  };
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
