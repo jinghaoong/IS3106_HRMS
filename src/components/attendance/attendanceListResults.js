@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, getDocs } from 'firebase/firestore';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Search as SearchIcon } from 'react-feather';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -24,13 +25,48 @@ import {
   TableRow,
 } from '@material-ui/core';
 
-const AttendanceListResults = ({ attendance, employees, ...rest }) => {
+import { auth, db } from '../../firebase-config';
+
+const AttendanceListResults = ({ ...rest }) => {
   const [statusView, setStatusView] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [startDateValue, setStartDateValue] = useState('');
   const [endDateValue, setEndDateValue] = useState('');
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [employees, setEmployees] = useState([]);
+  const employeesRef = collection(db, 'users');
+  const [attendance, setAttendance] = useState([]);
+  const attendanceRef = collection(db, 'attendance');
+  const [currUser, setCurrUser] = useState([]);
+  const [isEmpLoading, setIsEmpLoading] = useState(false);
+  const [isAtdLoading, setIsAtdLoading] = useState(false);
+
+  useEffect(() => {
+    setIsEmpLoading(true);
+    setIsAtdLoading(true);
+    const getEmployees = async () => {
+      const data = await getDocs(employeesRef);
+      setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setIsEmpLoading(false);
+    };
+    const getAttendance = async () => {
+      const data = await getDocs(attendanceRef);
+      setAttendance(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setIsAtdLoading(false);
+    };
+    getEmployees();
+    getAttendance();
+  }, []);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurrUser(user);
+      console.log('logged in as', currUser);
+    } else {
+      setCurrUser(null);
+    }
+  });
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -83,7 +119,7 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
   console.log(startDateValue);
   console.log(endDateValue);
 
-  return (employees.length > 0 && attendance.length > 0) ? (
+  return (!isEmpLoading && !isAtdLoading) ? (
     <Card {...rest}>
       <Box sx={{ mt: 3 }}>
         <CardContent id="buttons">
@@ -281,11 +317,6 @@ const AttendanceListResults = ({ attendance, employees, ...rest }) => {
       <h1> Loading... </h1>
     </Card>
   );
-};
-
-AttendanceListResults.propTypes = {
-  attendance: PropTypes.array.isRequired,
-  employees: PropTypes.array.isRequired
 };
 
 export default AttendanceListResults;

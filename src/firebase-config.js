@@ -4,13 +4,13 @@ import { getAuth } from 'firebase/auth';
 
 /*
 const firebaseConfig = {
-  apiKey: 'AIzaSyBDDcRjD-n8GARKy7Kz04UMPyJ_2DMW3lY',
-  authDomain: 'customhrms.firebaseapp.com',
-  projectId: 'customhrms',
-  storageBucket: 'customhrms.appspot.com',
-  messagingSenderId: '454637246867',
-  appId: '1:454637246867:web:7d3d4402869f5a20ac3066',
-  measurementId: 'G-KV472W0W56'
+  apiKey: 'AIzaSyAXj9pm00sSi7jTMYcmfjErQf3mBv-W-ns',
+  authDomain: 'customhrms-61398.firebaseapp.com',
+  projectId: 'customhrms-61398',
+  storageBucket: 'customhrms-61398.appspot.com',
+  messagingSenderId: '220757942722',
+  appId: '1:220757942722:web:84d851a3f71e3b4cfeb65b',
+  measurementId: 'G-1TX8SCYDJJ'
 };
 */
 const firebaseConfig = {

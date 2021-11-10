@@ -38,7 +38,7 @@ const AppraisalCycleData = ({
     return '';
   };
 
-  return (
+  return (appraisalForm.length > 0) ? (
     <Card {...rest}>
       <Box>
         <PerfectScrollbar>
@@ -82,6 +82,58 @@ const AppraisalCycleData = ({
                       </TableCell>
                     </TableRow>
                   ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </PerfectScrollbar>
+        <TablePagination
+          component="div"
+          count={appraisalForm.length}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleLimitChange}
+          page={page}
+          rowsPerPage={limit}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
+      </Box>
+    </Card>
+  ) : (
+    <Card {...rest}>
+      <Box>
+        <PerfectScrollbar>
+          <Box sx={{ minWidth: 1050 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    Cycle ID
+                  </TableCell>
+                  <TableCell>
+                    Start Date
+                  </TableCell>
+                  <TableCell>
+                    End Date
+                  </TableCell>
+                  <TableCell>
+                    Self Evaluation?
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>
+                    <h1>No records found</h1>
+                  </TableCell>
+                  <TableCell>
+                    <h1> </h1>
+                  </TableCell>
+                  <TableCell>
+                    <h1> </h1>
+                  </TableCell>
+                  <TableCell>
+                    <h1> </h1>
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </Box>

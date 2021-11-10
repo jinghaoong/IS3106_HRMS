@@ -17,7 +17,7 @@ import Appraisal from './pages/Appraisal';
 import Attendance from './pages/Attendance';
 import Dashboard from './pages/Dashboard';
 import EmployeesPage from './pages/EmployeesPage';
-import LeavePage from './pages/LeavePage';
+import LeavePage from './pages/Leave';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Payroll from './pages/Payroll';
@@ -49,7 +49,6 @@ const App = () => {
         { path: 'dashboard', element: (currUser !== null ? <Dashboard /> : <Login />) },
         { path: 'appraisal', element: (currUser !== null ? <Appraisal /> : <Login />) },
         { path: 'attendance', element: (currUser !== null ? (<Attendance />) : <Login />) },
-        // { path: 'leave', element: (currUser !== null ? <Leave leaveApplications={leaveApplications} /> : <Login />) },
         { path: 'leave', element: <LeavePage /> },
         { path: 'payroll', element: (currUser !== null ? <Payroll /> : <Login />) },
         { path: 'qr', element: (currUser !== null ? <QR /> : <Login />) },
