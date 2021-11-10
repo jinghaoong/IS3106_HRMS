@@ -12,10 +12,7 @@ import {
   updateDoc,
   doc,
   getDoc
-}
-from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
-// import { db } from '../firebase-config';
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import { db, auth } from '../../firebase-config';
@@ -70,26 +67,19 @@ const banks = [
 const AccountProfileDetails = (props) => {
   const [values, setValues] = useState('');
   const [currEmp, setCurrEmp] = useState([]);
-  const [currUser, setCurrUser] = useState([]);
+  const currUser = auth.currentUser;
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-    } else {
-      setCurrUser(null);
-    }
-  });
+  const getEmp = async () => {
+    await getDoc(doc(db, 'users', currUser.email)).then((docSnap) => {
+      if (docSnap.exists()) {
+        setCurrEmp(docSnap.data());
+      }
+    });
+  };
 
   useEffect(() => {
-    const getEmp = async () => {
-      await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
-        if (docSnap.exists()) {
-          setCurrEmp(docSnap.data());
-        }
-      });
-    };
     getEmp();
-  }, [currUser, currEmp]);
+  }, []);
 
   const handleChange = (event) => {
     setValues({

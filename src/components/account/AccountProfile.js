@@ -5,16 +5,13 @@ import {
   Typography
 } from '@material-ui/core';
 import { useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import {
   doc,
   getDoc
-}
-from 'firebase/firestore';
+} from 'firebase/firestore';
 import { auth, db } from '../../firebase-config';
 
 const AccountProfile = () => {
-  const [currUser, setCurrUser] = useState([]);
   const [currEmp, setCurrEmp] = useState([]);
 
   const profileVal = {
@@ -32,17 +29,10 @@ const AccountProfile = () => {
   };
 
   const [profile, setProfile] = useState(profileVal);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-    } else {
-      setCurrUser(null);
-    }
-  });
+  const currUser = auth.currentUser;
 
   const getEmp = async () => {
-    await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
+    await getDoc(doc(db, 'users', currUser.email)).then((docSnap) => {
       if (docSnap.exists()) {
         const newData = docSnap.data();
         setCurrEmp(newData);
