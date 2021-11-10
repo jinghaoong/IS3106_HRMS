@@ -39,15 +39,21 @@ const AttendanceListResults = ({ ...rest }) => {
   const [attendance, setAttendance] = useState([]);
   const attendanceRef = collection(db, 'attendance');
   const [currUser, setCurrUser] = useState([]);
+  const [isEmpLoading, setIsEmpLoading] = useState(false);
+  const [isAtdLoading, setIsAtdLoading] = useState(false);
 
   useEffect(() => {
+    setIsEmpLoading(true);
+    setIsAtdLoading(true);
     const getEmployees = async () => {
       const data = await getDocs(employeesRef);
       setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setIsEmpLoading(false);
     };
     const getAttendance = async () => {
       const data = await getDocs(attendanceRef);
       setAttendance(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setIsAtdLoading(false);
     };
     getEmployees();
     getAttendance();
@@ -113,7 +119,7 @@ const AttendanceListResults = ({ ...rest }) => {
   console.log(startDateValue);
   console.log(endDateValue);
 
-  return (employees.length > 0 && attendance.length > 0) ? (
+  return (!isEmpLoading && !isAtdLoading) ? (
     <Card {...rest}>
       <Box sx={{ mt: 3 }}>
         <CardContent id="buttons">

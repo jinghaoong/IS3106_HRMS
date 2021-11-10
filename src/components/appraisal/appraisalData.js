@@ -173,6 +173,21 @@ const AppraisalData = ({
                 <TableCell>
                   <h1>No records found</h1>
                 </TableCell>
+                <TableCell>
+                  <h1> </h1>
+                </TableCell>
+                <TableCell>
+                  <h1> </h1>
+                </TableCell>
+                <TableCell>
+                  <h1> </h1>
+                </TableCell>
+                <TableCell>
+                  <h1> </h1>
+                </TableCell>
+                <TableCell>
+                  <h1> </h1>
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
