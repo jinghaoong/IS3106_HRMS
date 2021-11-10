@@ -40,6 +40,7 @@ import * as Yup from 'yup';
 import { db } from '../firebase-config';
 
 const employeeRoles = [
+  { value: 'Manager', label: 'Manager' },
   { value: 'Employee', label: 'Employee' },
   { value: 'Part-timer', label: 'Part-timer' },
   { value: 'Intern', label: 'Intern' },

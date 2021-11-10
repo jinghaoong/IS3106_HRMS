@@ -1,3 +1,4 @@
+// import moment from 'moment';
 import {
   Box,
   Button,
@@ -8,11 +9,20 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
+<<<<<<< HEAD
 import { updateDoc, doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 // import { db } from '../firebase-config';
+=======
+import {
+  updateDoc,
+  getDoc,
+  doc,
+} from 'firebase/firestore';
+>>>>>>> dd5a72bebf6809d02ae6aec54d16b992ed7f58b1
 import { useEffect, useState } from 'react';
 import DateTimePicker from '@mui/lab/DateTimePicker';
+import AccountProfile from './AccountProfile';
 import { db, auth } from '../../firebase-config';
 
 const banks = [
@@ -62,33 +72,28 @@ const banks = [
   }
 ];
 
-const AccountProfileDetails = (props) => {
-  const [values, setValues] = useState('');
+const AccountProfileDetails = () => {
   const [currEmp, setCurrEmp] = useState([]);
-  const [currUser, setCurrUser] = useState([]);
+  const [value, setValues] = useState([]);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-    } else {
-      setCurrUser(null);
-    }
-  });
+  const currEmployee = async () => {
+    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+      if (docSnap.exists()) {
+        setCurrEmp(docSnap.data());
+        console.log('Current employee is ', currEmp);
+      } else {
+        console.log('No such document!');
+      }
+    });
+  };
 
   useEffect(() => {
-    const getEmp = async () => {
-      await getDoc(doc(db, 'users', `${currUser.email}`)).then((docSnap) => {
-        if (docSnap.exists()) {
-          setCurrEmp(docSnap.data());
-        }
-      });
-    };
-    getEmp();
-  }, [currUser, currEmp]);
+    currEmployee();
+  }, []);
 
   const handleChange = (event) => {
     setValues({
-      ...values,
+      ...value,
       [event.target.name]: event.target.value
     });
   };
@@ -96,12 +101,12 @@ const AccountProfileDetails = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const employeeRef = doc(db, 'users', currEmp.email);
-    // const ref2 = doc(db, 'users', `${currEmp.email}`);
-    // setDoc(employeeRef, { ...values });
-    await updateDoc(employeeRef, { ...values });
+    await updateDoc(employeeRef, { ...value });
+    window.location.reload();
   };
 
   return (
+<<<<<<< HEAD
     <form autoComplete="off" noValidate handleSubmit {...props}>
       <Card>
         <CardHeader
@@ -184,29 +189,151 @@ const AccountProfileDetails = (props) => {
                   </option>
                 ))}
               </TextField>
+=======
+    <>
+      <AccountProfile />
+      <form
+        autoComplete="off"
+        noValidate
+        handleSubmit
+        {...value}
+      >
+        <Card>
+          <CardHeader
+            subheader="Edit your profile details here."
+            title="Profile"
+          />
+          <Divider />
+          <CardContent>
+            <Grid
+              container
+              spacing={3}
+            >
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  helperText="Please specify the first name"
+                  label="First name"
+                  name="firstName"
+                  onChange={handleChange}
+                  required
+                  value={value.firstName}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Last name"
+                  name="lastName"
+                  onChange={handleChange}
+                  required
+                  value={value.lastName}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <DateTimePicker
+                  renderInput={(params) => <TextField {...params} />}
+                  label="Date of Birth"
+                  name="dob"
+                  value={value.dob}
+                  required
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Phone Number"
+                  name="phone"
+                  onChange={handleChange}
+                  type="number"
+                  value={value.contact}
+                  variant="outlined"
+                  required
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="IC Number"
+                  name="identificationNo"
+                  onChange={handleChange}
+                  required
+                  value={value.identificationNo}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Select Bank"
+                  name="bank"
+                  onChange={handleChange}
+                  required
+                  select
+                  SelectProps={{ native: true }}
+                  value={value.bank}
+                  variant="outlined"
+                >
+                  {banks.map((option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ))}
+                </TextField>
+              </Grid>
+>>>>>>> dd5a72bebf6809d02ae6aec54d16b992ed7f58b1
             </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            p: 2
-          }}
-        >
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            value="submit"
-            onClick={handleSubmit}
+          </CardContent>
+          <Divider />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              p: 2
+            }}
           >
-            Save details
-          </Button>
-        </Box>
-      </Card>
-    </form>
+            <Button
+              color="primary"
+              variant="contained"
+              type="submit"
+              value="submit"
+              onClick={handleSubmit}
+            >
+              Save details
+            </Button>
+          </Box>
+        </Card>
+      </form>
+    </>
   );
 };
 

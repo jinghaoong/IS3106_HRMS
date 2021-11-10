@@ -9,25 +9,23 @@ import {
   Typography
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
   Calendar as CalendarIcon,
   Clock as ClockIcon,
-  DollarSign as DollarSignIcon,
-  Star as StarIcon,
+  DollarSign as DollarSignIcon, Grid as GridIcon, Star as StarIcon,
   User as UserIcon,
   Users as UsersIcon
 } from 'react-feather';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import {
+  doc,
+  getDoc
+} from 'firebase/firestore';
 import NavItem from './NavItem';
-
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
-};
+import { db, auth } from '../firebase-config';
 
 const items = [
   {
@@ -36,34 +34,24 @@ const items = [
     title: 'Dashboard'
   },
   {
+    href: '/app/employees',
+    icon: UsersIcon,
+    title: 'Employees'
+  },
+  {
+    href: '/app/attendance',
+    icon: ClockIcon,
+    title: 'Attendance'
+  },
+  {
     href: '/app/leave',
     icon: CalendarIcon,
     title: 'Leave'
   },
   {
-    href: '/app/attendance',
-    icon: ClockIcon,
-    title: 'Attendance'
-  },
-  {
-    href: '/app/allEmployees',
-    icon: UsersIcon,
-    title: 'Employees'
-  },
-  {
     href: '/app/payroll',
     icon: DollarSignIcon,
     title: 'Payroll'
-  },
-  {
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Account'
-  },
-  {
-    href: '/app/attendance',
-    icon: ClockIcon,
-    title: 'Attendance'
   },
   {
     href: '/app/appraisal',
@@ -76,6 +64,16 @@ const items = [
     title: 'Account'
   },
   {
+    href: '/app/qr',
+    icon: GridIcon,
+    title: 'QR Generator'
+  },
+  {
+    href: '/app/userPayroll',
+    icon: DollarSignIcon,
+    title: 'User Payroll'
+  },
+  {
     href: '/404',
     icon: AlertCircleIcon,
     title: 'Error'
@@ -84,11 +82,33 @@ const items = [
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
+  const currUser = auth.currentUser;
+
+  const [currEmp, setCurrEmp] = useState('');
+
+  const currEmployee = async () => {
+    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+      if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data());
+        setCurrEmp(docSnap.data());
+        console.log('Current employee is ', currEmp);
+      } else {
+        console.log('No such document!');
+      }
+    });
+  };
+
+  const user = {
+    avatar: '/static/images/avatars/avatar_6.png',
+    jobTitle: currEmp ? currEmp.role : 'Employee',
+    name: currUser ? `${currEmp.firstName} ${currEmp.lastName}` : 'User',
+  };
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
+    currEmployee();
   }, [location.pathname]);
 
   const content = (
@@ -118,16 +138,16 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           to="/app/account"
         />
         <Typography
-          color="textPrimary"
-          variant="h5"
-        >
-          {user.name}
-        </Typography>
-        <Typography
           color="textSecondary"
           variant="body2"
         >
           {user.jobTitle}
+        </Typography>
+        <Typography
+          color="textPrimary"
+          variant="h5"
+        >
+          {user.name}
         </Typography>
       </Box>
       <Divider />
@@ -154,7 +174,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         <Typography
           align="center"
           gutterBottom
-          variant="h4"
+          variant="body2"
         >
           Need more?
         </Typography>
