@@ -1,8 +1,6 @@
-import moment from 'moment';
+// import moment from 'moment';
 import {
-  Avatar,
   Box,
-  Typography,
   Button,
   Card,
   CardContent,
@@ -13,14 +11,12 @@ import {
 } from '@material-ui/core';
 import {
   updateDoc,
+  getDoc,
   doc,
-  collection,
-  getDocs,
-  query,
-  where,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import DateTimePicker from '@mui/lab/DateTimePicker';
+import AccountProfile from './AccountProfile';
 import { db, auth } from '../../firebase-config';
 
 const banks = [
@@ -71,118 +67,49 @@ const banks = [
 ];
 
 const AccountProfileDetails = () => {
-  const currUser = auth.currentUser;
   const [currEmp, setCurrEmp] = useState([]);
-  const [values, setValues] = useState([]);
-  const userRef = collection(db, 'users');
+  const [value, setValues] = useState([]);
 
-  const { email, } = currUser;
-
-  const getEmp = async () => {
-    const q = query(userRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-    setCurrEmp(querySnapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
-    console.log(currEmp);
+  const currEmployee = async () => {
+    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+      if (docSnap.exists()) {
+        setCurrEmp(docSnap.data());
+        console.log('Current employee is ', currEmp);
+      } else {
+        console.log('No such document!');
+      }
+    });
   };
 
   useEffect(() => {
-    getEmp();
+    currEmployee();
   }, []);
-
-  const empDOB = currEmp[0].dob ? moment(currEmp[0].dob.toDate()).calendar() : '';
-  const empStart = currEmp[0].startDate ? moment(currEmp[0].startDate.toDate()).calendar() : '';
-
-  console.log(currEmp);
-  console.log(currEmp);
 
   const handleChange = (event) => {
     setValues({
-      ...values,
+      ...value,
       [event.target.name]: event.target.value
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const employeeRef = doc(db, 'users', currEmp[0].email);
-    await updateDoc(employeeRef, { ...values });
+    const employeeRef = doc(db, 'users', currEmp.email);
+    await updateDoc(employeeRef, { ...value });
   };
 
   return (
     <>
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <Avatar
-          src={currEmp[0].avatar}
-          sx={{
-            height: 100,
-            width: 100
-          }}
-        />
-        <Typography
-          color="textPrimary"
-          gutterBottom
-          variant="h3"
-        >
-          {`${currEmp[0].firstName} ${currEmp[0].lastName}`}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].identificationNo}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].email}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].address}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].role}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].status}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {empDOB}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {empStart}
-        </Typography>
-      </Box>
+      <AccountProfile />
       <form
         autoComplete="off"
         noValidate
         handleSubmit
-        {...values[0]}
+        {...value}
       >
         <Card>
           <CardHeader
-            subheader="Edit your currEmp[0] details here."
+            subheader="Edit your profile details here."
             title="Profile"
           />
           <Divider />
@@ -203,7 +130,7 @@ const AccountProfileDetails = () => {
                   name="firstName"
                   onChange={handleChange}
                   required
-                  value={values.firstName}
+                  value={value.firstName}
                   variant="outlined"
                 />
               </Grid>
@@ -218,7 +145,7 @@ const AccountProfileDetails = () => {
                   name="lastName"
                   onChange={handleChange}
                   required
-                  value={values.lastName}
+                  value={value.lastName}
                   variant="outlined"
                 />
               </Grid>
@@ -231,7 +158,7 @@ const AccountProfileDetails = () => {
                   renderInput={(params) => <TextField {...params} />}
                   label="Date of Birth"
                   name="dob"
-                  value={values.dob}
+                  value={value.dob}
                   required
                 />
               </Grid>
@@ -246,7 +173,7 @@ const AccountProfileDetails = () => {
                   name="phone"
                   onChange={handleChange}
                   type="number"
-                  value={values.contact}
+                  value={value.contact}
                   variant="outlined"
                   required
                 />
@@ -262,7 +189,7 @@ const AccountProfileDetails = () => {
                   name="identificationNo"
                   onChange={handleChange}
                   required
-                  value={values.identificationNo}
+                  value={value.identificationNo}
                   variant="outlined"
                 />
               </Grid>
@@ -279,7 +206,7 @@ const AccountProfileDetails = () => {
                   required
                   select
                   SelectProps={{ native: true }}
-                  value={values.bank}
+                  value={value.bank}
                   variant="outlined"
                 >
                   {banks.map((option) => (
