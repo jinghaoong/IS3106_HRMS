@@ -21,8 +21,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import moment from 'moment';
 
 const LeaveApplicationsListResults = ({ leaveApplications, ...rest }) => {
-  console.log('leaveApplications type:', typeof (leaveApplications));
   console.log('Current number of leave applications: ', leaveApplications.length);
+  console.log(leaveApplications);
   const [statusView] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [selectedLeaveApplicationsIds] = useState([]);

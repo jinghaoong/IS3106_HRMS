@@ -1,16 +1,8 @@
 import moment from 'moment';
-import {
-  Avatar,
-  Box,
-  Typography
-} from '@material-ui/core';
+import { Avatar, Box, Typography } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import {
-  doc,
-  getDoc
-}
-from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase-config';
 
 const AccountProfile = () => {
@@ -68,7 +60,9 @@ const AccountProfile = () => {
   }, [currUser, currEmp]);
 
   const empDOB = profile.dob ? moment(profile.dob.toDate()).calendar() : '';
-  const empStart = profile.startDate ? moment(profile.startDate.toDate()).calendar() : '';
+  const empStart = profile.startDate
+    ? moment(profile.startDate.toDate()).calendar()
+    : '';
 
   return (
     <Box
@@ -85,54 +79,29 @@ const AccountProfile = () => {
           width: 100
         }}
       />
-      <Typography
-        color="textPrimary"
-        variant="h3"
-      >
+      <Typography color="textPrimary" variant="h3">
         {`${profile.firstName} ${profile.lastName}`}
       </Typography>
-      <Typography
-        color="textPrimary"
-        gutterBottom
-        variant="h5"
-      >
+      <Typography color="textPrimary" gutterBottom variant="h5">
         {`${profile.role}`}
       </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
+      <Typography color="textSecondary" variant="body1">
         {profile.identificationNo}
       </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
+      <Typography color="textSecondary" variant="body1">
         {profile.email}
       </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
+      <Typography color="textSecondary" variant="body1">
         {profile.address}
       </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
+      <Typography color="textSecondary" variant="body1">
         {profile.status}
       </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
+      <Typography color="textSecondary" variant="body1">
         Date of Birth:&nbsp;
         {empDOB}
       </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
+      <Typography color="textSecondary" variant="body1">
         Joined On:&nbsp;
         {empStart}
       </Typography>

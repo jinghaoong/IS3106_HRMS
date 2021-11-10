@@ -4,7 +4,7 @@ import { Box, Container } from '@material-ui/core';
 import EmployeeListResults from '../components/employees/employeeListResults';
 
 const EmployeeList = ({ employees }) => {
-  console.log(employees);
+  console.log('employees', employees);
   return (
     <>
       <Helmet>

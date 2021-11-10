@@ -8,12 +8,7 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
-import {
-  updateDoc,
-  doc,
-  getDoc
-}
-from 'firebase/firestore';
+import { updateDoc, doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 // import { db } from '../firebase-config';
 import { useEffect, useState } from 'react';
@@ -107,12 +102,7 @@ const AccountProfileDetails = (props) => {
   };
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      handleSubmit
-      {...props}
-    >
+    <form autoComplete="off" noValidate handleSubmit {...props}>
       <Card>
         <CardHeader
           subheader="Edit your profile details here."
@@ -120,15 +110,8 @@ const AccountProfileDetails = (props) => {
         />
         <Divider />
         <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+          <Grid container spacing={3}>
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 helperText="Please specify the first name"
@@ -140,11 +123,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Last name"
@@ -155,11 +134,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <DateTimePicker
                 renderInput={(params) => <TextField {...params} />}
                 label="Date of Birth"
@@ -168,11 +143,7 @@ const AccountProfileDetails = (props) => {
                 required
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Phone Number"
@@ -184,11 +155,7 @@ const AccountProfileDetails = (props) => {
                 required
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="IC Number"
@@ -199,11 +166,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Select Bank"
@@ -216,10 +179,7 @@ const AccountProfileDetails = (props) => {
                 variant="outlined"
               >
                 {banks.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
+                  <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}

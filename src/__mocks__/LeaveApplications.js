@@ -23,7 +23,7 @@ const leaveApplicationsList = async function getLeaveApplications() {
 };
 
 const leaveApplications = Array.from(leaveApplicationsList);
-console.log('leaveApplications type:', typeof (leaveApplications));
+console.log('leaveApplicationsList:', leaveApplicationsList);
 console.log('leaveApplications:', leaveApplications);
 
 export default { leaveApplications };
