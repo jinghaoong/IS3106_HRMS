@@ -35,7 +35,7 @@ const items = [
     title: 'Dashboard'
   },
   {
-    href: '/app/allEmployees',
+    href: '/app/employees',
     icon: UsersIcon,
     title: 'Employees'
   },

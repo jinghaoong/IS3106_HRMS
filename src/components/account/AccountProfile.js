@@ -8,8 +8,7 @@ import { useEffect, useState } from 'react';
 import {
   doc,
   getDoc
-}
-from 'firebase/firestore';
+} from 'firebase/firestore';
 import { auth, db } from '../../firebase-config';
 
 const AccountProfile = () => {
