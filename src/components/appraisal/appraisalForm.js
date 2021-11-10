@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 import {
   Box,
@@ -9,13 +10,35 @@ import {
   Paper,
 } from '@material-ui/core';
 
+import { auth, db } from '../../firebase-config';
+
 import AddForm from './addForm';
 import EditForm from './editForm';
 import './appraisal.css';
 
-const AppraisalForm = ({ appraisalForm }) => {
+const AppraisalForm = () => {
   const [editState, setEditState] = useState(false);
   const [formView, setFormView] = useState(false);
+  const [appraisalForm, setAppraisalForm] = useState([]);
+  const appraisalFormRef = collection(db, 'appraisalForm');
+  const [currUser, setCurrUser] = useState();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setCurrUser(user);
+      console.log('logged in as', currUser);
+    } else {
+      setCurrUser(null);
+    }
+  });
+
+  useEffect(() => {
+    const getAppraisalForm = async () => {
+      const data = await getDocs(appraisalFormRef);
+      setAppraisalForm(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getAppraisalForm();
+  }, []);
 
   const handleEdit = () => {
     setEditState(!(editState));
@@ -83,10 +106,6 @@ const AppraisalForm = ({ appraisalForm }) => {
       </Box>
     </Card>
   );
-};
-
-AppraisalForm.propTypes = {
-  appraisalForm: PropTypes.array.isRequired,
 };
 
 export default AppraisalForm;

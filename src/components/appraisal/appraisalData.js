@@ -66,7 +66,7 @@ const AppraisalData = ({
     return '';
   };
 
-  return (
+  return (employees.length > 0 && appraisal.length > 0 && appraisalForm.length > 0) ? (
     <Card {...rest}>
       <Box>
         <PerfectScrollbar>
@@ -140,6 +140,53 @@ const AppraisalData = ({
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Box>
+    </Card>
+  ) : (
+    <Card {...rest}>
+      <PerfectScrollbar>
+        <Box sx={{ minWidth: 1050 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  Appraiser
+                </TableCell>
+                <TableCell>
+                  Appraisee
+                </TableCell>
+                <TableCell>
+                  Date
+                </TableCell>
+                <TableCell>
+                  Appraisal Cycle Period
+                </TableCell>
+                <TableCell>
+                  Rating
+                </TableCell>
+                <TableCell>
+                  Feedback
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <h1>No records found</h1>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Box>
+      </PerfectScrollbar>
+      <TablePagination
+        component="div"
+        count={employees.length}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleLimitChange}
+        page={page}
+        rowsPerPage={limit}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
     </Card>
   );
 };

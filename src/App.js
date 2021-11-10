@@ -42,37 +42,16 @@ const App = () => {
     }
   });
 
-  const [attendance, setAttendance] = useState([]);
-  const attendanceRef = collection(db, 'attendance');
   const [employees, setEmployees] = useState([]);
   const employeesRef = collection(db, 'users');
-  const [appraisal, setAppraisal] = useState([]);
-  const appraisalRef = collection(db, 'appraisals');
-  const [appraisalForm, setAppraisalForm] = useState([]);
-  const appraisalFormRef = collection(db, 'appraisalForm');
   const leaveApplications = useState([]);
 
   useEffect(() => {
-    const getAttendance = async () => {
-      const data = await getDocs(attendanceRef);
-      setAttendance(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
     const getEmployees = async () => {
       const data = await getDocs(employeesRef);
       setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-    const getAppraisal = async () => {
-      const data = await getDocs(appraisalRef);
-      setAppraisal(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-    const getAppraisalForm = async () => {
-      const data = await getDocs(appraisalFormRef);
-      setAppraisalForm(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-    getAttendance();
     getEmployees();
-    getAppraisal();
-    getAppraisalForm();
   }, []);
 
   const content = useRoutes([
@@ -85,8 +64,8 @@ const App = () => {
         { path: 'createEmployee', element: (currUser !== null ? <EmployeeForm EmployeeForm={EmployeeForm} /> : <Login />) },
         { path: 'allEmployees', element: (currUser !== null ? <EmployeesPage EmployeesPage={EmployeesPage} /> : <Login />) },
         { path: 'dashboard', element: (currUser !== null ? <Dashboard /> : <Login />) },
-        { path: 'appraisal', element: (currUser !== null ? <Appraisal appraisal={appraisal} employees={employees} appraisalForm={appraisalForm} /> : <Login />) },
-        { path: 'attendance', element: (currUser !== null ? (<Attendance attendance={attendance} employees={employees} />) : <Login />) },
+        { path: 'appraisal', element: (currUser !== null ? <Appraisal /> : <Login />) },
+        { path: 'attendance', element: (currUser !== null ? (<Attendance />) : <Login />) },
         { path: 'leave', element: (currUser !== null ? <Leave leaveApplications={leaveApplications} /> : <Login />) },
         { path: 'userAppraisal', element: (currUser !== null ? <UserAppraisal /> : <Login />) },
         { path: 'userAttendance', element: (currUser !== null ? <UserAttendance /> : <Login />) },
