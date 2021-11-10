@@ -1,321 +1,544 @@
-import moment from 'moment';
+import { Helmet } from 'react-helmet';
+// import { PropTypes } from 'prop-types';
 import {
-  Avatar,
+  // Alert,
   Box,
-  Typography,
   Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  TextField
+  ButtonGroup,
+  Container,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  // MenuItem,
+  // Select
+  // Typography,
 } from '@material-ui/core';
+import { InputAdornment, MenuItem } from '@mui/material';
 import {
-  updateDoc,
-  doc,
+  Add as AddIcon,
+  Edit as EditIcon,
+} from '@mui/icons-material';
+
+import {
   collection,
   getDocs,
-  query,
-  where,
+  doc,
+  setDoc,
+  Timestamp,
 } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, } from 'react';
+import {
+  DataGrid,
+  GridToolbar,
+} from '@mui/x-data-grid';
 import DateTimePicker from '@mui/lab/DateTimePicker';
-import { db, auth } from '../../firebase-config';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
 
-const banks = [
-  {
-    value: 'dbs',
-    label: 'DBS/POSB'
-  },
-  {
-    value: 'uob',
-    label: 'UOB'
-  },
-  {
-    value: 'ocbc',
-    label: 'OCBC'
-  },
-  {
-    value: 'scb',
-    label: 'Standard Chartered Bank'
-  },
-  {
-    value: 'hlf',
-    label: 'Hong Leong Finance'
-  },
-  {
-    value: 'citibank',
-    label: 'Citibank Singapore'
-  },
-  {
-    value: 'hsbc',
-    label: 'HSBC'
-  },
-  {
-    value: 'sbi',
-    label: 'State Bank of India'
-  },
-  {
-    value: 'bcb',
-    label: 'Barclays Bank'
-  },
-  {
-    value: 'boc',
-    label: 'Bank of China'
-  },
-  {
-    value: 'others',
-    label: 'Others'
-  }
+import { db } from '../firebase-config';
+
+const employeeRoles = [
+  { value: 'Manager', label: 'Manager' },
+  { value: 'Employee', label: 'Employee' },
+  { value: 'Part-timer', label: 'Part-timer' },
+  { value: 'Intern', label: 'Intern' },
+  { value: 'Others', label: 'Others' }
 ];
 
-const AccountProfileDetails = () => {
-  const currUser = auth.currentUser;
-  const [currEmp, setCurrEmp] = useState([]);
-  const [values, setValues] = useState([]);
-  const userRef = collection(db, 'users');
+const employeeStatus = [
+  { value: 'Active', label: 'Active' },
+  { value: 'Resigned', label: 'Resigned' }
+];
 
-  const { email, } = currUser;
+const EmployeesPage = () => {
+  const [employeesPage, setEmployeesPage] = useState([]);
+  const employeesPageRef = (collection(db, 'users'));
+  const [banks, setBanks] = useState([]);
+  const banksRef = (collection(db, 'banks'));
 
-  const getEmp = async () => {
-    const q = query(userRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-    setCurrEmp(querySnapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
-    console.log(currEmp);
+  const getEmployeesPage = async () => {
+    const data = await getDocs(employeesPageRef);
+    setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })));
+
+    const bankData = await getDocs(banksRef);
+    setBanks(bankData.docs.map((d) => ({ ...d.data(), id: d.id })));
   };
 
   useEffect(() => {
-    getEmp();
+    getEmployeesPage();
   }, []);
 
-  const empDOB = currEmp[0].dob ? moment(currEmp[0].dob.toDate()).calendar() : '';
-  const empStart = currEmp[0].startDate ? moment(currEmp[0].startDate.toDate()).calendar() : '';
+  const [employee, setEmployeePage] = useState([]);
+  const [dialogType, setDialogType] = useState('create');
 
-  console.log(currEmp);
-  console.log(currEmp);
+  const [open, setOpen] = useState(false);
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
+  console.log(banks);
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const employeeRef = doc(db, 'users', currEmp[0].email);
-    await updateDoc(employeeRef, { ...values });
+  const handleClose = () => {
+    setEmployeePage([]);
+    getEmployeesPage();
+    setOpen(false);
   };
+
+  const CreateButton = () => (
+    <Button
+      variant="contained"
+      color="primary"
+      startIcon={<AddIcon />}
+      onClick={() => {
+        setDialogType('create');
+        setEmployeePage([]);
+        console.log(dialogType);
+        handleClickOpen();
+      }}
+    >
+      Create Employee
+    </Button>
+  );
+
+  const actionsButtonGroup = (params) => (
+    <ButtonGroup>
+      <IconButton onClick={() => {
+        setDialogType('edit');
+        setEmployeePage(params.row);
+        console.log(dialogType);
+        handleClickOpen();
+      }}
+      >
+        <EditIcon />
+      </IconButton>
+    </ButtonGroup>
+  );
+
+  const rows = employeesPage;
+
+  const columns = [
+    {
+      field: 'id',
+      headerName: 'Employee ID',
+      width: 250,
+    },
+    {
+      field: 'firstName',
+      headerName: 'First Name',
+      width: 150,
+    },
+    {
+      field: 'lastName',
+      headerName: 'Last Name',
+      width: 150,
+    },
+    {
+      field: 'role',
+      headerName: 'Role',
+      width: 150,
+    },
+    {
+      field: 'contact',
+      headerName: 'Contact',
+      width: 200,
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      width: 200,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 150,
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 150,
+      sortable: false,
+      renderCell: actionsButtonGroup
+    }
+  ];
+
+  console.log(employeesPage);
 
   return (
     <>
+      <Helmet>
+        <title>Employees Page</title>
+      </Helmet>
       <Box
         sx={{
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column'
+          backgroundColor: 'background.default',
+          minHeight: '100%',
+          py: 3
         }}
       >
-        <Avatar
-          src={currEmp[0].avatar}
-          sx={{
-            height: 100,
-            width: 100
-          }}
-        />
-        <Typography
-          color="textPrimary"
-          gutterBottom
-          variant="h3"
-        >
-          {`${currEmp[0].firstName} ${currEmp[0].lastName}`}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].identificationNo}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].email}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].address}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].role}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {currEmp[0].status}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {empDOB}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body1"
-        >
-          {empStart}
-        </Typography>
-      </Box>
-      <form
-        autoComplete="off"
-        noValidate
-        handleSubmit
-        {...values[0]}
-      >
-        <Card>
-          <CardHeader
-            subheader="Edit your currEmp[0] details here."
-            title="Profile"
-          />
-          <Divider />
-          <CardContent>
-            <Grid
-              container
-              spacing={3}
-            >
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  fullWidth
-                  helperText="Please specify the first name"
-                  label="First name"
-                  name="firstName"
-                  onChange={handleChange}
-                  required
-                  value={values.firstName}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  fullWidth
-                  label="Last name"
-                  name="lastName"
-                  onChange={handleChange}
-                  required
-                  value={values.lastName}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <DateTimePicker
-                  renderInput={(params) => <TextField {...params} />}
-                  label="Date of Birth"
-                  name="dob"
-                  value={values.dob}
-                  required
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  fullWidth
-                  label="Phone Number"
-                  name="phone"
-                  onChange={handleChange}
-                  type="number"
-                  value={values.contact}
-                  variant="outlined"
-                  required
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  fullWidth
-                  label="IC Number"
-                  name="identificationNo"
-                  onChange={handleChange}
-                  required
-                  value={values.identificationNo}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid
-                item
-                md={6}
-                xs={12}
-              >
-                <TextField
-                  fullWidth
-                  label="Select Bank"
-                  name="bank"
-                  onChange={handleChange}
-                  required
-                  select
-                  SelectProps={{ native: true }}
-                  value={values.bank}
-                  variant="outlined"
-                >
-                  {banks.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
+        <Container maxWidth={false}>
+          <Box>
+            <CreateButton />
+            <div style={{ height: 800, width: '100%' }}>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                pageSize={10}
+                rowsPerPageOptions={[10]}
+                components={{
+                  Toolbar: GridToolbar,
+                }}
+              />
+            </div>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>
+                {dialogType === 'create' && <div>Create Employee</div>}
+                {dialogType === 'edit' && <div>Edit Employee</div>}
+                <Box>
+                  <Button
+                    color="primary"
+                    size="small"
+                    type="close"
+                    variant="contained"
+                    onClick={handleClose}
+                    style={{ float: 'right' }}
+                  >
+                    x
+                  </Button>
+                </Box>
+              </DialogTitle>
+              {dialogType !== 'delete'
+                && (
+                  <DialogContent>
+                    <Box
+                      sx={{
+                        backgroundColor: 'background.default',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                        justifyContent: 'center'
+                      }}
                     >
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-            </Grid>
-          </CardContent>
-          <Divider />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              p: 2
-            }}
-          >
-            <Button
-              color="primary"
-              variant="contained"
-              type="submit"
-              value="submit"
-              onClick={handleSubmit}
-            >
-              Save details
-            </Button>
+                      <Container maxWidth="sm">
+                        <Formik
+                          initialValues={{
+                            id: '',
+                            firstName: employee.firstName,
+                            lastName: employee.lastName,
+                            role: employee.role,
+                            contact: employee.contact,
+                            email: employee.email,
+                            salary: employee.salary,
+                            identificationNo: employee.identificationNo,
+                            address: employee.address,
+                            bank: employee.bank,
+                            bankAccNo: employee.bankAccNo,
+                            dob: employee.dob === undefined
+                              ? new Date() : employee.dob.toDate(),
+                            startDate: employee.startDate === undefined
+                              ? new Date() : employee.startDate.toDate(),
+                            status: employee.status
+                          }}
+                          validationSchema={Yup.object().shape({
+                            id: Yup.string(),
+                            firstName: Yup.string().required('Enter First Name'),
+                            lastName: Yup.string().required('Enter Last Name'),
+                            contact: Yup.string().required('Enter Contact'),
+                            email: Yup.string().required('Enter Email'),
+                            identificationNo: Yup.string().required('Enter IC No.'),
+                            address: Yup.string().required('Enter Address'),
+                            bank: Yup.string().required('Enter Bank'),
+                            bankAccNo: Yup.number().required('Enter Bank Account Number'),
+                            salary: Yup.number().required('Enter Salary'),
+                            dob: Yup.date().required('Enter Date of Birth'),
+                            startDate: Yup.date().required('Enter Start Date'),
+                            status: Yup.string().required('Enter Status')
+                          })}
+                          onSubmit={(values, actions) => {
+                            if (dialogType === 'create') {
+                              const newId = `${values.email}`;
+                              console.log('new id is ', newId);
+                              actions.setFieldValue('id', newId);
+                            }
+
+                            const temp = {
+                              id: values.email,
+                              firstName: values.firstName,
+                              lastName: values.lastName,
+                              role: values.role,
+                              contact: values.contact,
+                              identificationNo: values.identificationNo,
+                              address: values.address,
+                              bank: values.bank,
+                              bankAccNo: values.bankAccNo,
+                              email: values.email,
+                              salary: values.salary,
+                              dob: Timestamp.fromDate(values.dob),
+                              startDate: Timestamp.fromDate(values.startDate),
+                              status: values.status
+                            };
+
+                            setEmployeePage(temp);
+                            console.log('id currently is ', values.id, 'another one is', values.email);
+
+                            setDoc(doc(db, 'users', `${values.email}`), temp)
+                              .then(() => {
+                                console.log('doc set');
+                                handleClose();
+                              })
+                              .catch((error) => {
+                                console.log(error.message);
+                                actions.setErrors({ submit: error.message });
+                                actions.setSubmitting(false);
+                              });
+                          }}
+                        >
+                          {({
+                            errors,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            isSubmitting,
+                            touched,
+                            values
+                          }) => (
+                            <form onSubmit={handleSubmit}>
+                              <TextField
+                                error={Boolean(touched.firstName && errors.firstName)}
+                                fullWidth
+                                helperText={touched.firstName && errors.firstName}
+                                label="First Name"
+                                margin="normal"
+                                name="firstName"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.firstName}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.lastName && errors.lastName)}
+                                fullWidth
+                                helperText={touched.lastName && errors.lastName}
+                                label="Last Name"
+                                margin="normal"
+                                name="lastName"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.lastName}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.identificationNo && errors.identificationNo)}
+                                fullWidth
+                                helperText={touched.identificationNo && errors.identificationNo}
+                                label="IC Number"
+                                margin="normal"
+                                name="identificationNo"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.identificationNo}
+                                variant="outlined"
+                              />
+                              <TextField
+                                select
+                                fullWidth
+                                helperText={touched.role && errors.role}
+                                label="Role"
+                                margin="normal"
+                                name="role"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.role}
+                                variant="outlined"
+                                labelId="label"
+                              >
+                                {employeeRoles.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                              <TextField
+                                select
+                                error={Boolean(touched.status && errors.status)}
+                                fullWidth
+                                helperText={touched.status && errors.status}
+                                label="Status"
+                                margin="normal"
+                                name="status"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.status}
+                                variant="outlined"
+                              >
+                                {employeeStatus.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.value}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                              <TextField
+                                error={Boolean(touched.contact && errors.contact)}
+                                fullWidth
+                                helperText={touched.contact && errors.contact}
+                                label="Contact"
+                                margin="normal"
+                                name="contact"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.contact}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.email && errors.email)}
+                                fullWidth
+                                helperText={touched.email && errors.email}
+                                label="Email"
+                                margin="normal"
+                                name="email"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.email}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.address && errors.address)}
+                                fullWidth
+                                helperText={touched.address && errors.address}
+                                label="Address"
+                                margin="normal"
+                                name="address"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.address}
+                                variant="outlined"
+                              />
+                              <TextField
+                                select
+                                error={Boolean(touched.bank && errors.bank)}
+                                fullWidth
+                                helperText={touched.bank && errors.bank}
+                                label="Bank"
+                                margin="normal"
+                                name="bank"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="string"
+                                value={values.bank}
+                                variant="outlined"
+                              >
+                                {banks.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.bankName}
+                                  >
+                                    {option.bankName}
+                                  </MenuItem>
+                                ))}
+                              </TextField>
+                              <TextField
+                                error={Boolean(touched.bankAccNo && errors.bankAccNo)}
+                                fullWidth
+                                helperText={touched.bankAccNo && errors.bankAccNo}
+                                label="Bank Account Number"
+                                margin="normal"
+                                name="bankAccNo"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="number"
+                                value={values.bankAccNo}
+                                variant="outlined"
+                              />
+                              <TextField
+                                error={Boolean(touched.salary && errors.salary)}
+                                fullWidth
+                                helperText={touched.salary && errors.salary}
+                                label="Salary"
+                                margin="normal"
+                                name="salary"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                type="number"
+                                value={values.salary}
+                                variant="outlined"
+                                InputProps={{
+                                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                }}
+                              />
+                              <br />
+                              <br />
+                              <DateTimePicker
+                                renderInput={(params) => <TextField {...params} />}
+                                label="Date of Birth"
+                                name="dob"
+                                value={values.dob}
+                                onChange={(newDOB) => {
+                                  setFieldValue('dob', newDOB);
+                                }}
+                              />
+                              <br />
+                              <br />
+                              <DateTimePicker
+                                renderInput={(params) => <TextField {...params} />}
+                                label="Start Date"
+                                name="startDate"
+                                value={values.startDate}
+                                onChange={(newStart) => {
+                                  setFieldValue('startDate', newStart);
+                                }}
+                              />
+                              <br />
+                              <br />
+                              <DateTimePicker
+                                renderInput={(params) => <TextField {...params} />}
+                                label="End Date"
+                                name="endDate"
+                                value={values.endDate}
+                                onChange={(newEnd) => {
+                                  setFieldValue('endDate', newEnd);
+                                }}
+                              />
+                              <Box sx={{ py: 2 }}>
+                                <Button
+                                  color="primary"
+                                  disabled={isSubmitting}
+                                  fullWidth
+                                  size="large"
+                                  type="submit"
+                                  variant="contained"
+                                >
+                                  Submit
+                                </Button>
+                              </Box>
+                            </form>
+                          )}
+                        </Formik>
+                      </Container>
+                    </Box>
+                  </DialogContent>
+                )}
+            </Dialog>
           </Box>
-        </Card>
-      </form>
+        </Container>
+      </Box>
     </>
   );
 };
 
-export default AccountProfileDetails;
+export default EmployeesPage;
