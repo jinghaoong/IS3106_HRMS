@@ -122,6 +122,21 @@ const AppraisalData = ({
               </TableBody>
             </Table>
           </Box>
+          <Stack
+            direction="row"
+            sx={{
+              p: 2
+            }}
+          >
+            <Pagination
+              count={Math.ceil(appraisal.length / perPage)}
+              shape="rounded"
+              page={currPage}
+              onChange={(event, page) => {
+                setCurrPage(page);
+              }}
+            />
+          </Stack>
         </PerfectScrollbar>
       </Box>
     </Card>
