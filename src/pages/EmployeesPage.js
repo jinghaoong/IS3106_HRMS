@@ -42,7 +42,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
-} from '@firebase/auth';
+} from 'firebase/auth';
 import { db } from '../firebase-config';
 
 const employeeRoles = [
