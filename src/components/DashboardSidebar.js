@@ -8,10 +8,14 @@ import {
   List,
   Typography
 } from '@material-ui/core';
+import {
+  doc,
+  getDoc
+} from 'firebase/firestore';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import {
-  AlertCircle as AlertCircleIcon,
+  // AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
   Calendar as CalendarIcon,
   Clock as ClockIcon,
@@ -20,12 +24,8 @@ import {
   Users as UsersIcon
 } from 'react-feather';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import {
-  doc,
-  getDoc
-} from 'firebase/firestore';
+import { db } from '../firebase-config';
 import NavItem from './NavItem';
-import { db, auth } from '../firebase-config';
 
 const items = [
   {
@@ -59,14 +59,17 @@ const items = [
     title: 'Appraisal'
   },
   {
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Account'
-  },
-  {
     href: '/app/qr',
     icon: GridIcon,
     title: 'QR Generator'
+  },
+];
+
+const userItems = [
+  {
+    href: '/app/account',
+    icon: UserIcon,
+    title: 'Account'
   },
   {
     href: '/app/userPayroll',
@@ -78,21 +81,17 @@ const items = [
     icon: CalendarIcon,
     title: 'User Leave'
   },
-  {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
-  }
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
-  const currUser = auth.currentUser;
+  const currUser = JSON.parse(localStorage.getItem('currUser'));
 
-  const [currEmp, setCurrEmp] = useState('');
+  const [currEmp, setCurrEmp] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const currEmployee = async () => {
-    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+    await getDoc(doc(db, 'users', currUser.email)).then((docSnap) => {
       if (docSnap.exists()) {
         console.log('Document data:', docSnap.data());
         setCurrEmp(docSnap.data());
@@ -106,7 +105,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   const user = {
     avatar: '/static/images/avatars/avatar_6.png',
     jobTitle: currEmp ? currEmp.role : 'Employee',
-    name: currUser ? `${currEmp.firstName} ${currEmp.lastName}` : 'User',
+    name: currEmp ? `${currEmp.firstName} ${currEmp.lastName}` : 'User',
   };
 
   useEffect(() => {
@@ -114,6 +113,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
       onMobileClose();
     }
     currEmployee();
+    setLoading(false);
   }, [location.pathname]);
 
   const content = (
@@ -158,14 +158,26 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
       <Divider />
       <Box sx={{ p: 2 }}>
         <List>
-          {items.map((item) => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-            />
-          ))}
+          {loading && <Typography>Loading ...</Typography>}
+          {(!loading && currEmp.role === 'Manager')
+            && userItems.concat(items).map((item) => (
+              <NavItem
+                href={item.href}
+                key={item.title}
+                title={item.title}
+                icon={item.icon}
+              />
+            ))}
+          {(!loading && currEmp.role !== 'Manager')
+            && userItems.map((item) => (
+              <NavItem
+                href={item.href}
+                key={item.title}
+                title={item.title}
+                icon={item.icon}
+              />
+            ))}
+
         </List>
       </Box>
       <Box sx={{ flexGrow: 1 }} />
