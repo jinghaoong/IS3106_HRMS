@@ -45,7 +45,7 @@ const UnapprovedLeaves = () => {
               gutterBottom
               variant="h6"
             >
-              UNAPPROVED LEAVE REQUESTS
+              UNAPPROVED LEAVES
             </Typography>
             <Typography
               color="textPrimary"
