@@ -96,6 +96,9 @@ const LatestOrders = () => {
         }}
       >
         <Stack direction="row">
+          <Link to="/app/employees">
+            <Button>View All</Button>
+          </Link>
           <Pagination
             count={Math.ceil(employees.length / perPage)}
             shape="rounded"
@@ -104,9 +107,6 @@ const LatestOrders = () => {
               setCurrPage(page);
             }}
           />
-          <Link to="/app/employees">
-            <Button>View All</Button>
-          </Link>
         </Stack>
       </Box>
     </Card>
