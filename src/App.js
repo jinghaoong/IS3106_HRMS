@@ -2,10 +2,12 @@ import { StyledEngineProvider, ThemeProvider } from '@material-ui/core';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useState } from 'react';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import {
   Navigate,
-  useRoutes
+  useRoutes,
+  // useNavigate,
 } from 'react-router-dom';
 import DashboardLayout from './components/DashboardLayout';
 import GlobalStyles from './components/GlobalStyles';
@@ -26,13 +28,16 @@ import UserAttendance from './pages/UserAttendance';
 import UserLeave from './pages/UserLeave';
 import UserPayroll from './pages/UserPayroll';
 import theme from './theme';
+// import { useEffect, useState } from 'react';
 
 const App = () => {
-  const currUser = auth.currentUser;
+  const [currUser, setCurrUser] = useState(localStorage.getItem('currUser'));
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log('logged in as', currUser);
+      console.log('logged in as', user.email);
+      localStorage.setItem('currUser', JSON.stringify(user));
+      setCurrUser(user);
     } else {
       console.log('No logged in user');
     }

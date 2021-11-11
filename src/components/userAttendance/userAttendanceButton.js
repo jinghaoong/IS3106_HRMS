@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import {
   collection,
   getDocs,
@@ -10,27 +9,21 @@ import {
 import { Button, Typography } from '@material-ui/core';
 import Icon from '@mui/icons-material/Login';
 
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 const UserAttendanceButton = () => {
-  const [employees, setEmployees] = useState([]);
-  const employeesRef = collection(db, 'users');
   const [attendance, setAttendance] = useState([]);
   const attendanceRef = collection(db, 'attendance');
-  const [currUser, setCurrUser] = useState([]);
+  const currUser = JSON.parse(localStorage.getItem('currUser'));
+  console.log('currUser', currUser);
 
   // const [dateTime, setDateTime] = useState('');
 
   useEffect(() => {
-    const getEmployees = async () => {
-      const data = await getDocs(employeesRef);
-      setEmployees(data.docs.map((val) => ({ ...val.data(), id: val.id })));
-    };
     const getAttendance = async () => {
       const data = await getDocs(attendanceRef);
       setAttendance(data.docs.map((val) => ({ ...val.data(), id: val.id })));
     };
-    getEmployees();
     getAttendance();
   }, []);
 
@@ -42,18 +35,6 @@ const UserAttendanceButton = () => {
     }
     return '';
   };
-
-  console.log(employees);
-  console.log(attendance);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
 
   const createAttendance = async (today) => {
     await addDoc(attendanceRef, {

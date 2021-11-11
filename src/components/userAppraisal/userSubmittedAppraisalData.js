@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import {
   collection,
   getDocs,
@@ -22,24 +21,21 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
 } from '@material-ui/core';
 
 import { Rating } from 'react-simple-star-rating';
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 const UserSubmittedAppraisalData = () => {
   const [selectedEmployeesIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
   const [employees, setEmployees] = useState([]);
   const employeesRef = collection(db, 'users');
   const [appraisal, setAppraisal] = useState([]);
   const appraisalRef = collection(db, 'appraisals');
   const [appraisalForm, setAppraisalForm] = useState([]);
   const appraisalFormRef = collection(db, 'appraisalForm');
-  const [currUser, setCurrUser] = useState([]);
+  const currUser = JSON.parse(localStorage.getItem('currUser'));
   const [open, setOpen] = useState(false);
 
   const [selectedAppraiseeId, setSelectedAppraiseeId] = useState('');
@@ -71,25 +67,6 @@ const UserSubmittedAppraisalData = () => {
     getAppraisal();
     getAppraisalForm();
   }, []);
-
-  console.log('appraisalForms: ', appraisalForm);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
 
   const formatDate = (date) => {
     if (date !== null) {
@@ -237,7 +214,7 @@ const UserSubmittedAppraisalData = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(appraisal).slice(0, limit).sort((a, b) => b.date - a.date).filter((obj) => {
+              {Array.from(appraisal).sort((a, b) => b.date - a.date).filter((obj) => {
                 if (obj.appraiserId === currUser.email) {
                   return obj;
                 }
@@ -284,15 +261,6 @@ const UserSubmittedAppraisalData = () => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Appraisal</DialogTitle>
         <DialogContent>
@@ -396,15 +364,6 @@ const UserSubmittedAppraisalData = () => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </Card>
   );
 };

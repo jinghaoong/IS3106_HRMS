@@ -285,7 +285,6 @@ const EmployeesPage = () => {
                               const newId = `${values.email}`;
                               console.log('new id is ', newId);
                               actions.setFieldValue('id', newId);
-
                               const auth = getAuth();
                               createUserWithEmailAndPassword(auth, `${values.email}`, 'password')
                                 .then(() => sendPasswordResetEmail(auth, `${values.email}`))

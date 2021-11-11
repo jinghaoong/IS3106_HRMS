@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 
 import {
@@ -12,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 import { Rating } from 'react-simple-star-rating';
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 const UserAppraisalForm = () => {
   const [appraisal, setAppraisal] = useState([]);
@@ -24,6 +23,7 @@ const UserAppraisalForm = () => {
   const [success, setSuccess] = useState('');
   const [employees, setEmployees] = useState([]);
   const employeesRef = collection(db, 'users');
+  const currUser = JSON.parse(localStorage.getItem('currUser'));
 
   const initialFieldValues = {
     appraiseeEmail: '',
@@ -51,17 +51,6 @@ const UserAppraisalForm = () => {
     getEmployees();
     getAppraisal();
   }, []);
-
-  const [currUser, setCurrUser] = useState([]);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
