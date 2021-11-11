@@ -95,15 +95,20 @@ const EditForm = ({ appraisalForm }) => {
 
   const deleteAppraisal = async () => {
     if (startDateValue !== '' && endDateValue !== '') {
-      const appraisalFormDoc = doc(db, 'appraisalForm', selectedAppraisalId);
-      await deleteDoc(appraisalFormDoc);
-      setStartDateValue('');
-      setEndDateValue('');
-      setCheckboxState(false);
-      setSelected(null);
-      setSelectedAppraisalId('');
-      setWarning('');
-      setSuccess('Successfully Deleted!');
+      if (startDateValue > new Date()) {
+        const appraisalFormDoc = doc(db, 'appraisalForm', selectedAppraisalId);
+        await deleteDoc(appraisalFormDoc);
+        setStartDateValue('');
+        setEndDateValue('');
+        setCheckboxState(false);
+        setSelected(null);
+        setSelectedAppraisalId('');
+        setWarning('');
+        setSuccess('Successfully Deleted!');
+      } else {
+        setWarning('Cannot delete a past / ongoing cycle!');
+        setSuccess('');
+      }
     } else {
       setWarning('Values required!');
       setSuccess('');

@@ -3,6 +3,7 @@ import {
   collection,
   getDocs,
   updateDoc,
+  deleteDoc,
   doc
 } from 'firebase/firestore';
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -167,6 +168,13 @@ const UserSubmittedAppraisalData = () => {
     return false;
   };
 
+  const handleDelete = async (data) => {
+    console.log(data);
+    const appraisalDoc = doc(db, 'appraisals', data.id);
+    await deleteDoc(appraisalDoc);
+    window.location.reload();
+  };
+
   const getCycle = (dataDate) => {
     let cycle = [];
     const aDate = new Date(dataDate.seconds * 1000).toString();
@@ -223,8 +231,11 @@ const UserSubmittedAppraisalData = () => {
                 <TableCell>
                   Feedback
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ width: 25 }}>
                   Action
+                </TableCell>
+                <TableCell sx={{ width: 25 }}>
+                  <div />
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -266,6 +277,15 @@ const UserSubmittedAppraisalData = () => {
                       {getEditable(data.date) ? (
                         <Button onClick={() => { handleOpen(data); }}>
                           EDIT
+                        </Button>
+                      ) : (
+                        <div />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {getEditable(data.date) ? (
+                        <Button onClick={() => { handleDelete(data); }}>
+                          DELETE
                         </Button>
                       ) : (
                         <div />
