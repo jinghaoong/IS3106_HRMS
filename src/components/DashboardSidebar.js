@@ -19,10 +19,7 @@ import {
   Clock as ClockIcon,
   DollarSign as DollarSignIcon, Grid as GridIcon, Star as StarIcon,
   User as UserIcon,
-  Users as UsersIcon,
-  AlertCircle as AlertCircleIcon,
-  Award as AwardIcon,
-  FilePlus as FileIcon
+  Users as UsersIcon
 } from 'react-feather';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { db } from '../firebase-config';
@@ -92,21 +89,6 @@ const userItems = [
     icon: UserIcon,
     title: 'Account'
   },
-  {
-    href: '/app/userAttendance',
-    icon: FileIcon,
-    title: 'User Attendance'
-  },
-  {
-    href: '/app/userAppraisal',
-    icon: AwardIcon,
-    title: 'User Appraisal'
-  },
-  {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
-  }
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {

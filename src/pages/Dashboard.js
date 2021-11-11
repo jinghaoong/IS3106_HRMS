@@ -2,10 +2,8 @@ import { Box, Container, Grid } from '@material-ui/core';
 import { Helmet } from 'react-helmet';
 import EmployeeList from '../components/dashboard/EmployeeList';
 import LateAttendances from '../components/dashboard/LateAttendances';
-import TasksProgress from '../components/dashboard/TasksProgress';
-import TotalEmployees from '../components/dashboard/TotalEmployees';
-import TrafficByDevice from '../components/dashboard/TrafficByDevice';
 import PendingLeave from '../components/dashboard/PendingLeave';
+import TotalEmployees from '../components/dashboard/TotalEmployees';
 import UnapprovedLeaves from '../components/dashboard/UnapprovedLeaves';
 
 const Dashboard = () => (
@@ -50,15 +48,6 @@ const Dashboard = () => (
             xl={3}
             xs={12}
           >
-            <TasksProgress />
-          </Grid>
-          <Grid
-            item
-            lg={3}
-            sm={6}
-            xl={3}
-            xs={12}
-          >
             <UnapprovedLeaves sx={{ height: '100%' }} />
           </Grid>
           <Grid
@@ -72,30 +61,12 @@ const Dashboard = () => (
           </Grid>
           <Grid
             item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
-            <TrafficByDevice sx={{ height: '100%' }} />
-          </Grid>
-          <Grid
-            item
-            lg={4}
-            md={6}
-            xl={3}
-            xs={12}
-          >
-            <PendingLeave sx={{ height: '100%' }} />
-          </Grid>
-          <Grid
-            item
             lg={8}
             md={12}
             xl={9}
             xs={12}
           >
-            <EmployeeList />
+            <PendingLeave sx={{ height: '100%' }} />
           </Grid>
         </Grid>
       </Container>
