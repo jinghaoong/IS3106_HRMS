@@ -12,6 +12,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Pagination,
+  Stack,
 } from '@material-ui/core';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -24,12 +26,15 @@ const LatestOrders = () => {
 
   const getEmployees = async () => {
     const data = await getDocs(employeesPageRef);
-    setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })));
+    setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })).sort((a, b) => b.startDate - a.startDate));
   };
 
   useEffect(() => {
     getEmployees();
   }, []);
+
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 8; // items per page
 
   return (
     <Card {...employees}>
@@ -55,7 +60,7 @@ const LatestOrders = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {employees.map((employee) => (
+              {employees.slice((currPage - 1) * perPage, currPage * perPage).map((employee) => (
                 <TableRow
                   hover
                   key={employee.id}
@@ -71,7 +76,7 @@ const LatestOrders = () => {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      color="primary"
+                      color={employee.status === 'Active' ? 'primary' : 'error'}
                       label={employee.status}
                       size="small"
                     />
@@ -80,18 +85,29 @@ const LatestOrders = () => {
               ))}
             </TableBody>
           </Table>
+
         </Box>
       </PerfectScrollbar>
       <Box
         sx={{
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'flex-start',
           p: 2
         }}
       >
-        <Link to="/app/employees">
-          <Button>View All</Button>
-        </Link>
+        <Stack direction="row">
+          <Pagination
+            count={Math.ceil(employees.length / perPage)}
+            shape="rounded"
+            page={currPage}
+            onChange={(event, page) => {
+              setCurrPage(page);
+            }}
+          />
+          <Link to="/app/employees">
+            <Button>View All</Button>
+          </Link>
+        </Stack>
       </Box>
     </Card>
   );
