@@ -231,9 +231,6 @@ const AttendanceListResults = ({ ...rest }) => {
                   Hours Worked
                 </TableCell>
                 <TableCell>
-                  Overtime Hours
-                </TableCell>
-                <TableCell>
                   Status
                 </TableCell>
               </TableRow>
@@ -286,9 +283,6 @@ const AttendanceListResults = ({ ...rest }) => {
                     </TableCell>
                     <TableCell>
                       {at.normalHours}
-                    </TableCell>
-                    <TableCell>
-                      {at.overtimeHours}
                     </TableCell>
                     <TableCell>
                       <Chip

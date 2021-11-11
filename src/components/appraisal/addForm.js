@@ -87,6 +87,7 @@ const AddForm = () => {
       setWarning(`An Appraisal Cycle already exists from ${start} to ${end}!`);
       setSuccess('');
     }
+    window.location.reload();
   };
 
   return (

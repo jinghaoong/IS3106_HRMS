@@ -47,18 +47,25 @@ const UserSubmittedAppraisalData = () => {
   const [selectedFeedback, setSelectedFeedback] = useState('');
   const [selectedAppraisalId, setSelectedAppraisalId] = useState('');
 
+  const [isEmpLoading, setIsEmpLoading] = useState(true);
+  const [isAprLoading, setIsAprLoading] = useState(true);
+  const [isAprFormLoading, setIsAprFormLoading] = useState(true);
+
   useEffect(() => {
     const getEmployees = async () => {
       const data = await getDocs(employeesRef);
       setEmployees(data.docs.map((val) => ({ ...val.data(), id: val.id })));
+      setIsEmpLoading(false);
     };
     const getAppraisal = async () => {
       const data = await getDocs(appraisalRef);
       setAppraisal(data.docs.map((val) => ({ ...val.data(), id: val.id })));
+      setIsAprLoading(false);
     };
     const getAppraisalForm = async () => {
       const data = await getDocs(appraisalFormRef);
       setAppraisalForm(data.docs.map((val) => ({ ...val.data(), id: val.id })));
+      setIsAprFormLoading(false);
     };
     getEmployees();
     getAppraisal();
@@ -195,7 +202,7 @@ const UserSubmittedAppraisalData = () => {
     return `${start} to ${end}`;
   };
 
-  return (employees.length > 0 && appraisalForm.length > 0 && appraisal.length > 0) ? (
+  return (!isEmpLoading && !isAprLoading && !isAprFormLoading) ? (
     <Card>
       <CardHeader
         title="View your submitted appraisals"
@@ -328,9 +335,76 @@ const UserSubmittedAppraisalData = () => {
     </Card>
   ) : (
     <Card>
-      <h1>
-        Loading..
-      </h1>
+      <CardHeader
+        title="View your appraisals"
+        titleTypographyProps={{ variant: 'h1' }}
+      />
+      <PerfectScrollbar>
+        <Box sx={{ minWidth: 1050 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ width: 125 }}>
+                  Appraiser
+                </TableCell>
+                <TableCell sx={{ width: 125 }}>
+                  Date
+                </TableCell>
+                <TableCell sx={{ width: 250 }}>
+                  Appraisal Cycle Period
+                </TableCell>
+                <TableCell>
+                  Type
+                </TableCell>
+                <TableCell sx={{ width: 25 }}>
+                  Rating
+                </TableCell>
+                <TableCell>
+                  Feedback
+                </TableCell>
+                <TableCell>
+                  Action
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableCell sx={{ width: 125 }}>
+                <h1>Loading...</h1>
+              </TableCell>
+              <TableCell sx={{ width: 125 }}>
+                <h1> </h1>
+              </TableCell>
+              <TableCell sx={{ width: 250 }}>
+                <h1> </h1>
+              </TableCell>
+              <TableCell sx={{ width: 25 }}>
+                <h1> </h1>
+              </TableCell>
+              <TableCell>
+                <h1> </h1>
+              </TableCell>
+              <TableCell sx={{ width: 25 }}>
+                <h1> </h1>
+              </TableCell>
+              <TableCell>
+                <h1> </h1>
+              </TableCell>
+              <TableCell sx={{ width: 25 }}>
+                <h1> </h1>
+              </TableCell>
+            </TableBody>
+          </Table>
+        </Box>
+      </PerfectScrollbar>
+      <TablePagination
+        component="div"
+        count={employees.length}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleLimitChange}
+        page={page}
+        rowsPerPage={limit}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
     </Card>
   );
 };

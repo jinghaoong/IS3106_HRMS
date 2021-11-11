@@ -35,15 +35,19 @@ const UserAttendanceList = () => {
   const [statusView, setStatusView] = useState('');
   const [startDateValue, setStartDateValue] = useState('');
   const [endDateValue, setEndDateValue] = useState('');
+  const [isEmpLoading, setIsEmpLoading] = useState(true);
+  const [isAtdLoading, setIsAtdLoading] = useState(true);
 
   useEffect(() => {
     const getEmployees = async () => {
       const data = await getDocs(employeesRef);
       setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setIsEmpLoading(false);
     };
     const getAttendance = async () => {
       const data = await getDocs(attendanceRef);
       setAttendance(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setIsAtdLoading(false);
     };
     getEmployees();
     getAttendance();
@@ -92,7 +96,7 @@ const UserAttendanceList = () => {
     return 1;
   };
 
-  return (employees.length > 0 && attendance.length > 0) ? (
+  return (!isEmpLoading && !isAtdLoading) ? (
     <Card>
       <CardHeader
         title="View your attendance"
@@ -174,9 +178,6 @@ const UserAttendanceList = () => {
                   Hours Worked
                 </TableCell>
                 <TableCell>
-                  Overtime Hours
-                </TableCell>
-                <TableCell>
                   Status
                 </TableCell>
               </TableRow>
@@ -223,9 +224,6 @@ const UserAttendanceList = () => {
                       {at.normalHours}
                     </TableCell>
                     <TableCell>
-                      {at.overtimeHours}
-                    </TableCell>
-                    <TableCell>
                       <Chip
                         label={getStatus(new Date(at.dateTimeIn.seconds * 1000).toString()) === 1 ? 'On Time' : 'Late'}
                         color={getStatus(new Date(at.dateTimeIn.seconds * 1000).toString()) === 1 ? 'success' : 'error'}
@@ -249,9 +247,122 @@ const UserAttendanceList = () => {
     </Card>
   ) : (
     <Card>
-      <h1>
-        Loading..
-      </h1>
+      <CardHeader
+        title="View your attendance"
+        titleTypographyProps={{ variant: 'h1' }}
+      />
+      <PerfectScrollbar>
+        <Box sx={{ p: 3 }}>
+          <Button
+            value=""
+            variant={(statusView === '' || statusView === '0') ? 'contained' : 'outlined'}
+            onClick={(event) => { setStatusView(event.target.value); }}
+          >
+            All
+          </Button>
+          <Button
+            sx={{
+              mx: 2
+            }}
+            value="1"
+            variant={statusView === '1' ? 'contained' : 'outlined'}
+            onClick={(event) => { setStatusView(event.target.value); }}
+          >
+            On Time
+          </Button>
+          <Button
+            value="2"
+            variant={statusView === '2' ? 'contained' : 'outlined'}
+            onClick={(event) => { setStatusView(event.target.value); }}
+          >
+            Late
+          </Button>
+          <div>&nbsp;</div>
+          <Box className="pickers">
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Search by start date"
+                className="datepicker"
+                format="dd/MM/yyyy"
+                value={startDateValue}
+                clearable
+                maxDate={new Date()}
+                onChange={(date) => {
+                  setStartDateValue(date);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+            <div>&nbsp;</div>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Search by end date"
+                className="datepicker"
+                format="dd/MM/yyyy"
+                value={endDateValue}
+                clearable
+                maxDate={new Date()}
+                onChange={(date) => {
+                  setEndDateValue(date);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Box>
+        </Box>
+        <Box sx={{ minWidth: 1050 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  Date
+                </TableCell>
+                <TableCell>
+                  Time in
+                </TableCell>
+                <TableCell>
+                  Time out
+                </TableCell>
+                <TableCell>
+                  Hours Worked
+                </TableCell>
+                <TableCell>
+                  Status
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableCell>
+                <h1> </h1>
+              </TableCell>
+              <TableCell>
+                <h1> </h1>
+              </TableCell>
+              <TableCell>
+                <h1> </h1>
+              </TableCell>
+              <TableCell>
+                <h1> </h1>
+              </TableCell>
+              <TableCell>
+                <h1> </h1>
+              </TableCell>
+              <TableCell>
+                <h1> </h1>
+              </TableCell>
+            </TableBody>
+          </Table>
+        </Box>
+      </PerfectScrollbar>
+      <TablePagination
+        component="div"
+        count={employees.length}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleLimitChange}
+        page={page}
+        rowsPerPage={limit}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
     </Card>
   );
 };
