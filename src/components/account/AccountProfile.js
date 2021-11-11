@@ -9,13 +9,15 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 const AccountProfile = () => {
   const [currEmp, setCurrEmp] = useState('');
+  const user = JSON.parse(localStorage.getItem('currUser'));
+  console.log('Current user ', user);
 
   const currEmployee = async () => {
-    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+    await getDoc(doc(db, 'users', user.email)).then((docSnap) => {
       if (docSnap.exists()) {
         console.log('Document data:', docSnap.data());
         setCurrEmp(docSnap.data());
