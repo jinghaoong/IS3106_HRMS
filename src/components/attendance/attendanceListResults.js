@@ -21,6 +21,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
 import { db } from '../../firebase-config';
@@ -36,6 +38,8 @@ const AttendanceListResults = ({ ...rest }) => {
   const attendanceRef = collection(db, 'attendance');
   const [isEmpLoading, setIsEmpLoading] = useState(false);
   const [isAtdLoading, setIsAtdLoading] = useState(false);
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
 
   useEffect(() => {
     setIsEmpLoading(true);
@@ -214,7 +218,7 @@ const AttendanceListResults = ({ ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(attendance).filter((val) => {
+              {Array.from(attendance).slice((currPage - 1) * perPage, currPage * perPage).filter((val) => {
                 if (searchValue === '' || findEmployee(val.id).firstName.toLowerCase().includes(searchValue) || findEmployee(val.id).lastName.toLowerCase().includes(searchValue)) {
                   return val;
                 }
@@ -273,6 +277,21 @@ const AttendanceListResults = ({ ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
+      <Stack
+        direction="row"
+        sx={{
+          p: 2
+        }}
+      >
+        <Pagination
+          count={Math.ceil(attendance.length / perPage)}
+          shape="rounded"
+          page={currPage}
+          onChange={(event, page) => {
+            setCurrPage(page);
+          }}
+        />
+      </Stack>
     </Card>
   ) : (
     <Card>

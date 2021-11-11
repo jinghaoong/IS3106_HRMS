@@ -17,6 +17,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
 import { db } from '../../firebase-config';
@@ -30,6 +32,8 @@ const UserAttendanceList = () => {
   const [endDateValue, setEndDateValue] = useState('');
   const [isAtdLoading, setIsAtdLoading] = useState(true);
   const currUser = JSON.parse(localStorage.getItem('currUser'));
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
 
   useEffect(() => {
     const getAttendance = async () => {
@@ -64,6 +68,16 @@ const UserAttendanceList = () => {
       return 2;
     }
     return 1;
+  };
+
+  const userAttendanceSize = () => {
+    const arr = attendance.filter((data) => {
+      if (data.email === currUser.email) {
+        return data;
+      }
+      return null;
+    });
+    return arr.length;
   };
 
   return (!isAtdLoading) ? (
@@ -153,7 +167,7 @@ const UserAttendanceList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(attendance).filter((em) => {
+              {Array.from(attendance).slice((currPage - 1) * perPage, currPage * perPage).filter((em) => {
                 if (statusView === '' || getStatus(new Date(em.dateTimeIn.seconds * 1000).toString()).toString() === statusView) {
                   return em;
                 }
@@ -205,6 +219,21 @@ const UserAttendanceList = () => {
           </Table>
         </Box>
       </PerfectScrollbar>
+      <Stack
+        direction="row"
+        sx={{
+          p: 2
+        }}
+      >
+        <Pagination
+          count={Math.ceil(userAttendanceSize() / perPage)}
+          shape="rounded"
+          page={currPage}
+          onChange={(event, page) => {
+            setCurrPage(page);
+          }}
+        />
+      </Stack>
     </Card>
   ) : (
     <Card>
