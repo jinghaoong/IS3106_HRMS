@@ -18,10 +18,12 @@ import {
 } from 'firebase/firestore';
 import { collection } from '@firebase/firestore';
 import { useEffect, useState } from 'react';
-import DateTimePicker from '@mui/lab/DateTimePicker';
-import { db, auth } from '../../firebase-config';
+import DatePicker from '@mui/lab/DatePicker';
+import { db } from '../../firebase-config';
 
 const AccountProfileDetails = () => {
+  const user = JSON.parse(localStorage.getItem('currUser'));
+  console.log(user);
   const [currEmp, setCurrEmp] = useState([]);
   const [value, setValues] = useState([]);
   const [banks, setBanks] = useState([]);
@@ -31,8 +33,12 @@ const AccountProfileDetails = () => {
     setValues(currEmp);
   } */
 
+  function loadValues() {
+    setValues(currEmp);
+  }
+
   const currEmployee = async () => {
-    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+    await getDoc(doc(db, 'users', user.email)).then((docSnap) => {
       if (docSnap.exists()) {
         setCurrEmp(docSnap.data());
         console.log('Current employee is ', currEmp);
@@ -44,7 +50,7 @@ const AccountProfileDetails = () => {
     const bankData = await getDocs(banksRef);
     setBanks(bankData.docs.map((d) => ({ ...d.data(), id: d.id })));
 
-    // loadValues();
+    loadValues();
   };
 
   console.log(banks);
@@ -69,10 +75,10 @@ const AccountProfileDetails = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const employeeRef = doc(db, 'users', currEmp.email);
+    const employeeRef = doc(db, 'users', user.email);
     await updateDoc(employeeRef, { ...value });
     window.location.reload();
-    // loadValues();
+    loadValues();
   };
 
   return (
@@ -94,6 +100,21 @@ const AccountProfileDetails = () => {
               container
               spacing={3}
             >
+              <Grid
+                item
+                md={12}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Avatar"
+                  name="avatar"
+                  helperText="Please insert a link to your image."
+                  onChange={handleChange}
+                  value={value.avatar}
+                  variant="outlined"
+                />
+              </Grid>
               <Grid
                 item
                 md={6}
@@ -129,11 +150,12 @@ const AccountProfileDetails = () => {
                 md={6}
                 xs={12}
               >
-                <DateTimePicker
+                <DatePicker
                   renderInput={(params) => <TextField {...params} />}
                   label="Date of Birth"
                   type="date"
                   name="dob"
+                  format="dd/MM/yyyy"
                   value={value.dob}
                   onChange={handleDateChange}
                   required

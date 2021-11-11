@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Search as SearchIcon } from 'react-feather';
@@ -21,26 +20,26 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 const AttendanceListResults = ({ ...rest }) => {
   const [statusView, setStatusView] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [startDateValue, setStartDateValue] = useState('');
   const [endDateValue, setEndDateValue] = useState('');
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
   const [employees, setEmployees] = useState([]);
   const employeesRef = collection(db, 'users');
   const [attendance, setAttendance] = useState([]);
   const attendanceRef = collection(db, 'attendance');
-  const [currUser, setCurrUser] = useState([]);
   const [isEmpLoading, setIsEmpLoading] = useState(false);
   const [isAtdLoading, setIsAtdLoading] = useState(false);
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
 
   useEffect(() => {
     setIsEmpLoading(true);
@@ -58,23 +57,6 @@ const AttendanceListResults = ({ ...rest }) => {
     getEmployees();
     getAttendance();
   }, []);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
 
   function findEmployee(uId) {
     const em = Array.from(employees).filter((obj) => {
@@ -236,7 +218,7 @@ const AttendanceListResults = ({ ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(attendance).slice(0, limit).filter((val) => {
+              {Array.from(attendance).slice((currPage - 1) * perPage, currPage * perPage).filter((val) => {
                 if (searchValue === '' || findEmployee(val.id).firstName.toLowerCase().includes(searchValue) || findEmployee(val.id).lastName.toLowerCase().includes(searchValue)) {
                   return val;
                 }
@@ -256,9 +238,6 @@ const AttendanceListResults = ({ ...rest }) => {
                   }
                   return null;
                 })
-                // .map((obj) => {
-                //   return obj.normalHours = obj.timeOut - obj.timeIn;
-                // })
                 .sort(((a, b) => b.dateTimeIn.seconds - a.dateTimeIn.seconds))
                 .map((at) => (
                   <TableRow
@@ -267,6 +246,8 @@ const AttendanceListResults = ({ ...rest }) => {
                   >
                     <TableCell>
                       {findEmployee(at.email).firstName}
+                      <span> </span>
+                      {findEmployee(at.email).lastName}
                     </TableCell>
                     <TableCell>
                       {at.email}
@@ -296,15 +277,21 @@ const AttendanceListResults = ({ ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
+      <Stack
+        direction="row"
+        sx={{
+          p: 2
+        }}
+      >
+        <Pagination
+          count={Math.ceil(attendance.length / perPage)}
+          shape="rounded"
+          page={currPage}
+          onChange={(event, page) => {
+            setCurrPage(page);
+          }}
+        />
+      </Stack>
     </Card>
   ) : (
     <Card>

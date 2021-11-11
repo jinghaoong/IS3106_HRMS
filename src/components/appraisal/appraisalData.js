@@ -11,23 +11,16 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TablePagination
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
 const AppraisalData = ({
   appraisalForm, appraisal, employees, ...rest
 }) => {
   const [selectedEmployeesIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
 
   const formatDate = (date) => {
     if (date !== null) {
@@ -95,7 +88,7 @@ const AppraisalData = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Array.from(appraisal).slice(0, limit).sort((a, b) => b.date - a.date)
+                {Array.from(appraisal).slice((currPage - 1) * perPage, currPage * perPage).sort((a, b) => b.date - a.date)
                   .map((data) => (
                     <TableRow
                       hover
@@ -130,15 +123,6 @@ const AppraisalData = ({
             </Table>
           </Box>
         </PerfectScrollbar>
-        <TablePagination
-          component="div"
-          count={appraisal.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
       </Box>
     </Card>
   ) : (
@@ -192,16 +176,22 @@ const AppraisalData = ({
             </TableBody>
           </Table>
         </Box>
+        <Stack
+          direction="row"
+          sx={{
+            p: 2
+          }}
+        >
+          <Pagination
+            count={Math.ceil(appraisal.length / perPage)}
+            shape="rounded"
+            page={currPage}
+            onChange={(event, page) => {
+              setCurrPage(page);
+            }}
+          />
+        </Stack>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </Card>
   );
 };

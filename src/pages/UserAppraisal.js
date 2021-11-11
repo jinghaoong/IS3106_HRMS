@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import { Helmet } from 'react-helmet';
 import { Box, Container, Button } from '@material-ui/core';
 import UserAppraisalForm from 'src/components/userAppraisal/userAppraisalForm';
 import UserAppraisalList from '../components/userAppraisal/userAppraisalList';
-import { auth, db } from '../firebase-config';
+import { db } from '../firebase-config';
 
 const UserAppraisal = () => {
   const [viewForm, setViewForm] = useState(false);
@@ -13,7 +12,7 @@ const UserAppraisal = () => {
   const appraisalFormRef = collection(db, 'appraisalForm');
   const [employees, setEmployees] = useState([]);
   const employeesRef = collection(db, 'users');
-  const [currUser, setCurrUser] = useState([]);
+  const currUser = JSON.parse(localStorage.getItem('currUser'));
 
   useEffect(() => {
     const getAppraisalForm = async () => {
@@ -27,15 +26,6 @@ const UserAppraisal = () => {
     getAppraisalForm();
     getEmployees();
   }, []);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
 
   const formatDate = (date) => {
     if (date !== null) {

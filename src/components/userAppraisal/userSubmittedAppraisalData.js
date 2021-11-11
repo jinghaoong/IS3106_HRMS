@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import {
   collection,
   getDocs,
@@ -22,24 +21,23 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
 import { Rating } from 'react-simple-star-rating';
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 const UserSubmittedAppraisalData = () => {
   const [selectedEmployeesIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
   const [employees, setEmployees] = useState([]);
   const employeesRef = collection(db, 'users');
   const [appraisal, setAppraisal] = useState([]);
   const appraisalRef = collection(db, 'appraisals');
   const [appraisalForm, setAppraisalForm] = useState([]);
   const appraisalFormRef = collection(db, 'appraisalForm');
-  const [currUser, setCurrUser] = useState([]);
+  const currUser = JSON.parse(localStorage.getItem('currUser'));
   const [open, setOpen] = useState(false);
 
   const [selectedAppraiseeId, setSelectedAppraiseeId] = useState('');
@@ -50,6 +48,9 @@ const UserSubmittedAppraisalData = () => {
   const [isEmpLoading, setIsEmpLoading] = useState(true);
   const [isAprLoading, setIsAprLoading] = useState(true);
   const [isAprFormLoading, setIsAprFormLoading] = useState(true);
+
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
 
   useEffect(() => {
     const getEmployees = async () => {
@@ -71,25 +72,6 @@ const UserSubmittedAppraisalData = () => {
     getAppraisal();
     getAppraisalForm();
   }, []);
-
-  console.log('appraisalForms: ', appraisalForm);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
 
   const formatDate = (date) => {
     if (date !== null) {
@@ -202,6 +184,16 @@ const UserSubmittedAppraisalData = () => {
     return `${start} to ${end}`;
   };
 
+  const appraisalSize = () => {
+    const arr = appraisal.filter((data) => {
+      if (data.appraiserId === currUser.email) {
+        return data;
+      }
+      return null;
+    });
+    return arr.length;
+  };
+
   return (!isEmpLoading && !isAprLoading && !isAprFormLoading) ? (
     <Card>
       <CardHeader
@@ -237,12 +229,13 @@ const UserSubmittedAppraisalData = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(appraisal).slice(0, limit).sort((a, b) => b.date - a.date).filter((obj) => {
-                if (obj.appraiserId === currUser.email) {
-                  return obj;
-                }
-                return null;
-              })
+              {Array.from(appraisal).slice((currPage - 1) * perPage, currPage * perPage)
+                .sort((a, b) => b.date - a.date).filter((obj) => {
+                  if (obj.appraiserId === currUser.email) {
+                    return obj;
+                  }
+                  return null;
+                })
                 .map((data) => (
                   <TableRow
                     hover
@@ -284,15 +277,21 @@ const UserSubmittedAppraisalData = () => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
+      <Stack
+        direction="row"
+        sx={{
+          p: 2
+        }}
+      >
+        <Pagination
+          count={Math.ceil(appraisalSize() / perPage)}
+          shape="rounded"
+          page={currPage}
+          onChange={(event, page) => {
+            setCurrPage(page);
+          }}
+        />
+      </Stack>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Edit Appraisal</DialogTitle>
         <DialogContent>
@@ -396,15 +395,21 @@ const UserSubmittedAppraisalData = () => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
+      <Stack
+        direction="row"
+        sx={{
+          p: 2
+        }}
+      >
+        <Pagination
+          count="0"
+          shape="rounded"
+          page={currPage}
+          onChange={(event, page) => {
+            setCurrPage(page);
+          }}
+        />
+      </Stack>
     </Card>
   );
 };

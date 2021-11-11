@@ -12,24 +12,44 @@ import { red } from '@material-ui/core/colors';
 import MoneyIcon from '@material-ui/icons/Money';
 
 const LateAttendances = () => {
-  const [employees, setEmployeesPage] = useState([]);
-  const [size, setSize] = useState(0);
-  const employeesPageRef = (collection(db, 'users'));
+  const [attendance, setAttendance] = useState([]);
+  // const [size, setSize] = useState(0);
+  const attendanceRef = (collection(db, 'attendance'));
 
-  const getEmployees = async () => {
-    const data = await getDocs(employeesPageRef);
-    setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })));
-    await getDocs(employeesPageRef).then((snap) => {
-      setSize(snap.size); // will return the collection size
-    });
+  const getAttendance = async () => {
+    const data = await getDocs(attendanceRef);
+    setAttendance(data.docs.map((d) => ({ ...d.data(), id: d.id })));
+    await getDocs(attendanceRef);
+    // .then((snap) => {
+    //   setSize(snap.size); // will return the collection size
+    // });
   };
 
   useEffect(() => {
-    getEmployees();
+    getAttendance();
   }, []);
 
+  const getSize = () => {
+    const arr = Array.from(attendance).filter((obj) => {
+      const today = new Date();
+      const date = new Date(obj.dateTimeIn.seconds * 1000);
+      const now = today.toString().split(' ').slice(1, 4).join('-');
+      const dateIn = date.toString().split(' ').slice(1, 4).join('-');
+      if (now === dateIn) {
+        const formattedTime = date.toString().split(' ').slice(4, 5);
+        const hourMinSec = formattedTime.toString().split(':').slice(0, 3);
+        const newTime = hourMinSec.join(':');
+        if (newTime > '09:00:00') {
+          return obj;
+        }
+      }
+      return null;
+    });
+    return (arr.length);
+  };
+
   return (
-    <Card {...employees}>
+    <Card {...attendance}>
       <CardContent>
         <Grid
           container
@@ -42,13 +62,13 @@ const LateAttendances = () => {
               gutterBottom
               variant="h6"
             >
-              LATE ATTENDANCES
+              LATE ATTENDANCES TODAY
             </Typography>
             <Typography
               color="textPrimary"
               variant="h3"
             >
-              {size}
+              {getSize()}
             </Typography>
           </Grid>
           <Grid item>

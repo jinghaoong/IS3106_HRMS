@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -17,58 +16,33 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 const UserAttendanceList = () => {
   const [selectedEmployeesIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-  const [employees, setEmployees] = useState([]);
-  const employeesRef = collection(db, 'users');
   const [attendance, setAttendance] = useState([]);
   const attendanceRef = collection(db, 'attendance');
-  const [currUser, setCurrUser] = useState([]);
   const [statusView, setStatusView] = useState('');
   const [startDateValue, setStartDateValue] = useState('');
   const [endDateValue, setEndDateValue] = useState('');
-  const [isEmpLoading, setIsEmpLoading] = useState(true);
   const [isAtdLoading, setIsAtdLoading] = useState(true);
+  const currUser = JSON.parse(localStorage.getItem('currUser'));
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
 
   useEffect(() => {
-    const getEmployees = async () => {
-      const data = await getDocs(employeesRef);
-      setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      setIsEmpLoading(false);
-    };
     const getAttendance = async () => {
       const data = await getDocs(attendanceRef);
       setAttendance(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       setIsAtdLoading(false);
     };
-    getEmployees();
     getAttendance();
   }, []);
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
 
   const formatDate = (date) => {
     if (date !== null) {
@@ -96,7 +70,17 @@ const UserAttendanceList = () => {
     return 1;
   };
 
-  return (!isEmpLoading && !isAtdLoading) ? (
+  const userAttendanceSize = () => {
+    const arr = attendance.filter((data) => {
+      if (data.email === currUser.email) {
+        return data;
+      }
+      return null;
+    });
+    return arr.length;
+  };
+
+  return (!isAtdLoading) ? (
     <Card>
       <CardHeader
         title="View your attendance"
@@ -183,7 +167,7 @@ const UserAttendanceList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(attendance).slice(0, limit).filter((em) => {
+              {Array.from(attendance).slice((currPage - 1) * perPage, currPage * perPage).filter((em) => {
                 if (statusView === '' || getStatus(new Date(em.dateTimeIn.seconds * 1000).toString()).toString() === statusView) {
                   return em;
                 }
@@ -235,15 +219,21 @@ const UserAttendanceList = () => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
+      <Stack
+        direction="row"
+        sx={{
+          p: 2
+        }}
+      >
+        <Pagination
+          count={Math.ceil(userAttendanceSize() / perPage)}
+          shape="rounded"
+          page={currPage}
+          onChange={(event, page) => {
+            setCurrPage(page);
+          }}
+        />
+      </Stack>
     </Card>
   ) : (
     <Card>
@@ -354,15 +344,6 @@ const UserAttendanceList = () => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </Card>
   );
 };

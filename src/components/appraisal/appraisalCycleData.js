@@ -11,23 +11,16 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TablePagination
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
 const AppraisalCycleData = ({
   appraisalForm, ...rest
 }) => {
   const [selectedAppraisalFormIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
 
   const formatDate = (date) => {
     if (date !== null) {
@@ -61,7 +54,7 @@ const AppraisalCycleData = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Array.from(appraisalForm).slice(0, limit).sort((a, b) => b.startDate - a.startDate)
+                {Array.from(appraisalForm).slice((currPage - 1) * perPage, currPage * perPage).sort((a, b) => b.startDate - a.startDate)
                   .map((data) => (
                     <TableRow
                       hover
@@ -86,15 +79,21 @@ const AppraisalCycleData = ({
             </Table>
           </Box>
         </PerfectScrollbar>
-        <TablePagination
-          component="div"
-          count={appraisalForm.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
+        <Stack
+          direction="row"
+          sx={{
+            p: 2
+          }}
+        >
+          <Pagination
+            count={Math.ceil(appraisalForm.length / perPage)}
+            shape="rounded"
+            page={currPage}
+            onChange={(event, page) => {
+              setCurrPage(page);
+            }}
+          />
+        </Stack>
       </Box>
     </Card>
   ) : (
@@ -138,15 +137,16 @@ const AppraisalCycleData = ({
             </Table>
           </Box>
         </PerfectScrollbar>
-        <TablePagination
-          component="div"
-          count={appraisalForm.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
+        <Stack>
+          <Pagination
+            count={Math.ceil(appraisalForm.length / perPage)}
+            shape="rounded"
+            page={currPage}
+            onChange={(event, page) => {
+              setCurrPage(page);
+            }}
+          />
+        </Stack>
       </Box>
     </Card>
   );
