@@ -11,7 +11,7 @@ import { db } from 'src/firebase-config';
 import { red } from '@material-ui/core/colors';
 import MoneyIcon from '@material-ui/icons/Money';
 
-const Budget = () => {
+const LateAttendances = () => {
   const [employees, setEmployeesPage] = useState([]);
   const [size, setSize] = useState(0);
   const employeesPageRef = (collection(db, 'users'));
@@ -68,4 +68,4 @@ const Budget = () => {
   );
 };
 
-export default Budget;
+export default LateAttendances;
