@@ -5,7 +5,7 @@ import LatestOrders from '../components/dashboard/LatestOrders';
 import LatestProducts from '../components/dashboard/LatestProducts';
 import Sales from '../components/dashboard/Sales';
 import TasksProgress from '../components/dashboard/TasksProgress';
-import TotalCustomers from '../components/dashboard/TotalCustomers';
+import TotalEmployees from '../components/dashboard/TotalEmployees';
 import TotalProfit from '../components/dashboard/TotalProfit';
 import TrafficByDevice from '../components/dashboard/TrafficByDevice';
 
@@ -42,7 +42,7 @@ const Dashboard = () => (
             xl={3}
             xs={12}
           >
-            <TotalCustomers />
+            <TotalEmployees />
           </Grid>
           <Grid
             item
