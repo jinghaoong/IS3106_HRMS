@@ -9,13 +9,15 @@ import {
   doc,
   getDoc
 } from 'firebase/firestore';
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 const AccountProfile = () => {
   const [currEmp, setCurrEmp] = useState('');
+  const user = JSON.parse(localStorage.getItem('currUser'));
+  console.log('Current user ', user);
 
   const currEmployee = async () => {
-    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+    await getDoc(doc(db, 'users', user.email)).then((docSnap) => {
       if (docSnap.exists()) {
         console.log('Document data:', docSnap.data());
         setCurrEmp(docSnap.data());
@@ -33,7 +35,7 @@ const AccountProfile = () => {
   console.log('Testing', currEmp.firstName);
 
   const profile = {
-    avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
+    avatar: currEmp.avatar,
     firstName: currEmp.firstName,
     lastName: currEmp.lastName,
     identificationNo: currEmp.identificationNo,
@@ -48,8 +50,8 @@ const AccountProfile = () => {
     bank: currEmp.bank,
   };
 
-  const empDOB = profile.dob ? moment(profile.dob.toDate()).calendar() : '';
-  const empStart = profile.joined ? moment(profile.joined.toDate()).calendar() : '';
+  const empDOB = profile.dob ? moment(profile.dob.toDate()).format('DD/MM/YYYY') : '';
+  const empStart = profile.joined ? moment(profile.joined.toDate()).format('DD/MM/YYYY') : '';
   console.log(currEmp.firstName);
 
   return (
