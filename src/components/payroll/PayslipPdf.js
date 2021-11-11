@@ -10,20 +10,14 @@ import {
 import {
   PDFViewer
 } from '@react-pdf/renderer';
-import { format } from 'date-fns';
 import { PropTypes } from 'prop-types';
 import { useEffect, useState } from 'react';
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 import PayslipDocument from './PayslipDocument';
 
 const PayslipPdf = ({ payslip, open, handleClose }) => {
-  const startDate = format(payslip.startDate.toDate(), 'dd-MM-yyyy');
-  const endDate = format(payslip.endDate.toDate(), 'dd-MM-yyyy');
   const [employee, setEmployee] = useState();
   const employeeRef = doc(db, 'users', payslip.email);
-
-  const manager = auth.currentUser;
-  console.log(manager);
 
   const getEmployee = async () => {
     const docSnap = await getDoc(employeeRef);
@@ -61,7 +55,7 @@ const PayslipPdf = ({ payslip, open, handleClose }) => {
           }}
         >
           <PDFViewer width="500" height="800">
-            <PayslipDocument employee={employee} payslip={payslip} startDate={startDate} endDate={endDate} />
+            <PayslipDocument employee={employee} payslip={payslip} />
           </PDFViewer>
         </Box>
       </DialogContent>

@@ -87,7 +87,7 @@ const PayslipForm = ({
                 cpfEmployee: Yup.number().positive(),
                 cpfEmployer: Yup.number().positive(),
                 startDate: Yup.date().required('Enter Start Date "dd-mm-yyyy"'),
-                endDate: Yup.date().required('Enter End Date "dd-mm-yyyy"'),
+                endDate: Yup.date().min(Yup.ref('startDate'), 'End Date must be same or after Start Date').required('Enter End Date "dd-mm-yyyy"'),
                 paymentMode: Yup.string().required('Enter Payment Mode'),
                 remarks: Yup.string(),
               })}

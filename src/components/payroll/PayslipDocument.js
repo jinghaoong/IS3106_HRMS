@@ -6,6 +6,7 @@ import {
   View
 } from '@react-pdf/renderer';
 import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 
 const styles = StyleSheet.create({
   page: {
@@ -72,79 +73,80 @@ const PayslipDocument = (
   {
     employee,
     payslip,
-    startDate,
-    endDate
   }
-) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>COMPANY PAYSLIP</Text>
-      </View>
+) => {
+  const startDate = format(payslip.startDate.toDate(), 'dd-MM-yyyy');
+  const endDate = format(payslip.endDate.toDate(), 'dd-MM-yyyy');
 
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Employee Name</Text>
-        <Text style={styles.headerInput}>
-          {employee && employee.firstName}
-          &nbsp;
-          {employee && employee.lastName}
-        </Text>
-      </View>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Employee Email</Text>
-        <Text style={styles.headerInput}>{payslip.email}</Text>
-      </View>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Payment Mode</Text>
-        <Text style={styles.headerInput}>{payslip.paymentMode}</Text>
-      </View>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Payment Date</Text>
-        <Text style={styles.headerInput}>
-          {startDate}
-          &nbsp;to&nbsp;
-          {endDate}
-        </Text>
-      </View>
-
-      <View style={styles.tableContainer}>
-        <View style={styles.row}>
-          <Text style={styles.description}>Basic</Text>
-          <Text style={styles.xyz}>{payslip.basic}</Text>
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>COMPANY PAYSLIP</Text>
         </View>
-        <View style={styles.row}>
-          <Text style={styles.description}>CPF</Text>
-          <Text style={styles.xyz}>{payslip.cpfEmployee + payslip.cpfEmployer}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.description}>Overtime</Text>
-          <Text style={styles.xyz}>{payslip.overtime > 0 ? payslip.overtime : 0}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.description}>Total</Text>
-          <Text style={styles.xyz}>{payslip.basic + payslip.cpfEmployee + payslip.cpfEmployer + payslip.overtime}</Text>
-        </View>
-      </View>
 
-      <View style={styles.remarksContainer}>
-        <Text>Remarks:</Text>
-        <Text>{payslip.remarks}</Text>
-      </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitle}>Employee Name</Text>
+          <Text style={styles.headerInput}>
+            {employee && employee.firstName}
+            &nbsp;
+            {employee && employee.lastName}
+          </Text>
+        </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitle}>Employee Email</Text>
+          <Text style={styles.headerInput}>{payslip.email}</Text>
+        </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitle}>Payment Mode</Text>
+          <Text style={styles.headerInput}>{payslip.paymentMode}</Text>
+        </View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitle}>Payment Date</Text>
+          <Text style={styles.headerInput}>
+            {startDate}
+            &nbsp;to&nbsp;
+            {endDate}
+          </Text>
+        </View>
 
-      <View style={styles.signatureContainer}>
-        <Text style={styles.signature}>Employer:  _________________</Text>
-        <Text style={styles.signature}>Employee:  _________________</Text>
-      </View>
+        <View style={styles.tableContainer}>
+          <View style={styles.row}>
+            <Text style={styles.description}>Basic</Text>
+            <Text style={styles.xyz}>{payslip.basic}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.description}>CPF</Text>
+            <Text style={styles.xyz}>{payslip.cpfEmployee + payslip.cpfEmployer}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.description}>Overtime</Text>
+            <Text style={styles.xyz}>{payslip.overtime > 0 ? payslip.overtime : 0}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.description}>Total</Text>
+            <Text style={styles.xyz}>{payslip.basic + payslip.cpfEmployee + payslip.cpfEmployer + payslip.overtime}</Text>
+          </View>
+        </View>
 
-    </Page>
-  </Document>
-);
+        <View style={styles.remarksContainer}>
+          <Text>Remarks:</Text>
+          <Text>{payslip.remarks}</Text>
+        </View>
+
+        <View style={styles.signatureContainer}>
+          <Text style={styles.signature}>Employer:  _________________</Text>
+          <Text style={styles.signature}>Employee:  _________________</Text>
+        </View>
+
+      </Page>
+    </Document>
+  );
+};
 
 PayslipDocument.propTypes = {
   employee: PropTypes.object,
-  payslip: PropTypes.object,
-  startDate: PropTypes.instanceOf(Date),
-  endDate: PropTypes.instanceOf(Date),
+  payslip: PropTypes.object
 };
 
 export default PayslipDocument;

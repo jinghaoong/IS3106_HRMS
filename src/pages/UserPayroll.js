@@ -1,22 +1,49 @@
 import {
   collection,
+  doc,
+  getDoc,
   getDocs,
-  query,
-  where
+  // orderBy,
+  query, where
 } from '@firebase/firestore';
 import {
-  Box, Button, Card,
+  Box,
+  Button,
+  Card,
   CardActions,
-  CardContent, Container, Typography
+  CardContent,
+  Container,
+  Pagination,
+  Stack,
+  Typography
 } from '@material-ui/core';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import PayslipDocument from '../components/payroll/PayslipDocument';
 import UserPayslipDetails from '../components/payroll/UserPayslipDetails';
 import { auth, db } from '../firebase-config';
 
 const UserPayroll = () => {
   const user = auth.currentUser;
+
+  const [employee, setEmployee] = useState();
+  const employeeRef = doc(db, 'users', user.email);
+
+  const getEmployee = async () => {
+    const docSnap = await getDoc(employeeRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      console.log(data);
+      setEmployee(data);
+    } else {
+      console.log('No data');
+    }
+  };
+
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 6; // items per page
   const [payroll, setPayroll] = useState([]);
   const payrollRef = collection(db, 'payroll');
 
@@ -28,10 +55,11 @@ const UserPayroll = () => {
   const getPayroll = async () => {
     const q = query(payrollRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
-    setPayroll(querySnapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+    setPayroll(querySnapshot.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => b.endDate - a.endDate));
   };
 
   useEffect(() => {
+    getEmployee();
     getPayroll();
   }, []);
 
@@ -60,6 +88,20 @@ const UserPayroll = () => {
         }}
       >
         <Container>
+          <Card sx={{ marginBottom: 1 }}>
+            <CardContent>
+              <Stack spacing={2}>
+                <Pagination
+                  count={Math.ceil(payroll.length / perPage)}
+                  shape="rounded"
+                  page={currPage}
+                  onChange={(event, page) => {
+                    setCurrPage(page);
+                  }}
+                />
+              </Stack>
+            </CardContent>
+          </Card>
           {payroll.length === 0
             && (
               <Card>
@@ -71,9 +113,9 @@ const UserPayroll = () => {
               </Card>
             )}
           {payroll
-            && payroll.map((payslip) => (
+            && payroll.slice((currPage - 1) * perPage, currPage * perPage).map((payslip) => (
               <>
-                <Card key={payslip.id}>
+                <Card key={payslip.id} sx={{ marginTop: 1 }}>
                   <CardContent>
                     <Typography>
                       Payslip ID:&nbsp;
@@ -89,11 +131,21 @@ const UserPayroll = () => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button onClick={() => {
-                      handleClickOpen();
-                    }}
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        handleClickOpen();
+                      }}
                     >
                       View
+                    </Button>
+                    <Button variant="outlined">
+                      <PDFDownloadLink
+                        document={<PayslipDocument employee={employee} payslip={payslip} />}
+                        fileName={`${employee.firstName} ${employee.lastName}_payslip_${format((payslip.endDate.toDate()), 'dd-MM-yyyy')}`}
+                      >
+                        {({ loading }) => (loading ? 'Loading document...' : 'Download')}
+                      </PDFDownloadLink>
                     </Button>
                   </CardActions>
                 </Card>
