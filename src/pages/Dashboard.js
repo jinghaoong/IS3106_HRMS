@@ -1,13 +1,13 @@
-import { Helmet } from 'react-helmet';
 import { Box, Container, Grid } from '@material-ui/core';
+import { Helmet } from 'react-helmet';
+import EmployeeList from '../components/dashboard/EmployeeList';
 import LateAttendances from '../components/dashboard/LateAttendances';
-import LatestOrders from '../components/dashboard/LatestOrders';
 import LatestProducts from '../components/dashboard/LatestProducts';
 import Sales from '../components/dashboard/Sales';
 import TasksProgress from '../components/dashboard/TasksProgress';
 import TotalEmployees from '../components/dashboard/TotalEmployees';
-import UnapprovedLeaves from '../components/dashboard/UnapprovedLeaves';
 import TrafficByDevice from '../components/dashboard/TrafficByDevice';
+import UnapprovedLeaves from '../components/dashboard/UnapprovedLeaves';
 
 const Dashboard = () => (
   <>
@@ -69,7 +69,7 @@ const Dashboard = () => (
             xl={9}
             xs={12}
           >
-            <Sales />
+            <EmployeeList />
           </Grid>
           <Grid
             item
@@ -96,7 +96,7 @@ const Dashboard = () => (
             xl={9}
             xs={12}
           >
-            <LatestOrders />
+            <Sales />
           </Grid>
         </Grid>
       </Container>
