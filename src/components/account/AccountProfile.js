@@ -50,8 +50,8 @@ const AccountProfile = () => {
     bank: currEmp.bank,
   };
 
-  const empDOB = profile.dob ? moment(profile.dob.toDate()).calendar() : '';
-  const empStart = profile.joined ? moment(profile.joined.toDate()).calendar() : '';
+  const empDOB = profile.dob ? moment(profile.dob.toDate()).format('DD/MM/YYYY') : '';
+  const empStart = profile.joined ? moment(profile.joined.toDate()).format('DD/MM/YYYY') : '';
   console.log(currEmp.firstName);
 
   return (
