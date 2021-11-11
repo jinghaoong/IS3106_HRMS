@@ -22,6 +22,8 @@ import DateTimePicker from '@mui/lab/DateTimePicker';
 import { db, auth } from '../../firebase-config';
 
 const AccountProfileDetails = () => {
+  const user = JSON.parse(localStorage.getItem('currUser'));
+  console.log(user);
   const [currEmp, setCurrEmp] = useState([]);
   const [value, setValues] = useState([]);
   const [banks, setBanks] = useState([]);
@@ -31,8 +33,12 @@ const AccountProfileDetails = () => {
     setValues(currEmp);
   } */
 
+  function loadValues() {
+    setValues(currEmp);
+  }
+
   const currEmployee = async () => {
-    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+    await getDoc(doc(db, 'users', auth.currentUser.email)).then((docSnap) => {
       if (docSnap.exists()) {
         setCurrEmp(docSnap.data());
         console.log('Current employee is ', currEmp);
@@ -44,7 +50,7 @@ const AccountProfileDetails = () => {
     const bankData = await getDocs(banksRef);
     setBanks(bankData.docs.map((d) => ({ ...d.data(), id: d.id })));
 
-    // loadValues();
+    loadValues();
   };
 
   console.log(banks);
@@ -72,7 +78,7 @@ const AccountProfileDetails = () => {
     const employeeRef = doc(db, 'users', currEmp.email);
     await updateDoc(employeeRef, { ...value });
     window.location.reload();
-    // loadValues();
+    loadValues();
   };
 
   return (
