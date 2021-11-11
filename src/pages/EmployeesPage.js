@@ -38,7 +38,11 @@ import DateTimePicker from '@mui/lab/DateTimePicker';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import EmployeeDelete from 'src/components/employees/EmployeeDelete';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from '@firebase/auth';
 import { db } from '../firebase-config';
 
 const employeeRoles = [
@@ -55,6 +59,8 @@ const employeeStatus = [
 ];
 
 const EmployeesPage = () => {
+  // const user = JSON.parse(localStorage.getItem('currUser'));
+  // console.log('Current user password and email', user.email, user.password);
   const [employeesPage, setEmployeesPage] = useState([]);
   const employeesPageRef = (collection(db, 'users'));
   const [banks, setBanks] = useState([]);
@@ -279,11 +285,13 @@ const EmployeesPage = () => {
                               const newId = `${values.email}`;
                               console.log('new id is ', newId);
                               actions.setFieldValue('id', newId);
-
                               const auth = getAuth();
-                              createUserWithEmailAndPassword(auth, `${values.email}`, 'password');
+                              createUserWithEmailAndPassword(auth, `${values.email}`, 'password')
+                                .then(() => sendPasswordResetEmail(auth, `${values.email}`))
+                                .catch((err) => {
+                                  console.log('Cannot login: ', err);
+                                });
                             }
-
                             const temp = {
                               id: values.email,
                               avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
