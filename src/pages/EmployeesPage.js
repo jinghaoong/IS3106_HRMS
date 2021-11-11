@@ -38,6 +38,7 @@ import DateTimePicker from '@mui/lab/DateTimePicker';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import EmployeeDelete from 'src/components/employees/EmployeeDelete';
+import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 import { db } from '../firebase-config';
 
 const employeeRoles = [
@@ -278,6 +279,9 @@ const EmployeesPage = () => {
                               const newId = `${values.email}`;
                               console.log('new id is ', newId);
                               actions.setFieldValue('id', newId);
+
+                              const auth = getAuth();
+                              createUserWithEmailAndPassword(auth, `${values.email}`, 'password');
                             }
 
                             const temp = {
