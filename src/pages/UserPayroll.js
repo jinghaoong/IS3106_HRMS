@@ -28,8 +28,13 @@ import { auth, db } from '../firebase-config';
 const UserPayroll = () => {
   const user = auth.currentUser;
 
+  const {
+    email,
+    // ...rest
+  } = user;
+
   const [employee, setEmployee] = useState();
-  const employeeRef = doc(db, 'users', user.email);
+  const employeeRef = doc(db, 'users', email);
 
   const getEmployee = async () => {
     const docSnap = await getDoc(employeeRef);
@@ -44,18 +49,14 @@ const UserPayroll = () => {
 
   const [currPage, setCurrPage] = useState(1);
   const perPage = 6; // items per page
+
   const [payroll, setPayroll] = useState([]);
   const payrollRef = collection(db, 'payroll');
-
-  const {
-    email,
-    // ...rest
-  } = user;
 
   const getPayroll = async () => {
     const q = query(payrollRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
-    setPayroll(querySnapshot.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => b.endDate - a.endDate));
+    setPayroll(querySnapshot.docs.map((d) => ({ ...d.data(), id: d.id })).sort((a, b) => b.endDate - a.endDate));
   };
 
   useEffect(() => {
@@ -63,7 +64,6 @@ const UserPayroll = () => {
     getPayroll();
   }, []);
 
-  // const [selectedPayslip, setPayslip] = useState();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
