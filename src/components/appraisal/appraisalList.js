@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
@@ -12,16 +11,13 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
 } from '@material-ui/core';
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 import AppraisalData from './appraisalData';
 import AppraisalCycleData from './appraisalCycleData';
 
 const AppraisalList = ({ ...rest }) => {
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
   const [appraisalCycleView, setAppraisalCycleView] = useState(false);
 
   const [employees, setEmployees] = useState([]);
@@ -30,19 +26,10 @@ const AppraisalList = ({ ...rest }) => {
   const appraisalRef = collection(db, 'appraisals');
   const [appraisalForm, setAppraisalForm] = useState([]);
   const appraisalFormRef = collection(db, 'appraisalForm');
-  const [currUser, setCurrUser] = useState();
   const [isEmpLoading, setIsEmpLoading] = useState(true);
   const [isAprLoading, setIsAprLoading] = useState(true);
   const [isAprFormLoading, setIsAprFormLoading] = useState(true);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
   useEffect(() => {
     const getEmployees = async () => {
       const data = await getDocs(employeesRef);
@@ -64,14 +51,6 @@ const AppraisalList = ({ ...rest }) => {
     getAppraisal();
     getAppraisalForm();
   }, []);
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
 
   const handleTableChange = () => {
     console.log(appraisalCycleView);
@@ -114,15 +93,6 @@ const AppraisalList = ({ ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </Card>
   );
 };

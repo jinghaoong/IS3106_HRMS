@@ -11,23 +11,12 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TablePagination
 } from '@material-ui/core';
 
 const AppraisalData = ({
   appraisalForm, appraisal, employees, ...rest
 }) => {
   const [selectedEmployeesIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
 
   const formatDate = (date) => {
     if (date !== null) {
@@ -95,7 +84,7 @@ const AppraisalData = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Array.from(appraisal).slice(0, limit).sort((a, b) => b.date - a.date)
+                {Array.from(appraisal).sort((a, b) => b.date - a.date)
                   .map((data) => (
                     <TableRow
                       hover
@@ -130,15 +119,6 @@ const AppraisalData = ({
             </Table>
           </Box>
         </PerfectScrollbar>
-        <TablePagination
-          component="div"
-          count={appraisal.length}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
-          rowsPerPageOptions={[5, 10, 25]}
-        />
       </Box>
     </Card>
   ) : (
@@ -193,15 +173,6 @@ const AppraisalData = ({
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={employees.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </Card>
   );
 };

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
 
 import {
   Box,
@@ -10,7 +9,7 @@ import {
   Paper,
 } from '@material-ui/core';
 
-import { auth, db } from '../../firebase-config';
+import { db } from '../../firebase-config';
 
 import AddForm from './addForm';
 import EditForm from './editForm';
@@ -21,16 +20,6 @@ const AppraisalForm = () => {
   const [formView, setFormView] = useState(false);
   const [appraisalForm, setAppraisalForm] = useState([]);
   const appraisalFormRef = collection(db, 'appraisalForm');
-  const [currUser, setCurrUser] = useState();
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCurrUser(user);
-      console.log('logged in as', currUser);
-    } else {
-      setCurrUser(null);
-    }
-  });
 
   useEffect(() => {
     const getAppraisalForm = async () => {

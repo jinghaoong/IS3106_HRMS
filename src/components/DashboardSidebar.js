@@ -17,7 +17,9 @@ import {
   Clock as ClockIcon,
   DollarSign as DollarSignIcon, Grid as GridIcon, Star as StarIcon,
   User as UserIcon,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Award as AwardIcon,
+  FilePlus as FileIcon
 } from 'react-feather';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import {
@@ -77,6 +79,16 @@ const items = [
     href: '/app/userLeave',
     icon: CalendarIcon,
     title: 'User Leave'
+  },
+  {
+    href: '/app/userAttendance',
+    icon: FileIcon,
+    title: 'User Attendance'
+  },
+  {
+    href: '/app/userAppraisal',
+    icon: AwardIcon,
+    title: 'User Appraisal'
   },
   {
     href: '/404',
