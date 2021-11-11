@@ -2,7 +2,6 @@ import { StyledEngineProvider, ThemeProvider } from '@material-ui/core';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useState } from 'react';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import {
   Navigate,
@@ -28,12 +27,11 @@ import UserPayroll from './pages/UserPayroll';
 import theme from './theme';
 
 const App = () => {
-  const [currUser, setCurrUser] = useState(auth.currentUser);
+  const currUser = auth.currentUser;
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       console.log('logged in as', currUser);
-      setCurrUser(auth.currentUser);
     } else {
       console.log('No logged in user');
     }
@@ -42,18 +40,18 @@ const App = () => {
   const content = useRoutes([
     {
       path: 'app',
-      element: (currUser !== null ? <DashboardLayout /> : ''),
+      element: (currUser !== null ? <DashboardLayout /> : <Navigate to="/login" />),
       children: [
-        { path: 'account', element: (currUser !== null ? <Account /> : <Login />) },
-        { path: 'employees', element: (currUser !== null ? <EmployeesPage /> : <Login />) },
-        { path: 'dashboard', element: (currUser !== null ? <Dashboard /> : <Login />) },
-        { path: 'appraisal', element: (currUser !== null ? <Appraisal /> : <Login />) },
-        { path: 'attendance', element: (currUser !== null ? (<Attendance />) : <Login />) },
+        { path: 'account', element: <Account /> },
+        { path: 'employees', element: <EmployeesPage /> },
+        { path: 'dashboard', element: <Dashboard /> },
+        { path: 'appraisal', element: <Appraisal /> },
+        { path: 'attendance', element: <Attendance /> },
         { path: 'leave', element: <LeavePage /> },
-        { path: 'payroll', element: (currUser !== null ? <Payroll /> : <Login />) },
-        { path: 'qr', element: (currUser !== null ? <QR /> : <Login />) },
-        { path: 'userAppraisal', element: (currUser !== null ? <UserAppraisal /> : <Login />) },
-        { path: 'userAttendance', element: (currUser !== null ? <UserAttendance /> : <Login />) },
+        { path: 'payroll', element: <Payroll /> },
+        { path: 'qr', element: <QR /> },
+        { path: 'userAppraisal', element: <UserAppraisal /> },
+        { path: 'userAttendance', element: <UserAttendance /> },
         { path: 'userpayroll', element: <UserPayroll /> },
         { path: '*', element: <Navigate to="/404" /> },
       ]
@@ -62,9 +60,8 @@ const App = () => {
       path: '/',
       element: <MainLayout />,
       children: [
-        { path: '/', element: <Navigate to={currUser === null ? '/login' : '/app/dashboard'} /> },
+        { path: '', element: <Navigate to={currUser === null ? '/login' : '/app/dashboard'} /> },
         { path: 'login', element: <Login /> },
-        // { path: 'register', element: <EmployeeForm EmployeeForm={EmployeeForm} /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ]
