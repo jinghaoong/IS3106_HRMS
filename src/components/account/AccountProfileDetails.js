@@ -96,6 +96,7 @@ const AccountProfileDetails = () => {
     e.preventDefault();
     const employeeRef = doc(db, 'users', currEmp.email);
     await updateDoc(employeeRef, { ...value });
+    window.location.reload();
   };
 
   return (

@@ -1,12 +1,12 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container, Grid } from '@material-ui/core';
-import Budget from '../components/dashboard/Budget';
+import LateAttendances from '../components/dashboard/LateAttendances';
 import LatestOrders from '../components/dashboard/LatestOrders';
 import LatestProducts from '../components/dashboard/LatestProducts';
 import Sales from '../components/dashboard/Sales';
 import TasksProgress from '../components/dashboard/TasksProgress';
-import TotalCustomers from '../components/dashboard/TotalCustomers';
-import TotalProfit from '../components/dashboard/TotalProfit';
+import TotalEmployees from '../components/dashboard/TotalEmployees';
+import UnapprovedLeaves from '../components/dashboard/UnapprovedLeaves';
 import TrafficByDevice from '../components/dashboard/TrafficByDevice';
 
 const Dashboard = () => (
@@ -33,7 +33,7 @@ const Dashboard = () => (
             xl={3}
             xs={12}
           >
-            <Budget />
+            <LateAttendances />
           </Grid>
           <Grid
             item
@@ -42,7 +42,7 @@ const Dashboard = () => (
             xl={3}
             xs={12}
           >
-            <TotalCustomers />
+            <TotalEmployees />
           </Grid>
           <Grid
             item
@@ -60,7 +60,7 @@ const Dashboard = () => (
             xl={3}
             xs={12}
           >
-            <TotalProfit sx={{ height: '100%' }} />
+            <UnapprovedLeaves sx={{ height: '100%' }} />
           </Grid>
           <Grid
             item

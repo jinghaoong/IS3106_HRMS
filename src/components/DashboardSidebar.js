@@ -9,7 +9,7 @@ import {
   Typography
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
@@ -20,8 +20,12 @@ import {
   Users as UsersIcon
 } from 'react-feather';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import {
+  doc,
+  getDoc
+} from 'firebase/firestore';
 import NavItem from './NavItem';
-import { auth } from '../firebase-config';
+import { db, auth } from '../firebase-config';
 
 const items = [
   {
@@ -85,16 +89,31 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   const location = useLocation();
   const currUser = auth.currentUser;
 
+  const [currEmp, setCurrEmp] = useState('');
+
+  const currEmployee = async () => {
+    await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
+      if (docSnap.exists()) {
+        console.log('Document data:', docSnap.data());
+        setCurrEmp(docSnap.data());
+        console.log('Current employee is ', currEmp);
+      } else {
+        console.log('No such document!');
+      }
+    });
+  };
+
   const user = {
     avatar: '/static/images/avatars/avatar_6.png',
-    jobTitle: currUser ? currUser.id : 'Senior Developer',
-    name: currUser ? currUser.email : 'Katarina Smith',
+    jobTitle: currEmp ? currEmp.role : 'Employee',
+    name: currUser ? `${currEmp.firstName} ${currEmp.lastName}` : 'User',
   };
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
+    currEmployee();
   }, [location.pathname]);
 
   const content = (
@@ -124,16 +143,16 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
           to="/app/account"
         />
         <Typography
-          color="textPrimary"
-          variant="h5"
-        >
-          {user.name}
-        </Typography>
-        <Typography
           color="textSecondary"
           variant="body2"
         >
           {user.jobTitle}
+        </Typography>
+        <Typography
+          color="textPrimary"
+          variant="h5"
+        >
+          {user.name}
         </Typography>
       </Box>
       <Divider />
@@ -160,7 +179,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         <Typography
           align="center"
           gutterBottom
-          variant="h4"
+          variant="body2"
         >
           Need more?
         </Typography>
