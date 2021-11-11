@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  doc,
+  updateDoc
+} from 'firebase/firestore';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Search as SearchIcon } from 'react-feather';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -12,6 +17,10 @@ import {
   Button,
   Card,
   CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   TextField,
   InputAdornment,
   SvgIcon,
@@ -21,8 +30,11 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
+import DateTimePicker from '@mui/lab/DateTimePicker';
 import { db } from '../../firebase-config';
 
 const AttendanceListResults = ({ ...rest }) => {
@@ -36,18 +48,31 @@ const AttendanceListResults = ({ ...rest }) => {
   const attendanceRef = collection(db, 'attendance');
   const [isEmpLoading, setIsEmpLoading] = useState(false);
   const [isAtdLoading, setIsAtdLoading] = useState(false);
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState('');
+
+  const initialValues = {
+    email: '',
+    dateTimeIn: null,
+    dateTimeOut: null,
+    normalHours: 0
+  };
+
+  const [values, setValues] = useState(initialValues);
 
   useEffect(() => {
     setIsEmpLoading(true);
     setIsAtdLoading(true);
     const getEmployees = async () => {
       const data = await getDocs(employeesRef);
-      setEmployees(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setEmployees(data.docs.map((d) => ({ ...d.data(), id: d.id })));
       setIsEmpLoading(false);
     };
     const getAttendance = async () => {
       const data = await getDocs(attendanceRef);
-      setAttendance(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setAttendance(data.docs.map((d) => ({ ...d.data(), id: d.id })));
       setIsAtdLoading(false);
     };
     getEmployees();
@@ -56,13 +81,9 @@ const AttendanceListResults = ({ ...rest }) => {
 
   function findEmployee(uId) {
     const em = Array.from(employees).filter((obj) => {
-      console.log(obj.id);
-      console.log(uId);
       if (obj.id.toString() === uId.toString()) {
-        console.log('ok');
         return obj;
       }
-      console.log('no');
       return null;
     });
     return em[0];
@@ -94,8 +115,44 @@ const AttendanceListResults = ({ ...rest }) => {
     return 1;
   };
 
-  console.log(startDateValue);
-  console.log(endDateValue);
+  const handleOpen = (data) => {
+    console.log(data);
+    setSelected(data.id);
+    setValues({
+      ...values,
+      email: data.email,
+      dateTimeIn: new Date(data.dateTimeIn.seconds * 1000),
+      dateTimeOut: new Date(data.dateTimeOut.seconds * 1000),
+      normalHours: data.normalHours
+    });
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleDateTimeInChange = (date) => {
+    setValues({
+      ...values,
+      dateTimeIn: date
+    });
+  };
+
+  const handleDateTimeOutChange = (date) => {
+    setValues({
+      ...values,
+      dateTimeOut: date,
+      normalHours: Number(Math.abs(values.dateTimeOut.getTime() - values.dateTimeIn.getTime()) / 36e5).toFixed(3)
+    });
+  };
+
+  const handleSubmit = async () => {
+    const attendanceDoc = doc(db, 'attendance', selected);
+    await updateDoc(attendanceDoc, values);
+    setOpen(false);
+    window.location.reload(true);
+  };
 
   return (!isEmpLoading && !isAtdLoading) ? (
     <Card {...rest}>
@@ -214,7 +271,7 @@ const AttendanceListResults = ({ ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Array.from(attendance).filter((val) => {
+              {Array.from(attendance).slice((currPage - 1) * perPage, currPage * perPage).filter((val) => {
                 if (searchValue === '' || findEmployee(val.id).firstName.toLowerCase().includes(searchValue) || findEmployee(val.id).lastName.toLowerCase().includes(searchValue)) {
                   return val;
                 }
@@ -267,12 +324,70 @@ const AttendanceListResults = ({ ...rest }) => {
                         color={getStatus(new Date(at.dateTimeIn.seconds * 1000).toString()) === 1 ? 'success' : 'error'}
                       />
                     </TableCell>
+                    <TableCell>
+                      <Button onClick={() => { handleOpen(at); }}>
+                        EDIT
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
           </Table>
         </Box>
       </PerfectScrollbar>
+      <Stack
+        direction="row"
+        sx={{
+          p: 2
+        }}
+      >
+        <Pagination
+          count={Math.ceil(attendance.length / perPage)}
+          shape="rounded"
+          page={currPage}
+          onChange={(event, page) => {
+            setCurrPage(page);
+          }}
+        />
+      </Stack>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Edit Attendance</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            name="Employee Email"
+            label="Employee Email"
+            type="email"
+            value={values.email}
+            fullWidth
+            disabled
+          />
+          <DateTimePicker
+            renderInput={(params) => <TextField {...params} />}
+            label="Date/Time In"
+            type="date"
+            name="dateTimeIn"
+            value={values.dateTimeIn}
+            onChange={handleDateTimeInChange}
+            required
+          />
+          <DateTimePicker
+            renderInput={(params) => <TextField {...params} />}
+            label="Date/Time Out"
+            type="date"
+            name="dateTimeOut"
+            value={values.dateTimeOut}
+            onChange={handleDateTimeOutChange}
+            required
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>Submit</Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   ) : (
     <Card>

@@ -1,8 +1,5 @@
 import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
+  collection, getDocs,
   // orderBy,
   query, where
 } from '@firebase/firestore';
@@ -22,34 +19,16 @@ import {
   Add as AddIcon,
   Block as BlockIcon,
   CheckCircle as CheckCircleIcon,
-  HourglassEmpty,
+  HourglassEmpty
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { auth, db } from '../firebase-config';
 import LeaveForm from '../components/leave/LeaveForm';
+import { db } from '../firebase-config';
 
 const UserLeave = () => {
-  const user = auth.currentUser;
-  const {
-    email,
-    // ...rest
-  } = user;
-
-  const [employee, setEmployee] = useState();
-  const employeeRef = doc(db, 'users', email);
-
-  const getEmployee = async () => {
-    const docSnap = await getDoc(employeeRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      console.log(data);
-      setEmployee(data);
-    } else {
-      console.log('No data');
-    }
-  };
+  const employee = JSON.parse(localStorage.getItem('currEmployee'));
 
   const [currPage, setCurrPage] = useState(1);
   const perPage = 6; // items per page
@@ -58,13 +37,12 @@ const UserLeave = () => {
   const leaveRef = collection(db, 'leave');
 
   const getLeave = async () => {
-    const q = query(leaveRef, where('employee', '==', email));
+    const q = query(leaveRef, where('employee', '==', employee.email));
     const querySnapshot = await getDocs(q);
     setLeave(querySnapshot.docs.map((d) => ({ ...d.data(), id: d.id })).sort((a, b) => b.startDate - a.startDate));
   };
 
   useEffect(() => {
-    getEmployee();
     getLeave();
     console.log(employee);
   }, []);
@@ -115,7 +93,6 @@ const UserLeave = () => {
         <Container>
           <Card sx={{ marginBottom: 1 }}>
             <CardContent>
-
               <Stack direction="row" spacing={2}>
                 <CreateButton />
                 <Pagination

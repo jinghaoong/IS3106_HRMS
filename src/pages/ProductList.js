@@ -5,8 +5,8 @@ import {
   Grid,
   Pagination
 } from '@material-ui/core';
-import ProductListToolbar from '../components/product/ProductListToolbar';
-import ProductCard from '../components/product/ProductCard';
+import ProductListToolbar from '../components/_template/product/ProductListToolbar';
+import ProductCard from '../components/_template/product/ProductCard';
 import products from '../__mocks__/products';
 
 const ProductList = () => (

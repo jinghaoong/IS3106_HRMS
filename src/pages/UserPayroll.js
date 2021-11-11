@@ -1,8 +1,5 @@
 import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
+  collection, getDocs,
   // orderBy,
   query, where
 } from '@firebase/firestore';
@@ -23,29 +20,10 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import PayslipDocument from '../components/payroll/PayslipDocument';
 import UserPayslipDetails from '../components/payroll/UserPayslipDetails';
-import { auth, db } from '../firebase-config';
+import { db } from '../firebase-config';
 
 const UserPayroll = () => {
-  const user = auth.currentUser;
-
-  const {
-    email,
-    // ...rest
-  } = user;
-
-  const [employee, setEmployee] = useState();
-  const employeeRef = doc(db, 'users', email);
-
-  const getEmployee = async () => {
-    const docSnap = await getDoc(employeeRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      console.log(data);
-      setEmployee(data);
-    } else {
-      console.log('No data');
-    }
-  };
+  const employee = JSON.parse(localStorage.getItem('currEmployee'));
 
   const [currPage, setCurrPage] = useState(1);
   const perPage = 6; // items per page
@@ -54,13 +32,12 @@ const UserPayroll = () => {
   const payrollRef = collection(db, 'payroll');
 
   const getPayroll = async () => {
-    const q = query(payrollRef, where('email', '==', email));
+    const q = query(payrollRef, where('email', '==', employee.email));
     const querySnapshot = await getDocs(q);
     setPayroll(querySnapshot.docs.map((d) => ({ ...d.data(), id: d.id })).sort((a, b) => b.endDate - a.endDate));
   };
 
   useEffect(() => {
-    getEmployee();
     getPayroll();
   }, []);
 

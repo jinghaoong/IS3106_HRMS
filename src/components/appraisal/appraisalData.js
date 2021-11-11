@@ -11,12 +11,16 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Pagination,
+  Stack
 } from '@material-ui/core';
 
 const AppraisalData = ({
   appraisalForm, appraisal, employees, ...rest
 }) => {
   const [selectedEmployeesIds] = useState([]);
+  const [currPage, setCurrPage] = useState(1);
+  const perPage = 10; // items per page
 
   const formatDate = (date) => {
     if (date !== null) {
@@ -84,7 +88,7 @@ const AppraisalData = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Array.from(appraisal).sort((a, b) => b.date - a.date)
+                {Array.from(appraisal).slice((currPage - 1) * perPage, currPage * perPage).sort((a, b) => b.date - a.date)
                   .map((data) => (
                     <TableRow
                       hover
@@ -118,6 +122,21 @@ const AppraisalData = ({
               </TableBody>
             </Table>
           </Box>
+          <Stack
+            direction="row"
+            sx={{
+              p: 2
+            }}
+          >
+            <Pagination
+              count={Math.ceil(appraisal.length / perPage)}
+              shape="rounded"
+              page={currPage}
+              onChange={(event, page) => {
+                setCurrPage(page);
+              }}
+            />
+          </Stack>
         </PerfectScrollbar>
       </Box>
     </Card>
@@ -172,6 +191,21 @@ const AppraisalData = ({
             </TableBody>
           </Table>
         </Box>
+        <Stack
+          direction="row"
+          sx={{
+            p: 2
+          }}
+        >
+          <Pagination
+            count={Math.ceil(appraisal.length / perPage)}
+            shape="rounded"
+            page={currPage}
+            onChange={(event, page) => {
+              setCurrPage(page);
+            }}
+          />
+        </Stack>
       </PerfectScrollbar>
     </Card>
   );

@@ -1,17 +1,17 @@
 import {
-  Box,
+  Alert, Box,
   Button,
   Container,
   TextField,
-  Typography,
-  Alert,
+  Typography
 } from '@material-ui/core';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import { Formik } from 'formik';
 import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { auth } from '../firebase-config';
+import { auth, db } from '../firebase-config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -44,9 +44,30 @@ const Login = () => {
               signInWithEmailAndPassword(auth, values.email, values.password)
                 .then((userCredential) => {
                   // Signed in
-                  console.log(userCredential.user);
-                  actions.setSubmitting(false);
-                  navigate('/app/dashboard', { replace: true });
+                  const { user } = userCredential;
+                  console.log(user);
+                  localStorage.setItem('currUser', JSON.stringify(user));
+
+                  const {
+                    email,
+                    // ...rest
+                  } = user;
+
+                  const employeeRef = doc(db, 'users', email);
+                  getDoc(employeeRef).then((docSnap) => {
+                    if (docSnap.exists()) {
+                      const employee = docSnap.data();
+                      localStorage.setItem('currEmployee', JSON.stringify(employee));
+                      console.log(employee);
+                      if (employee.role === 'Manager') {
+                        navigate('/app/dashboard', { replace: true });
+                      } else {
+                        navigate('/user/attendance', { replace: true });
+                      }
+                    } else {
+                      console.log('No employee found');
+                    }
+                  });
                 })
                 .catch((error) => {
                   // Signin failed
@@ -118,7 +139,6 @@ const Login = () => {
                     size="large"
                     type="submit"
                     variant="contained"
-                  // onClick=
                   >
                     Sign in
                   </Button>
@@ -126,23 +146,6 @@ const Login = () => {
               </form>
             )}
           </Formik>
-          {/*
-          <Button
-            color="secondary"
-            fullWidth
-            size="large"
-            type="submit"
-            variant="contained"
-            onClick={() => {
-              signOut(auth).then(() => {
-                console.log('Sign out success');
-                console.log(auth.currentUser);
-              }).catch((error) => { console.log(error.m); });
-            }}
-          >
-            Sign Out
-          </Button>
-          */}
         </Container>
       </Box>
     </>

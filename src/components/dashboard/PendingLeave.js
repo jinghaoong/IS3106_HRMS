@@ -20,25 +20,45 @@ import { Link } from 'react-router-dom';
 import { collection, getDocs } from '@firebase/firestore';
 import { db } from 'src/firebase-config';
 
-const EmployeeList = () => {
+const PendingLeave = () => {
+  const [leave, setLeave] = useState([]);
+  const leaveRef = (collection(db, 'leave'));
   const [employees, setEmployeesPage] = useState([]);
   const employeesPageRef = (collection(db, 'users'));
 
-  const getEmployees = async () => {
-    const data = await getDocs(employeesPageRef);
-    setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })).sort((a, b) => b.startDate - a.startDate));
+  const getLeave = async () => {
+    const data = await getDocs(leaveRef);
+    setLeave(data.docs.map((d) => ({ ...d.data(), id: d.id })));
   };
-
   useEffect(() => {
+    const getEmployees = async () => {
+      const data = await getDocs(employeesPageRef);
+      setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })));
+    };
     getEmployees();
+    getLeave();
   }, []);
+
+  function findEmployee(uId) {
+    const em = Array.from(employees).filter((obj) => {
+      console.log(obj.id);
+      console.log(uId);
+      if (obj.id.toString() === uId.toString()) {
+        console.log('ok');
+        return obj;
+      }
+      console.log('no');
+      return null;
+    });
+    return em[0];
+  }
 
   const [currPage, setCurrPage] = useState(1);
   const perPage = 8; // items per page
 
   return (
     <Card {...employees}>
-      <CardHeader title="All Employees" />
+      <CardHeader title="All Pending Leave Application" />
       <Divider />
       <PerfectScrollbar>
         <Box sx={{ minWidth: 800 }}>
@@ -52,32 +72,43 @@ const EmployeeList = () => {
                   Employee Name
                 </TableCell>
                 <TableCell>
-                  Joined On
+                  Leave Start Date
                 </TableCell>
                 <TableCell>
-                  Status
+                  Leave End Date
+                </TableCell>
+                <TableCell>
+                  Leave Type
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {employees.slice((currPage - 1) * perPage, currPage * perPage).map((employee) => (
+              {leave.slice((currPage - 1) * perPage, currPage * perPage).filter((val) => {
+                if (!val.approved && val.editedBy === null) {
+                  return val;
+                }
+                return null;
+              }).map((obj) => (
                 <TableRow
                   hover
-                  key={employee.id}
+                  key={obj.id}
                 >
                   <TableCell>
-                    {employee.id}
+                    {findEmployee(obj.employee).id}
                   </TableCell>
                   <TableCell>
-                    {employee.firstName}
+                    {findEmployee(obj.employee).firstName}
                   </TableCell>
                   <TableCell>
-                    {moment(employee.startDate.toDate()).calendar()}
+                    {moment(obj.startDate.toDate()).calendar()}
+                  </TableCell>
+                  <TableCell>
+                    {moment(obj.endDate.toDate()).calendar()}
                   </TableCell>
                   <TableCell>
                     <Chip
-                      color={employee.status === 'Active' ? 'primary' : 'error'}
-                      label={employee.status}
+                      color="warning"
+                      label={obj.type}
                       size="small"
                     />
                   </TableCell>
@@ -96,11 +127,11 @@ const EmployeeList = () => {
         }}
       >
         <Stack direction="row">
-          <Link to="/app/employees">
+          <Link to="/app/leave">
             <Button>View All</Button>
           </Link>
           <Pagination
-            count={Math.ceil(employees.length / perPage)}
+            count={Math.ceil(leave.length / perPage)}
             shape="rounded"
             page={currPage}
             onChange={(event, page) => {
@@ -113,4 +144,4 @@ const EmployeeList = () => {
   );
 };
 
-export default EmployeeList;
+export default PendingLeave;

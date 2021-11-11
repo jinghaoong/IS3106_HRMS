@@ -35,7 +35,7 @@ const AccountProfile = () => {
   console.log('Testing', currEmp.firstName);
 
   const profile = {
-    avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
+    avatar: currEmp.avatar,
     firstName: currEmp.firstName,
     lastName: currEmp.lastName,
     identificationNo: currEmp.identificationNo,
@@ -50,8 +50,8 @@ const AccountProfile = () => {
     bank: currEmp.bank,
   };
 
-  const empDOB = profile.dob ? moment(profile.dob.toDate()).calendar() : '';
-  const empStart = profile.joined ? moment(profile.joined.toDate()).calendar() : '';
+  const empDOB = profile.dob ? moment(profile.dob.toDate()).format('DD/MM/YYYY') : '';
+  const empStart = profile.joined ? moment(profile.joined.toDate()).format('DD/MM/YYYY') : '';
   console.log(currEmp.firstName);
 
   return (
