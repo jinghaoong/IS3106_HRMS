@@ -6,69 +6,30 @@ import {
   CardContent,
   CardHeader,
   Divider,
+  MenuItem,
   Grid,
   TextField
 } from '@material-ui/core';
 import {
   updateDoc,
   getDoc,
+  getDocs,
   doc,
 } from 'firebase/firestore';
+import { collection } from '@firebase/firestore';
 import { useEffect, useState } from 'react';
 import DateTimePicker from '@mui/lab/DateTimePicker';
-import AccountProfile from './AccountProfile';
 import { db, auth } from '../../firebase-config';
-
-const banks = [
-  {
-    value: 'dbs',
-    label: 'DBS/POSB'
-  },
-  {
-    value: 'uob',
-    label: 'UOB'
-  },
-  {
-    value: 'ocbc',
-    label: 'OCBC'
-  },
-  {
-    value: 'scb',
-    label: 'Standard Chartered Bank'
-  },
-  {
-    value: 'hlf',
-    label: 'Hong Leong Finance'
-  },
-  {
-    value: 'citibank',
-    label: 'Citibank Singapore'
-  },
-  {
-    value: 'hsbc',
-    label: 'HSBC'
-  },
-  {
-    value: 'sbi',
-    label: 'State Bank of India'
-  },
-  {
-    value: 'bcb',
-    label: 'Barclays Bank'
-  },
-  {
-    value: 'boc',
-    label: 'Bank of China'
-  },
-  {
-    value: 'others',
-    label: 'Others'
-  }
-];
 
 const AccountProfileDetails = () => {
   const [currEmp, setCurrEmp] = useState([]);
   const [value, setValues] = useState([]);
+  const [banks, setBanks] = useState([]);
+  const banksRef = (collection(db, 'banks'));
+
+  /* function loadValues() {
+    setValues(currEmp);
+  } */
 
   const currEmployee = async () => {
     await getDoc(doc(db, 'users', (auth.currentUser).email)).then((docSnap) => {
@@ -79,7 +40,14 @@ const AccountProfileDetails = () => {
         console.log('No such document!');
       }
     });
+
+    const bankData = await getDocs(banksRef);
+    setBanks(bankData.docs.map((d) => ({ ...d.data(), id: d.id })));
+
+    // loadValues();
   };
+
+  console.log(banks);
 
   useEffect(() => {
     currEmployee();
@@ -92,16 +60,23 @@ const AccountProfileDetails = () => {
     });
   };
 
+  const handleDateChange = (date) => {
+    setValues({
+      ...value,
+      dob: date
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const employeeRef = doc(db, 'users', currEmp.email);
     await updateDoc(employeeRef, { ...value });
     window.location.reload();
+    // loadValues();
   };
 
   return (
     <>
-      <AccountProfile />
       <form
         autoComplete="off"
         noValidate
@@ -126,7 +101,6 @@ const AccountProfileDetails = () => {
               >
                 <TextField
                   fullWidth
-                  helperText="Please specify the first name"
                   label="First name"
                   name="firstName"
                   onChange={handleChange}
@@ -158,8 +132,10 @@ const AccountProfileDetails = () => {
                 <DateTimePicker
                   renderInput={(params) => <TextField {...params} />}
                   label="Date of Birth"
+                  type="date"
                   name="dob"
                   value={value.dob}
+                  onChange={handleDateChange}
                   required
                 />
               </Grid>
@@ -171,10 +147,26 @@ const AccountProfileDetails = () => {
                 <TextField
                   fullWidth
                   label="Phone Number"
-                  name="phone"
+                  name="contact"
                   onChange={handleChange}
-                  type="number"
+                  type="string"
                   value={value.contact}
+                  variant="outlined"
+                  required
+                />
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Address"
+                  name="address"
+                  onChange={handleChange}
+                  type="string"
+                  value={value.address}
                   variant="outlined"
                   required
                 />
@@ -204,21 +196,35 @@ const AccountProfileDetails = () => {
                   label="Select Bank"
                   name="bank"
                   onChange={handleChange}
-                  required
                   select
-                  SelectProps={{ native: true }}
+                  required
                   value={value.bank}
                   variant="outlined"
                 >
                   {banks.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
+                    <MenuItem
+                      key={option.id}
+                      value={option.bankName}
                     >
-                      {option.label}
-                    </option>
+                      {option.bankName}
+                    </MenuItem>
                   ))}
                 </TextField>
+              </Grid>
+              <Grid
+                item
+                md={6}
+                xs={12}
+              >
+                <TextField
+                  fullWidth
+                  label="Bank Account Number"
+                  name="bankAccNo"
+                  onChange={handleChange}
+                  required
+                  value={value.bankAccNo}
+                  variant="outlined"
+                />
               </Grid>
             </Grid>
           </CardContent>

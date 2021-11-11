@@ -19,6 +19,7 @@ import { InputAdornment, MenuItem } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 
 import {
@@ -36,7 +37,8 @@ import {
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-
+import EmployeeDelete from 'src/components/employees/EmployeeDelete';
+import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
 import { db } from '../firebase-config';
 
 const employeeRoles = [
@@ -113,6 +115,15 @@ const EmployeesPage = () => {
       >
         <EditIcon />
       </IconButton>
+      <IconButton onClick={() => {
+        setDialogType('delete');
+        setEmployeePage(params.row);
+        console.log(dialogType);
+        handleClickOpen();
+      }}
+      >
+        <DeleteIcon />
+      </IconButton>
     </ButtonGroup>
   );
 
@@ -127,12 +138,12 @@ const EmployeesPage = () => {
     {
       field: 'firstName',
       headerName: 'First Name',
-      width: 150,
+      width: 200,
     },
     {
       field: 'lastName',
       headerName: 'Last Name',
-      width: 150,
+      width: 200,
     },
     {
       field: 'role',
@@ -142,7 +153,7 @@ const EmployeesPage = () => {
     {
       field: 'contact',
       headerName: 'Contact',
-      width: 200,
+      width: 150,
     },
     {
       field: 'email',
@@ -157,7 +168,7 @@ const EmployeesPage = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 180,
       sortable: false,
       renderCell: actionsButtonGroup
     }
@@ -208,6 +219,13 @@ const EmployeesPage = () => {
                   </Button>
                 </Box>
               </DialogTitle>
+              {dialogType === 'delete' && (
+                <EmployeeDelete
+                  employee={employee}
+                  open={open}
+                  handleClose={handleClose}
+                />
+              )}
               {dialogType !== 'delete'
                 && (
                   <DialogContent>
@@ -224,6 +242,7 @@ const EmployeesPage = () => {
                         <Formik
                           initialValues={{
                             id: '',
+                            avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
                             firstName: employee.firstName,
                             lastName: employee.lastName,
                             role: employee.role,
@@ -260,10 +279,14 @@ const EmployeesPage = () => {
                               const newId = `${values.email}`;
                               console.log('new id is ', newId);
                               actions.setFieldValue('id', newId);
+
+                              const auth = getAuth();
+                              createUserWithEmailAndPassword(auth, `${values.email}`, 'password');
                             }
 
                             const temp = {
                               id: values.email,
+                              avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
                               firstName: values.firstName,
                               lastName: values.lastName,
                               role: values.role,
@@ -280,7 +303,6 @@ const EmployeesPage = () => {
                             };
 
                             setEmployeePage(temp);
-                            console.log('id currently is ', values.id, 'another one is', values.email);
 
                             setDoc(doc(db, 'users', `${values.email}`), temp)
                               .then(() => {
@@ -305,6 +327,17 @@ const EmployeesPage = () => {
                             values
                           }) => (
                             <form onSubmit={handleSubmit}>
+                              <input
+                                type="hidden"
+                                display="none"
+                                fullWidth
+                                label="Avatar"
+                                margin="normal"
+                                name="avatar"
+                                onBlur={handleBlur}
+                                value={values.avatar}
+                                variant="outlined"
+                              />
                               <TextField
                                 error={Boolean(touched.firstName && errors.firstName)}
                                 fullWidth
@@ -415,6 +448,7 @@ const EmployeesPage = () => {
                                 type="string"
                                 value={values.email}
                                 variant="outlined"
+                                disabled={dialogType === 'edit'}
                               />
                               <TextField
                                 error={Boolean(touched.address && errors.address)}

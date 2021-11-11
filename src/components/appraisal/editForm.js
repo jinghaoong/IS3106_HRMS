@@ -80,6 +80,7 @@ const EditForm = ({ appraisalForm }) => {
         setSelectedAppraisalId('');
         setWarning('');
         setSuccess('Successfully Edited!');
+        window.location.reload();
       } else {
         setWarning('Values required!');
         setSuccess('');

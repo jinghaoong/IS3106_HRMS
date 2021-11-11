@@ -33,7 +33,7 @@ const AccountProfile = () => {
   console.log('Testing', currEmp.firstName);
 
   const profile = {
-    avatar: '/static/images/avatars/default_avatar.png',
+    avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
     firstName: currEmp.firstName,
     lastName: currEmp.lastName,
     identificationNo: currEmp.identificationNo,
@@ -43,12 +43,13 @@ const AccountProfile = () => {
     role: currEmp.role,
     status: currEmp.status,
     dob: currEmp.dob,
-    joined: currEmp.startDate
+    joined: currEmp.startDate,
+    bankAcc: currEmp.bankAccNo,
+    bank: currEmp.bank,
   };
 
   const empDOB = profile.dob ? moment(profile.dob.toDate()).calendar() : '';
-  const empStart = profile.startDate ? moment(profile.startDate.toDate()).calendar() : '';
-
+  const empStart = profile.joined ? moment(profile.joined.toDate()).calendar() : '';
   console.log(currEmp.firstName);
 
   return (
@@ -68,10 +69,16 @@ const AccountProfile = () => {
       />
       <Typography
         color="textPrimary"
-        gutterBottom
         variant="h3"
       >
         {`${profile.firstName} ${profile.lastName}`}
+      </Typography>
+      <Typography
+        color="textPrimary"
+        gutterBottom
+        variant="h5"
+      >
+        {profile.role}
       </Typography>
       <Typography
         color="textSecondary"
@@ -95,24 +102,14 @@ const AccountProfile = () => {
         color="textSecondary"
         variant="body1"
       >
-        {profile.role}
-      </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
-        {profile.status}
-      </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
+        Date of Birth:&nbsp;
         {empDOB}
       </Typography>
       <Typography
         color="textSecondary"
         variant="body1"
       >
+        Joined On:&nbsp;
         {empStart}
       </Typography>
     </Box>

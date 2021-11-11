@@ -46,6 +46,16 @@ const UserAppraisal = () => {
     return '';
   };
 
+  function findEmployee(uId) {
+    const em = Array.from(employees).filter((obj) => {
+      if (obj.id === uId) {
+        return obj;
+      }
+      return null;
+    });
+    return em[0];
+  }
+
   const findCycle = () => {
     let cycle = [];
     const today = new Date().toString();
@@ -57,16 +67,6 @@ const UserAppraisal = () => {
       }
       return null;
     });
-
-    function findEmployee(uId) {
-      const em = Array.from(employees).filter((obj) => {
-        if (obj.id === uId) {
-          return obj;
-        }
-        return null;
-      });
-      return em[0];
-    }
 
     if (cycle.length !== 0) {
       console.log('self', cycle[0].selfEval);
