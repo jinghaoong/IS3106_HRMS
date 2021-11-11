@@ -43,12 +43,13 @@ const AccountProfile = () => {
     role: currEmp.role,
     status: currEmp.status,
     dob: currEmp.dob,
-    joined: currEmp.startDate
+    joined: currEmp.startDate,
+    bankAcc: currEmp.bankAccNo,
+    bank: currEmp.bank,
   };
 
   const empDOB = profile.dob ? moment(profile.dob.toDate()).calendar() : '';
-  const empStart = profile.startDate ? moment(profile.startDate.toDate()).calendar() : '';
-
+  const empStart = profile.joined ? moment(profile.joined.toDate()).calendar() : '';
   console.log(currEmp.firstName);
 
   return (
@@ -68,10 +69,16 @@ const AccountProfile = () => {
       />
       <Typography
         color="textPrimary"
-        gutterBottom
         variant="h3"
       >
         {`${profile.firstName} ${profile.lastName}`}
+      </Typography>
+      <Typography
+        color="textPrimary"
+        gutterBottom
+        variant="h5"
+      >
+        {profile.role}
       </Typography>
       <Typography
         color="textSecondary"
@@ -95,24 +102,14 @@ const AccountProfile = () => {
         color="textSecondary"
         variant="body1"
       >
-        {profile.role}
-      </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
-        {profile.status}
-      </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body1"
-      >
+        Date of Birth:&nbsp;
         {empDOB}
       </Typography>
       <Typography
         color="textSecondary"
         variant="body1"
       >
+        Joined On:&nbsp;
         {empStart}
       </Typography>
     </Box>

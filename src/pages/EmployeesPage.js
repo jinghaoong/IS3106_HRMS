@@ -19,6 +19,7 @@ import { InputAdornment, MenuItem } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 
 import {
@@ -36,7 +37,7 @@ import {
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-
+import EmployeeDelete from 'src/components/employees/EmployeeDelete';
 import { db } from '../firebase-config';
 
 const employeeRoles = [
@@ -112,6 +113,15 @@ const EmployeesPage = () => {
       }}
       >
         <EditIcon />
+      </IconButton>
+      <IconButton onClick={() => {
+        setDialogType('delete');
+        setEmployeePage(params.row);
+        console.log(dialogType);
+        handleClickOpen();
+      }}
+      >
+        <DeleteIcon />
       </IconButton>
     </ButtonGroup>
   );
@@ -208,6 +218,13 @@ const EmployeesPage = () => {
                   </Button>
                 </Box>
               </DialogTitle>
+              {dialogType === 'delete' && (
+              <EmployeeDelete
+                employee={employee}
+                open={open}
+                handleClose={handleClose}
+              />
+              )}
               {dialogType !== 'delete'
                 && (
                   <DialogContent>
@@ -415,6 +432,7 @@ const EmployeesPage = () => {
                                 type="string"
                                 value={values.email}
                                 variant="outlined"
+                                disabled={dialogType === 'edit'}
                               />
                               <TextField
                                 error={Boolean(touched.address && errors.address)}
