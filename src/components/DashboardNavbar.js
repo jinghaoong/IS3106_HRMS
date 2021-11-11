@@ -17,6 +17,7 @@ import Logo from './Logo';
 import { auth } from '../firebase-config';
 
 const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
+  const currUser = JSON.parse(localStorage.getItem('currUser'));
   const [notifications] = useState([]);
   const navigate = useNavigate();
 
@@ -26,7 +27,7 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
       {...rest}
     >
       <Toolbar>
-        <RouterLink to="/">
+        <RouterLink to={currUser !== null ? '/app/dashboard' : '/login'}>
           <Logo />
         </RouterLink>
         <Box sx={{ flexGrow: 1 }} />
@@ -46,9 +47,10 @@ const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
             title="Sign Out"
             onClick={() => {
               signOut(auth).then(() => {
+                localStorage.removeItem('currUser');
                 console.log('Signed out');
-                console.log(auth.currentUser);
-                navigate('/login', { replace: true });
+                console.log(localStorage.getItem('currUser'));
+                navigate('/login', { replace: false });
               }).catch((error) => {
                 console.log(error.message);
               });
