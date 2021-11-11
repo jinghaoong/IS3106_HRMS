@@ -14,6 +14,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   setDoc,
   Timestamp
@@ -25,6 +26,7 @@ import * as Yup from 'yup';
 import { auth, db } from '../../firebase-config';
 
 const LeaveForm = ({
+  user,
   leaveRequest,
   // setLeaveRequest,
   dialogType,
@@ -32,11 +34,17 @@ const LeaveForm = ({
   handleClose
 }) => {
   const [employees, setEmployees] = useState([]);
-  const employeesRef = (collection(db, 'users'));
+  const employeesRef = dialogType === 'user-create'
+    ? doc(db, 'users', user.id) : collection(db, 'users');
 
   const getEmployees = async () => {
-    const querySnapshot = await getDocs(employeesRef);
-    setEmployees(querySnapshot.docs.map((d) => ({ ...d.data(), id: d.id })));
+    if (dialogType === 'user-create') {
+      const docSnap = await getDoc(employeesRef);
+      setEmployees([docSnap.data()]);
+    } else {
+      const querySnapshot = await getDocs(employeesRef);
+      setEmployees(querySnapshot.docs.map((d) => ({ ...d.data(), id: d.id })));
+    }
   };
 
   useEffect(() => {
@@ -76,7 +84,7 @@ const LeaveForm = ({
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>
-        {dialogType === 'create' && <div>New Leave Request</div>}
+        {(dialogType === 'create' || dialogType === 'user-create') && <div>New Leave Request</div>}
         {dialogType === 'view' && <div>{`View Leave Request: id = ${leaveRequest.id}`}</div>}
       </DialogTitle>
       <DialogContent>
@@ -103,6 +111,7 @@ const LeaveForm = ({
               }}
               validationSchema={Yup.object().shape({
                 employee: Yup.string().email('Must be a valid email').max(255).required('Enter Employee Email'),
+                type: Yup.string().required('Enter a Leave Type!'),
                 startDate: Yup.date().required('Enter Start Date "dd-mm-yyyy"'),
                 endDate: Yup.date().min(Yup.ref('startDate'), 'End Date cannot be before Start Date').required('Enter End Date "dd-mm-yyyy"'),
                 remarks: Yup.string(),
@@ -114,7 +123,7 @@ const LeaveForm = ({
                   startDate: Timestamp.fromDate(values.startDate),
                   endDate: Timestamp.fromDate(values.endDate),
                   remarks: values.remarks,
-                  approved: dialogType === 'create' ? false : values.approved,
+                  approved: dialogType === 'create' || dialogType === 'user-create' ? false : values.approved,
                   editedBy: viewOnly ? auth.currentUser.email : null,
                 };
 
@@ -256,6 +265,7 @@ const LeaveForm = ({
 };
 
 LeaveForm.propTypes = {
+  user: PropTypes.object,
   leaveRequest: PropTypes.object,
   // setLeaveRequest: PropTypes.func,
   dialogType: PropTypes.string,

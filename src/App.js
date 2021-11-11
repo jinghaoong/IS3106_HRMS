@@ -23,6 +23,7 @@ import Payroll from './pages/Payroll';
 import QR from './pages/QR';
 import UserAppraisal from './pages/UserAppraisal';
 import UserAttendance from './pages/UserAttendance';
+import UserLeave from './pages/UserLeave';
 import UserPayroll from './pages/UserPayroll';
 import theme from './theme';
 
@@ -52,7 +53,8 @@ const App = () => {
         { path: 'qr', element: <QR /> },
         { path: 'userAppraisal', element: <UserAppraisal /> },
         { path: 'userAttendance', element: <UserAttendance /> },
-        { path: 'userpayroll', element: <UserPayroll /> },
+        { path: 'userPayroll', element: <UserPayroll /> },
+        { path: 'userLeave', element: <UserLeave /> },
         { path: '*', element: <Navigate to="/404" /> },
       ]
     },

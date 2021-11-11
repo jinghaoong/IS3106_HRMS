@@ -22,10 +22,12 @@ import {
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { format } from 'date-fns';
-import { db } from '../firebase-config';
+import { auth, db } from '../firebase-config';
 import LeaveForm from '../components/leave/LeaveForm';
 
 const LeavePage = () => {
+  const [user, setUser] = useState(auth.currentUser);
+
   const [leave, setLeave] = useState([]);
   const leaveRef = (collection(db, 'leave'));
 
@@ -36,6 +38,7 @@ const LeavePage = () => {
 
   useEffect(() => {
     getLeave();
+    setUser(auth.currentUser);
   }, []);
 
   const [leaveRequest, setLeaveRequest] = useState([]);
@@ -54,7 +57,7 @@ const LeavePage = () => {
 
   const updateLeaveRequest = async (temp) => {
     const updateRef = doc(db, 'leave', temp.id);
-    updateDoc(updateRef, { approved: !temp.approved })
+    updateDoc(updateRef, { approved: !temp.approved, editedBy: user.email })
       .then(getLeave());
   };
 

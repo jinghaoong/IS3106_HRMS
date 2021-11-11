@@ -70,6 +70,11 @@ const items = [
     title: 'User Payroll'
   },
   {
+    href: '/app/userLeave',
+    icon: CalendarIcon,
+    title: 'User Leave'
+  },
+  {
     href: '/404',
     icon: AlertCircleIcon,
     title: 'Error'
