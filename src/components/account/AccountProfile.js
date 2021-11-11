@@ -33,7 +33,7 @@ const AccountProfile = () => {
   console.log('Testing', currEmp.firstName);
 
   const profile = {
-    avatar: '/static/images/avatars/default_avatar.png',
+    avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
     firstName: currEmp.firstName,
     lastName: currEmp.lastName,
     identificationNo: currEmp.identificationNo,

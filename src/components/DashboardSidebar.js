@@ -104,7 +104,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
   };
 
   const user = {
-    avatar: '/static/images/avatars/avatar_6.png',
+    avatar: currEmp.avatar,
     jobTitle: currEmp ? currEmp.role : 'Employee',
     name: currUser ? `${currEmp.firstName} ${currEmp.lastName}` : 'User',
   };

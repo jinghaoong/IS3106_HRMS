@@ -137,12 +137,12 @@ const EmployeesPage = () => {
     {
       field: 'firstName',
       headerName: 'First Name',
-      width: 150,
+      width: 200,
     },
     {
       field: 'lastName',
       headerName: 'Last Name',
-      width: 150,
+      width: 200,
     },
     {
       field: 'role',
@@ -152,7 +152,7 @@ const EmployeesPage = () => {
     {
       field: 'contact',
       headerName: 'Contact',
-      width: 200,
+      width: 150,
     },
     {
       field: 'email',
@@ -167,7 +167,7 @@ const EmployeesPage = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 180,
       sortable: false,
       renderCell: actionsButtonGroup
     }
@@ -219,11 +219,11 @@ const EmployeesPage = () => {
                 </Box>
               </DialogTitle>
               {dialogType === 'delete' && (
-              <EmployeeDelete
-                employee={employee}
-                open={open}
-                handleClose={handleClose}
-              />
+                <EmployeeDelete
+                  employee={employee}
+                  open={open}
+                  handleClose={handleClose}
+                />
               )}
               {dialogType !== 'delete'
                 && (
@@ -241,6 +241,7 @@ const EmployeesPage = () => {
                         <Formik
                           initialValues={{
                             id: '',
+                            avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
                             firstName: employee.firstName,
                             lastName: employee.lastName,
                             role: employee.role,
@@ -281,6 +282,7 @@ const EmployeesPage = () => {
 
                             const temp = {
                               id: values.email,
+                              avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png',
                               firstName: values.firstName,
                               lastName: values.lastName,
                               role: values.role,
@@ -297,7 +299,6 @@ const EmployeesPage = () => {
                             };
 
                             setEmployeePage(temp);
-                            console.log('id currently is ', values.id, 'another one is', values.email);
 
                             setDoc(doc(db, 'users', `${values.email}`), temp)
                               .then(() => {
@@ -322,6 +323,17 @@ const EmployeesPage = () => {
                             values
                           }) => (
                             <form onSubmit={handleSubmit}>
+                              <input
+                                type="hidden"
+                                display="none"
+                                fullWidth
+                                label="Avatar"
+                                margin="normal"
+                                name="avatar"
+                                onBlur={handleBlur}
+                                value={values.avatar}
+                                variant="outlined"
+                              />
                               <TextField
                                 error={Boolean(touched.firstName && errors.firstName)}
                                 fullWidth
