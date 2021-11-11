@@ -22,6 +22,7 @@ import {
   DollarSign as DollarSignIcon, Grid as GridIcon, Star as StarIcon,
   User as UserIcon,
   Users as UsersIcon,
+  AlertCircle as AlertCircleIcon,
   Award as AwardIcon,
   FilePlus as FileIcon
 } from 'react-feather';

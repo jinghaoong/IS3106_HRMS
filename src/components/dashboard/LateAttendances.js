@@ -13,10 +13,23 @@ import MoneyIcon from '@material-ui/icons/Money';
 
 const LateAttendances = () => {
   const [attendance, setAttendance] = useState([]);
-  const [size, setSize] = useState(0);
+  // const [size, setSize] = useState(0);
   const attendanceRef = (collection(db, 'attendance'));
 
-  function getSize() {
+  const getAttendance = async () => {
+    const data = await getDocs(attendanceRef);
+    setAttendance(data.docs.map((d) => ({ ...d.data(), id: d.id })));
+    await getDocs(attendanceRef);
+    // .then((snap) => {
+    //   setSize(snap.size); // will return the collection size
+    // });
+  };
+
+  useEffect(() => {
+    getAttendance();
+  }, []);
+
+  const getSize = () => {
     const arr = Array.from(attendance).filter((obj) => {
       const today = new Date();
       const date = new Date(obj.dateTimeIn.seconds * 1000);
@@ -32,23 +45,8 @@ const LateAttendances = () => {
       }
       return null;
     });
-    setSize(arr.length);
-  }
-
-  const getAttendance = async () => {
-    const data = await getDocs(attendanceRef);
-    setAttendance(data.docs.map((d) => ({ ...d.data(), id: d.id })));
-    await getDocs(attendanceRef).then(() => {
-      getSize();
-    });
-    // .then((snap) => {
-    //   setSize(snap.size); // will return the collection size
-    // });
+    return (arr.length);
   };
-
-  useEffect(() => {
-    getAttendance();
-  }, []);
 
   return (
     <Card {...attendance}>
@@ -64,13 +62,13 @@ const LateAttendances = () => {
               gutterBottom
               variant="h6"
             >
-              TODAY ATTENDANCES
+              LATE ATTENDANCES TODAY
             </Typography>
             <Typography
               color="textPrimary"
               variant="h3"
             >
-              {size}
+              {getSize()}
             </Typography>
           </Grid>
           <Grid item>

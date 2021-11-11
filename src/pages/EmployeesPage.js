@@ -38,7 +38,7 @@ import DateTimePicker from '@mui/lab/DateTimePicker';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import EmployeeDelete from 'src/components/employees/EmployeeDelete';
-import { getAuth, createUserWithEmailAndPassword } from '@firebase/auth';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { db } from '../firebase-config';
 
 const employeeRoles = [
