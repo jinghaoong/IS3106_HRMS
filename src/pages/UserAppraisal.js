@@ -93,7 +93,7 @@ const UserAppraisal = () => {
               </Button>
             ) : <div />}
             <div>&nbsp;</div>
-            {viewForm ? <UserAppraisalForm /> : <UserAppraisalList />}
+            {viewForm ? <UserAppraisalForm role={findEmployee(currUser.email).role} /> : <UserAppraisalList />}
           </Box>
         </Container>
       </Box>
