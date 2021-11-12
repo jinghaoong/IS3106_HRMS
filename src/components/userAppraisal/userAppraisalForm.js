@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 
 import {
+  Alert,
   Box,
   Button,
   TextField,
@@ -220,15 +221,15 @@ const UserAppraisalForm = () => {
         <div>
           {warning === '' ? (<Box />)
             : (
-              <Box className="warning-box">
+              <Alert severity="error">
                 {warning}
-              </Box>
+              </Alert>
             )}
           {success === '' ? (<Box />)
             : (
-              <Box className="successful-box">
+              <Alert severity="success">
                 {success}
-              </Box>
+              </Alert>
             )}
         </div>
       </Paper>
