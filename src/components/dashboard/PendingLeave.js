@@ -127,6 +127,9 @@ const PendingLeave = () => {
         }}
       >
         <Stack direction="row">
+          <Link to="/app/leave">
+            <Button>View All</Button>
+          </Link>
           <Pagination
             count={Math.ceil(leave.length / perPage)}
             shape="rounded"
@@ -135,9 +138,6 @@ const PendingLeave = () => {
               setCurrPage(page);
             }}
           />
-          <Link to="/app/leave">
-            <Button>View All</Button>
-          </Link>
         </Stack>
       </Box>
     </Card>

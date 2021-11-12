@@ -6,8 +6,7 @@ import { useState } from 'react';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import {
   Navigate,
-  useRoutes,
-  // useNavigate,
+  useRoutes
 } from 'react-router-dom';
 import DashboardLayout from './components/DashboardLayout';
 import GlobalStyles from './components/GlobalStyles';
@@ -31,7 +30,8 @@ import theme from './theme';
 // import { useEffect, useState } from 'react';
 
 const App = () => {
-  const [currUser, setCurrUser] = useState(localStorage.getItem('currUser'));
+  const [currUser, setCurrUser] = useState(JSON.parse(localStorage.getItem('currUser')));
+  // const currEmployee = JSON.parse(localStorage.getItem('currUser'));
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -43,44 +43,51 @@ const App = () => {
     }
   });
 
-  const content = useRoutes([
+  const routes = [
     {
       path: 'app',
       element: (currUser !== null ? <DashboardLayout /> : <Navigate to="/login" />),
       children: [
+        { path: 'dashboard', element: <Dashboard /> },
         { path: 'account', element: <Account /> },
         { path: 'employees', element: <EmployeesPage /> },
-        { path: 'dashboard', element: <Dashboard /> },
         { path: 'appraisal', element: <Appraisal /> },
         { path: 'attendance', element: <Attendance /> },
         { path: 'leave', element: <LeavePage /> },
         { path: 'payroll', element: <Payroll /> },
         { path: 'qr', element: <QR /> },
-        { path: 'userAppraisal', element: <UserAppraisal /> },
-        { path: 'userAttendance', element: <UserAttendance /> },
-        { path: 'userPayroll', element: <UserPayroll /> },
-        { path: 'userLeave', element: <UserLeave /> },
-        { path: '*', element: <Navigate to="/404" /> },
+        { path: '*', element: <Navigate to="/404" replace="false" /> },
+      ]
+    },
+    {
+      path: 'user',
+      element: (currUser !== null ? <DashboardLayout /> : <Navigate to="/login" />),
+      children: [
+        { path: 'attendance', element: <UserAttendance /> },
+        { path: 'appraisal', element: <UserAppraisal /> },
+        { path: 'payroll', element: <UserPayroll /> },
+        { path: 'leave', element: <UserLeave /> },
+        { path: '*', element: <Navigate to="/404" replace="false" /> },
       ]
     },
     {
       path: '/',
       element: <MainLayout />,
       children: [
-        { path: '', element: <Navigate to={currUser === null ? '/login' : '/app/dashboard'} /> },
+        { path: '', element: (currUser === null ? <Navigate to="/login" /> : <Navigate to="/app/account" />) },
         { path: 'login', element: <Login /> },
         { path: '404', element: <NotFound /> },
-        { path: '*', element: <Navigate to="/404" /> },
+        { path: '*', element: <Navigate to="/404" replace="false" /> },
       ]
     }
-  ]);
+  ];
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <GlobalStyles />
-          {content}
+          {useRoutes(routes)}
         </ThemeProvider>
       </StyledEngineProvider>
     </LocalizationProvider>

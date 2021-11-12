@@ -52,6 +52,9 @@ const EmployeeList = () => {
                   Employee Name
                 </TableCell>
                 <TableCell>
+                  Contact
+                </TableCell>
+                <TableCell>
                   Joined On
                 </TableCell>
                 <TableCell>
@@ -70,6 +73,9 @@ const EmployeeList = () => {
                   </TableCell>
                   <TableCell>
                     {employee.firstName}
+                  </TableCell>
+                  <TableCell>
+                    {employee.contact}
                   </TableCell>
                   <TableCell>
                     {moment(employee.startDate.toDate()).calendar()}
@@ -96,6 +102,9 @@ const EmployeeList = () => {
         }}
       >
         <Stack direction="row">
+          <Link to="/app/employees">
+            <Button>View All</Button>
+          </Link>
           <Pagination
             count={Math.ceil(employees.length / perPage)}
             shape="rounded"
@@ -104,9 +113,6 @@ const EmployeeList = () => {
               setCurrPage(page);
             }}
           />
-          <Link to="/app/employees">
-            <Button>View All</Button>
-          </Link>
         </Stack>
       </Box>
     </Card>

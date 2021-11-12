@@ -1,8 +1,6 @@
 import {
   Avatar,
-  Box,
-  Button,
-  Divider,
+  Box, Divider,
   Drawer,
   Hidden,
   List,
@@ -21,10 +19,7 @@ import {
   Clock as ClockIcon,
   DollarSign as DollarSignIcon, Grid as GridIcon, Star as StarIcon,
   User as UserIcon,
-  Users as UsersIcon,
-  AlertCircle as AlertCircleIcon,
-  Award as AwardIcon,
-  FilePlus as FileIcon
+  Users as UsersIcon
 } from 'react-feather';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { db } from '../firebase-config';
@@ -70,35 +65,30 @@ const items = [
 
 const userItems = [
   {
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Account'
+    href: '/user/attendance',
+    icon: ClockIcon,
+    title: 'User Attendance'
   },
   {
-    href: '/app/userPayroll',
-    icon: DollarSignIcon,
-    title: 'User Payroll'
-  },
-  {
-    href: '/app/userLeave',
+    href: '/user/leave',
     icon: CalendarIcon,
     title: 'User Leave'
   },
   {
-    href: '/app/userAttendance',
-    icon: FileIcon,
-    title: 'User Attendance'
+    href: '/user/payroll',
+    icon: DollarSignIcon,
+    title: 'User Payroll'
   },
   {
-    href: '/app/userAppraisal',
-    icon: AwardIcon,
+    href: '/user/appraisal',
+    icon: StarIcon,
     title: 'User Appraisal'
   },
   {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
-  }
+    href: '/app/account',
+    icon: UserIcon,
+    title: 'Account'
+  },
 ];
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
@@ -178,7 +168,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         <List>
           {loading && <Typography>Loading ...</Typography>}
           {(!loading && currEmp.role === 'Manager')
-            && userItems.concat(items).map((item) => (
+            && items.concat(userItems).map((item) => (
               <NavItem
                 href={item.href}
                 key={item.title}
@@ -199,43 +189,6 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         </List>
       </Box>
       <Box sx={{ flexGrow: 1 }} />
-      <Box
-        sx={{
-          backgroundColor: 'background.default',
-          m: 2,
-          p: 2
-        }}
-      >
-        <Typography
-          align="center"
-          gutterBottom
-          variant="body2"
-        >
-          Need more?
-        </Typography>
-        <Typography
-          align="center"
-          variant="body2"
-        >
-          Upgrade to PRO version and access 20 more screens
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            pt: 2
-          }}
-        >
-          <Button
-            color="primary"
-            component="a"
-            href="https://react-material-kit.devias.io"
-            variant="contained"
-          >
-            See PRO version
-          </Button>
-        </Box>
-      </Box>
     </Box>
   );
 
