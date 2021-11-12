@@ -34,7 +34,7 @@ import {
   DataGrid,
   GridToolbar,
 } from '@mui/x-data-grid';
-import DateTimePicker from '@mui/lab/DateTimePicker';
+import DatePicker from '@mui/lab/DatePicker';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import EmployeeDelete from 'src/components/employees/EmployeeDelete';
@@ -525,7 +525,7 @@ const EmployeesPage = () => {
                               />
                               <br />
                               <br />
-                              <DateTimePicker
+                              <DatePicker
                                 renderInput={(params) => <TextField {...params} />}
                                 label="Date of Birth"
                                 name="dob"
@@ -536,7 +536,7 @@ const EmployeesPage = () => {
                               />
                               <br />
                               <br />
-                              <DateTimePicker
+                              <DatePicker
                                 renderInput={(params) => <TextField {...params} />}
                                 label="Start Date"
                                 name="startDate"
@@ -547,7 +547,7 @@ const EmployeesPage = () => {
                               />
                               <br />
                               <br />
-                              <DateTimePicker
+                              <DatePicker
                                 renderInput={(params) => <TextField {...params} />}
                                 label="End Date"
                                 name="endDate"

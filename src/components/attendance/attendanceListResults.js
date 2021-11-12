@@ -268,6 +268,9 @@ const AttendanceListResults = ({ ...rest }) => {
                 <TableCell>
                   Status
                 </TableCell>
+                <TableCell>
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
