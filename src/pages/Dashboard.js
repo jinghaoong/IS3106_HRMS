@@ -54,19 +54,19 @@ const Dashboard = () => (
             item
             lg={8}
             md={12}
-            xl={9}
+            xl={12}
             xs={12}
           >
-            <EmployeeList />
+            <PendingLeave sx={{ height: '100%' }} />
           </Grid>
           <Grid
             item
             lg={8}
             md={12}
-            xl={9}
+            xl={12}
             xs={12}
           >
-            <PendingLeave sx={{ height: '100%' }} />
+            <EmployeeList />
           </Grid>
         </Grid>
       </Container>
