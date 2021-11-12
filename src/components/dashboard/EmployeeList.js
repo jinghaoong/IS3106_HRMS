@@ -52,6 +52,9 @@ const EmployeeList = () => {
                   Employee Name
                 </TableCell>
                 <TableCell>
+                  Contact
+                </TableCell>
+                <TableCell>
                   Joined On
                 </TableCell>
                 <TableCell>
@@ -70,6 +73,9 @@ const EmployeeList = () => {
                   </TableCell>
                   <TableCell>
                     {employee.firstName}
+                  </TableCell>
+                  <TableCell>
+                    {employee.contact}
                   </TableCell>
                   <TableCell>
                     {moment(employee.startDate.toDate()).calendar()}

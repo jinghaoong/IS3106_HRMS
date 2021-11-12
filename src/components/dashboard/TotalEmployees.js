@@ -12,24 +12,21 @@ import { db } from 'src/firebase-config';
 import PeopleIcon from '@material-ui/icons/PeopleOutlined';
 
 const TotalEmployees = () => {
-  const [employees, setEmployeesPage] = useState([]);
   const [size, setSize] = useState(0);
   const employeesPageRef = (collection(db, 'users'));
 
-  const getEmployees = async () => {
-    const data = await getDocs(employeesPageRef);
-    setEmployeesPage(data.docs.map((d) => ({ ...d.data(), id: d.id })));
+  const getSize = async () => {
     await getDocs(employeesPageRef).then((snap) => {
       setSize(snap.size); // will return the collection size
     });
   };
 
   useEffect(() => {
-    getEmployees();
+    getSize();
   }, []);
 
   return (
-    <Card {...employees}>
+    <Card>
       <CardContent>
         <Grid
           container

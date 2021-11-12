@@ -1,11 +1,12 @@
 import {
+  Alert,
   Box,
   Button,
   Container,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle, TextField
+  DialogTitle, Stack, TextField
 } from '@material-ui/core';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import { MenuItem } from '@mui/material';
@@ -111,7 +112,7 @@ const LeaveForm = ({
               }}
               validationSchema={Yup.object().shape({
                 employee: Yup.string().email('Must be a valid email').max(255).required('Enter Employee Email'),
-                type: Yup.string().required('Enter a Leave Type!'),
+                type: Yup.string().required('Enter Leave Type'),
                 startDate: Yup.date().required('Enter Start Date "dd-mm-yyyy"'),
                 endDate: Yup.date().min(Yup.ref('startDate'), 'End Date cannot be before Start Date').required('Enter End Date "dd-mm-yyyy"'),
                 remarks: Yup.string(),
@@ -163,6 +164,10 @@ const LeaveForm = ({
                 values
               }) => (
                 <form onSubmit={handleSubmit}>
+                  <Stack spacing={1} marginTop={1}>
+                    {errors.startDate ? (<Alert severity="warning">Enter Start Date &quot;dd-mm-yyyy&quot;</Alert>) : null}
+                    {errors.endDate ? (<Alert severity="warning">{errors.endDate}</Alert>) : null}
+                  </Stack>
                   <TextField
                     error={Boolean(touched.employee && errors.employee)}
                     select
@@ -207,7 +212,12 @@ const LeaveForm = ({
                     ))}
                   </TextField>
                   <DesktopDatePicker
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField
+                        error={Boolean(touched.startDate && errors.startDate)}
+                        {...params}
+                      />
+                    )}
                     label="Start Date"
                     name="startDate"
                     value={values.startDate}
@@ -217,7 +227,12 @@ const LeaveForm = ({
                     readOnly={dialogType === 'view'}
                   />
                   <DesktopDatePicker
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField
+                        error={Boolean(touched.endDate && errors.endDate)}
+                        {...params}
+                      />
+                    )}
                     label="End Date"
                     name="endDate"
                     value={values.endDate}

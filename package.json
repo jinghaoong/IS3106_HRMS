@@ -68,10 +68,11 @@
     "react-select": "^5.2.1",
     "react-simple-star-rating": "^3.0.0",
     "react-transition-group": "^4.4.2",
-    "uuid": "^8.3.0",
+    "uuid": "^7.0.0",
     "yup": "^0.32.9"
   },
   "devDependencies": {
     "eslint-config-airbnb": "^18.2.1"
-  }
+  },
+  "homepage": "https://customhrms-e80cc.web.app"
 }

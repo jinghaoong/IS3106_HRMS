@@ -12,7 +12,7 @@ import {
   CardContent,
   Container,
   Pagination,
-  Stack,
+  Grid,
   Typography
 } from '@material-ui/core';
 import {
@@ -93,17 +93,21 @@ const UserLeave = () => {
         <Container>
           <Card sx={{ marginBottom: 1 }}>
             <CardContent>
-              <Stack direction="row" spacing={2}>
-                <CreateButton />
-                <Pagination
-                  count={Math.ceil(leave.length / perPage)}
-                  shape="rounded"
-                  page={currPage}
-                  onChange={(event, page) => {
-                    setCurrPage(page);
-                  }}
-                />
-              </Stack>
+              <Grid container spacing={2}>
+                <Grid item key={0}>
+                  <CreateButton />
+                </Grid>
+                <Grid item key={1}>
+                  <Pagination
+                    count={Math.ceil(leave.length / perPage)}
+                    shape="rounded"
+                    page={currPage}
+                    onChange={(event, page) => {
+                      setCurrPage(page);
+                    }}
+                  />
+                </Grid>
+              </Grid>
             </CardContent>
           </Card>
           {leave.length === 0
@@ -145,9 +149,9 @@ const UserLeave = () => {
                     <Typography>{`Remarks: ${leaveRequest.remarks === '' ? '-NIL-' : leaveRequest.remarks}`}</Typography>
                   </CardContent>
                 </Card>
-                <LeaveForm user={employee} leaveRequest={[]} dialogType={dialogType} open={open} handleClose={handleClose} />
               </>
             ))}
+          <LeaveForm user={employee} leaveRequest={[]} dialogType={dialogType} open={open} handleClose={handleClose} />
         </Container>
       </Box>
     </>

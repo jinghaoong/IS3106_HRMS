@@ -5,6 +5,7 @@ import LateAttendances from '../components/dashboard/LateAttendances';
 import PendingLeave from '../components/dashboard/PendingLeave';
 import TotalEmployees from '../components/dashboard/TotalEmployees';
 import UnapprovedLeaves from '../components/dashboard/UnapprovedLeaves';
+import QRCard from '../components/qr/QRCard';
 
 const Dashboard = () => (
   <>
@@ -52,21 +53,30 @@ const Dashboard = () => (
           </Grid>
           <Grid
             item
-            lg={8}
-            md={12}
-            xl={9}
+            lg={3}
+            sm={6}
+            xl={3}
             xs={12}
           >
-            <EmployeeList />
+            <QRCard />
           </Grid>
           <Grid
             item
             lg={8}
             md={12}
-            xl={9}
+            xl={12}
             xs={12}
           >
             <PendingLeave sx={{ height: '100%' }} />
+          </Grid>
+          <Grid
+            item
+            lg={8}
+            md={12}
+            xl={12}
+            xs={12}
+          >
+            <EmployeeList />
           </Grid>
         </Grid>
       </Container>

@@ -17,7 +17,7 @@ import {
   BarChart as BarChartIcon,
   Calendar as CalendarIcon,
   Clock as ClockIcon,
-  DollarSign as DollarSignIcon, Grid as GridIcon, Star as StarIcon,
+  DollarSign as DollarSignIcon, Star as StarIcon,
   User as UserIcon,
   Users as UsersIcon
 } from 'react-feather';
@@ -55,11 +55,6 @@ const items = [
     href: '/app/appraisal',
     icon: StarIcon,
     title: 'Appraisal'
-  },
-  {
-    href: '/app/qr',
-    icon: GridIcon,
-    title: 'QR Generator'
   },
 ];
 
