@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -7,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   InputAdornment,
+  Stack,
   TextField
 } from '@material-ui/core';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
@@ -83,9 +85,9 @@ const PayslipForm = ({
               validationSchema={Yup.object().shape({
                 email: Yup.string().email('Must be a valid email').max(255).required('Enter Employee Email'),
                 basic: Yup.number().positive().required('Enter Basic Pay'),
-                overtime: Yup.number().positive().required('Enter Overtime Pay'),
-                cpfEmployee: Yup.number().positive(),
-                cpfEmployer: Yup.number().positive(),
+                overtime: Yup.number().moreThan(-1).required('Enter Overtime Pay'),
+                cpfEmployee: Yup.number().positive().required('Enter CPF (Employee)'),
+                cpfEmployer: Yup.number().positive().required('Enter CPF (Employer)'),
                 startDate: Yup.date().required('Enter Start Date "dd-mm-yyyy"'),
                 endDate: Yup.date().min(Yup.ref('startDate'), 'End Date must be same or after Start Date').required('Enter End Date "dd-mm-yyyy"'),
                 paymentMode: Yup.string().required('Enter Payment Mode'),
@@ -136,6 +138,10 @@ const PayslipForm = ({
                 values
               }) => (
                 <form onSubmit={handleSubmit}>
+                  <Stack spacing={1} marginTop={1}>
+                    {errors.startDate ? (<Alert severity="warning">Enter Start Date &quot;dd-mm-yyyy&quot;</Alert>) : null}
+                    {errors.endDate ? (<Alert severity="warning">{errors.endDate}</Alert>) : null}
+                  </Stack>
                   <TextField
                     error={Boolean(touched.email && errors.email)}
                     select
@@ -224,19 +230,31 @@ const PayslipForm = ({
                     }}
                   />
                   <DesktopDatePicker
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField
+                        error={Boolean(touched.startDate && errors.startDate)}
+                        {...params}
+                      />
+                    )}
                     label="Start Date"
                     name="startDate"
                     value={values.startDate}
+                    onBlur={handleBlur}
                     onChange={(newStart) => {
                       setFieldValue('startDate', newStart);
                     }}
                   />
                   <DesktopDatePicker
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField
+                        error={Boolean(touched.endDate && errors.endDate)}
+                        {...params}
+                      />
+                    )}
                     label="End Date"
                     name="endDate"
                     value={values.endDate}
+                    onBlur={handleBlur}
                     onChange={(newEnd) => {
                       setFieldValue('endDate', newEnd);
                     }}
