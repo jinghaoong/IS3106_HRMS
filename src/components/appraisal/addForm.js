@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -154,15 +155,15 @@ const AddForm = () => {
       <div>
         {warning === '' ? (<Box />)
           : (
-            <Box className="warning-box">
+            <Alert severity="error">
               {warning}
-            </Box>
+            </Alert>
           )}
         {success === '' ? (<Box />)
           : (
-            <Box className="successful-box">
+            <Alert severity="success">
               {success}
-            </Box>
+            </Alert>
           )}
       </div>
     </Box>

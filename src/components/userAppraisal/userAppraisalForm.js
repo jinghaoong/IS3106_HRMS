@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 
 import {
+  Alert,
   Box,
   Button,
   TextField,
   Card,
   Paper,
-  CardHeader
+  CardHeader,
+  MenuItem,
 } from '@material-ui/core';
 
 import { Rating } from 'react-simple-star-rating';
 import { db } from '../../firebase-config';
 
-const UserAppraisalForm = () => {
+const UserAppraisalForm = ({ role }) => {
   const [appraisal, setAppraisal] = useState([]);
   const appraisalRef = collection(db, 'appraisals');
   const [appraisalForm, setAppraisalForm] = useState([]);
@@ -92,7 +95,7 @@ const UserAppraisalForm = () => {
     return '';
   };
 
-  function findEmployee(uId) {
+  const findEmployee = (uId) => {
     const em = Array.from(employees).filter((obj) => {
       if (obj.id === uId) {
         return obj;
@@ -100,7 +103,7 @@ const UserAppraisalForm = () => {
       return null;
     });
     return em[0];
-  }
+  };
 
   const getCycle = (dataDate) => {
     let cycle = [];
@@ -170,15 +173,28 @@ const UserAppraisalForm = () => {
         <div>&nbsp;</div>
         <form onSubmit={handleSubmit}>
           <TextField
-            sx={{
-              width: '90%',
-            }}
-            variant="outlined"
-            label="Appraisee Email (for Self Evaluation, please type in your own email)"
+            select
+            fullWidth
+            label="Appraisee Email"
+            margin="normal"
             name="appraiseeEmail"
-            value={values.appraiseeEmail}
             onChange={handleInputChange}
-          />
+            type="string"
+            value={values.appraiseeEmail}
+            variant="outlined"
+          >
+            {(role !== 'Manager') ? (
+              <MenuItem key={currUser.email} value={currUser.email}>
+                {currUser.email}
+              </MenuItem>
+            ) : (
+              employees.map((option) => (
+                <MenuItem key={option.email} value={option.email}>
+                  {option.email}
+                </MenuItem>
+              ))
+            )}
+          </TextField>
           <div>&nbsp;</div>
           <div sx={{ mx: 5 }}>
             <h3>
@@ -220,20 +236,24 @@ const UserAppraisalForm = () => {
         <div>
           {warning === '' ? (<Box />)
             : (
-              <Box className="warning-box">
+              <Alert severity="error">
                 {warning}
-              </Box>
+              </Alert>
             )}
           {success === '' ? (<Box />)
             : (
-              <Box className="successful-box">
+              <Alert severity="success">
                 {success}
-              </Box>
+              </Alert>
             )}
         </div>
       </Paper>
     </Card>
   );
+};
+
+UserAppraisalForm.propTypes = {
+  role: PropTypes.string
 };
 
 export default UserAppraisalForm;
