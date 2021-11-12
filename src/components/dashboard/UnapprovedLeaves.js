@@ -13,8 +13,8 @@ import {
   getDocs
 } from '@firebase/firestore';
 import { db } from 'src/firebase-config';
-import { red } from '@material-ui/core/colors';
-import MoneyIcon from '@material-ui/icons/Money';
+import { orange } from '@material-ui/core/colors';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 
 const UnapprovedLeaves = () => {
   const [size, setSize] = useState(0);
@@ -57,12 +57,12 @@ const UnapprovedLeaves = () => {
           <Grid item>
             <Avatar
               sx={{
-                backgroundColor: red[600],
+                backgroundColor: orange[500],
                 height: 56,
                 width: 56
               }}
             >
-              <MoneyIcon />
+              <DateRangeIcon />
             </Avatar>
           </Grid>
         </Grid>

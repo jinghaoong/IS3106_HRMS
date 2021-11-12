@@ -69,30 +69,36 @@ const Payroll = () => {
 
   const actionsButtonGroup = (params) => (
     <ButtonGroup>
-      <IconButton onClick={() => {
-        setDialogType('edit');
-        setPayslip(params.row);
-        console.log(dialogType);
-        handleClickOpen();
-      }}
+      <IconButton
+        title="Edit Payslip"
+        onClick={() => {
+          setDialogType('edit');
+          setPayslip(params.row);
+          console.log(dialogType);
+          handleClickOpen();
+        }}
       >
         <EditIcon />
       </IconButton>
-      <IconButton onClick={() => {
-        setDialogType('delete');
-        setPayslip(params.row);
-        console.log(dialogType);
-        handleClickOpen();
-      }}
+      <IconButton
+        title="Delete Payslip"
+        onClick={() => {
+          setDialogType('delete');
+          setPayslip(params.row);
+          console.log(dialogType);
+          handleClickOpen();
+        }}
       >
         <DeleteIcon />
       </IconButton>
-      <IconButton onClick={() => {
-        setDialogType('pdf');
-        setPayslip(params.row);
-        console.log(dialogType);
-        handleClickOpen();
-      }}
+      <IconButton
+        title="View PDF"
+        onClick={() => {
+          setDialogType('pdf');
+          setPayslip(params.row);
+          console.log(dialogType);
+          handleClickOpen();
+        }}
       >
         <PictureAsPdfIcon />
       </IconButton>

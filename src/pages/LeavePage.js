@@ -3,8 +3,9 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Chip,
   Container,
-  IconButton
+  IconButton,
 } from '@material-ui/core';
 import {
   Add as AddIcon, Block as BlockIcon, CheckCircle as CheckCircleIcon, MoreVert as MoreIcon
@@ -13,6 +14,7 @@ import {
   DataGrid,
   GridToolbar
 } from '@mui/x-data-grid';
+import { format } from 'date-fns';
 import {
   collection,
   doc,
@@ -21,9 +23,8 @@ import {
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { format } from 'date-fns';
-import { auth, db } from '../firebase-config';
 import LeaveForm from '../components/leave/LeaveForm';
+import { auth, db } from '../firebase-config';
 
 const LeavePage = () => {
   const [user, setUser] = useState(auth.currentUser);
@@ -89,7 +90,8 @@ const LeavePage = () => {
         <MoreIcon />
       </IconButton>
       <IconButton
-        title="Approve Leave Request"
+        color="success"
+        title="Approve Leave"
         disabled={params.row.approved}
         onClick={() => {
           console.log('Approve ', leaveRequest.id);
@@ -99,7 +101,8 @@ const LeavePage = () => {
         <CheckCircleIcon />
       </IconButton>
       <IconButton
-        title="Reject Leave Request"
+        color="error"
+        title="Reject Leave"
         disabled={!params.row.approved}
         onClick={() => {
           console.log('Reject ', leaveRequest);
@@ -110,6 +113,16 @@ const LeavePage = () => {
       </IconButton>
     </ButtonGroup>
   );
+
+  const status = (params) => {
+    let statusChip = <Chip label="Rejected" color="error" />;
+    if (params.row.approved) {
+      statusChip = <Chip label="Approved" color="success" />;
+    } else if (!params.row.approved && params.row.editedBy === null) {
+      statusChip = <Chip label="Pending" color="warning" />;
+    }
+    return statusChip;
+  };
 
   const rows = leave;
 
@@ -146,6 +159,7 @@ const LeavePage = () => {
       field: 'approved',
       headerName: 'Approved?',
       width: 200,
+      renderCell: status
     },
     {
       field: 'actions',

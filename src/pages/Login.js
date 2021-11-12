@@ -101,7 +101,7 @@ const Login = () => {
                     gutterBottom
                     variant="body2"
                   >
-                    Enter manager email and password
+                    Enter Email and Password
                   </Typography>
                   {errors.login ? (<Alert severity="error">{errors.login}</Alert>) : null}
                 </Box>

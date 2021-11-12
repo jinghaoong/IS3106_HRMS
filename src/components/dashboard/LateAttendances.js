@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs } from '@firebase/firestore';
 import { db } from 'src/firebase-config';
 import { red } from '@material-ui/core/colors';
-import MoneyIcon from '@material-ui/icons/Money';
+import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 
 const LateAttendances = () => {
   const [attendance, setAttendance] = useState([]);
@@ -79,7 +79,7 @@ const LateAttendances = () => {
                 width: 56
               }}
             >
-              <MoneyIcon />
+              <AssignmentLateIcon />
             </Avatar>
           </Grid>
         </Grid>
