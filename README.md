@@ -13,9 +13,6 @@ Group Members:
 - Start the server: ```npm run start``` or ```yarn start```
 - Views are on ```localhost:3000```
 
-## Deployed on Firebase Hosting
-- https://customhrms-e80cc.web.app/
-
 ## Tech Stack
 - Backend and Hosting: Firebase Firestore
 - Frontend: ReactJS + Material UI Components
